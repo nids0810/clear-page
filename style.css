@@ -1,0 +1,15 @@
+body:hover {
+    background: #444;
+}
+
+#clickMe {
+    width: 100px;
+    text-align: center;
+    font-size: 20px;
+    color:#444;
+}
+
+#clickMe:hover {
+    color: #fff;
+    cursor: pointer;
+}
