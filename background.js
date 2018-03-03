@@ -4,6 +4,7 @@
 
 var toggle = false;
 chrome.browserAction.onClicked.addListener(function(tab) {
+    if(tab.active) {
   toggle = !toggle;
   if(toggle){
       chrome.browserAction.setIcon({path: "icons/icon_on_16.png", tabId:tab.id});
@@ -13,4 +14,8 @@ chrome.browserAction.onClicked.addListener(function(tab) {
     chrome.browserAction.setIcon({path: "icons/icon_16.png", tabId:tab.id});
     chrome.tabs.executeScript(tab.id, {file:"js/no-action.js"});
   }
+    }
+    else {
+        toggle = false;
+    }
 });
