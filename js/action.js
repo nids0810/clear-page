@@ -5,7 +5,7 @@
     var blockElementsAction = function (element) {
         element.style.background='none';
         element.style.backgroundImage='none';
-        element.style.backgroundColor='#f1f2f3';
+        element.style.backgroundColor='#f9f9f9';
         element.style.fontFamily = 'Comic Sans MS, Comic Sans, cursive';
         element.style.color = '#333';
         element.style.border = 'none';
@@ -19,7 +19,7 @@
     // Anchor Action
     var anchorAction = function(element) {
         element.style.background='none';
-        element.style.backgroundColor='#f1f2f3';
+        element.style.backgroundColor='#f9f9f9';
         element.style.fontFamily = 'Comic Sans MS, Comic Sans, cursive';
         element.style.fontWeight = 'bold';
         element.style.textDecoration = 'underline';
