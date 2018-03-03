@@ -1,76 +1,52 @@
-# Clear Page
-This chrome extension will remove all the unnecesary elements, scripts and formatting from the webpage and will make the page easy to read.
+# Clear Page #
+Those needing a simple and plainer website may find this extension to be useful. It transforms the website completely devoid of distractions and makes it easy to read. This extension will remove all the unnecessary elements, scripts, style and formattings from the webpage.
 
-This extension is created by @vipl0ve and @nids0810. 
-We would love to hear from you about this chrome extension.
-Let us know if interested, we would love to add you as one of our collaborators.
+This extension is developed by [@vipl0ve](https://github.com/vipl0ve "Viplove Prakash") and [@nids0810](https://github.com/nids0810 "Nidhi Singh").
+We would love to hear from you about this chrome extension. Also, let us know if interested, we would love to add you as one of our collaborators.
 
-The following elements will be impacted by this chrome extension
+This chrome extension will impact the following elements 
 
-## Basic HTML tags
-h1 to h6
-p
+<table>
+    <tr>
+        <td>Basic HTML tags</td>
+        <td>h1 to h6, p</td>
+    </tr>
+    <tr>
+        <td>Formatting tags</td>
+        <td>cite, code, i, q</td>
+    </tr>
+    <tr>
+        <td>Forms and Input tags</td>
+        <td>form, textarea</td>
+    </tr>
+    <tr>
+        <td>Images tags</td>
+        <td>img, map, area, canvas, figcaption, figure, picture</td>
+    </tr>
+    <tr>
+        <td>Audio and Video tags</td>
+        <td>audio, source, track, video</td>
+    </tr>
+    <tr>
+        <td>Style tags</td>
+        <td>div, span, header, footer, main, section, article, aside, details, dialog, summary, data</td>
+    </tr>
+    <tr>
+        <td>Programming tags</td>
+        <td>script, noscript, applet, embed, object, param</td>
+    </tr>
+    <tr>
+        <td>Links tags</td>
+        <td>a, link, nav</td>
+    </tr>
+    <tr>
+        <td>Frames tagss</td>
+        <td>frame, frameset, noframes, iframe</td>
+    </tr>
+</table>
 
-## Formatting tags
-cite
-code
-i
-q
 
-## Forms and Input tags
-form
-textarea
-
-
-## images tags
-img
-map
-area
-canvas
-figcaption
-figure
-picture
-
-## audio/video
-audio
-source
-track
-video
-
-## style tags
-div
-span
-header
-footer
-main
-section
-article
-aside
-details
-dialog
-summary
-data
-
-## programming tags
-script
-noscript
-applet
-embed
-object
-param
-
-## links tags
-a
-link
-nav
-
-## frames tags
-frame
-frameset
-noframes
-iframe
-
-# version 2.0 coming soon ...
-option page
-developer website
-bug fixes
+# Version 2.0 coming soon ... #
+* An _Option page_ to customzie the extension with our own preferences inluding fonts, background color and text color.
+* A _Developer website_ with how this chrome extension works and FAQs.
+* Any _bug fixes_ we will recieve from the users.
