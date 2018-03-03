@@ -3,11 +3,11 @@
   "name": "Clear Page",
   "version": "1.0",
     
-  "description": "Clear all the unnecessary images, social media links and other formatting and remove all the distractions.",
+  "description": "Those needing a simple and plain website may find this extension to be useful. It transform the website completely devoid of distractions and easy to read.",
   "icons": {
     "16": "icons/icon_16.png",
     "32": "icons/icon_32.png",
-    "64": "icons/icon_64.png",
+    "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
   "background" : {
@@ -15,10 +15,10 @@
     "persistent": false
   },
   "browser_action": {
-    "default_icon": "icons/icon_32.png"
+    //"default_icon": "icons/icon_48.png"
   },
   "author": "Viplove Prakash",
-  "homepage_url": "https://github.com/nids0810/chrome-extension",
+  "homepage_url": "https://nids0810.github.io/clear-page/",
     
   "permissions": ["activeTab"],
   "commands": {

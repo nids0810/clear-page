@@ -1,7 +1,7 @@
 # Clear Page
 This chrome extension will remove all the unnecesary elements, scripts and formatting from the webpage and will make the page easy to read.
 
-This extension is created by Viplove Prakash and Nidhi Singh. 
+This extension is created by @vipl0ve and @nids0810. 
 We would love to hear from you about this chrome extension.
 Let us know if interested, we would love to add you as one of our collaborators.
 
