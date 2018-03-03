@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
   "name": "Clear Page",
-  "description": "Clear all the unnecessary images, social media links and other formatting and remove all the distractions.",
   "version": "1.0",
+    
+  "description": "Clear all the unnecessary images, social media links and other formatting and remove all the distractions.",
   "icons": {
     "16": "icons/icon_16.png",
     "32": "icons/icon_32.png",
@@ -10,11 +11,15 @@
     "128": "icons/icon_128.png"
   },
   "background" : {
-    "scripts" : ["background.js"]
+    "scripts" : ["background.js"],
+    "persistent": false
   },
   "browser_action": {
     "default_icon": "icons/icon_32.png"
   },
+  "author": "Viplove Prakash",
+  "homepage_url": "https://github.com/nids0810/chrome-extension",
+    
   "permissions": ["activeTab"],
   "commands": {
       "_execute_browser_action": {

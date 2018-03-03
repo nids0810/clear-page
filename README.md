@@ -1,6 +1,24 @@
 # my-first-chrome-extension
+This chrome extension will remove all the unnecesary elements, scripts and formatting from the webpage and will make it easy to read.
 
-## images
+The following elements will be impacted by this chrome extension
+
+## Basic HTML tags
+h1 to h6
+p
+
+## Formatting tags
+cite
+code
+i
+q
+
+## Forms and Input tags
+form
+textarea
+
+
+## images tags
 img
 map
 area
@@ -15,7 +33,7 @@ source
 track
 video
 
-## style
+## style tags
 div
 span
 header
@@ -29,7 +47,7 @@ dialog
 summary
 data
 
-## Programming
+## programming tags
 script
 noscript
 applet
@@ -37,14 +55,18 @@ embed
 object
 param
 
-## links
+## links tags
 a
 link
 nav
 
-## frames
+## frames tags
 frame
 frameset
 noframes
 iframe
 
+# version 2.0 coming soon ...
+option page
+developer website
+bug fixes
