@@ -4,6 +4,8 @@ Those needing a simple and plainer website may find this extension to be useful.
 This extension is developed by [@vipl0ve](https://github.com/vipl0ve "Viplove Prakash") and [@nids0810](https://github.com/nids0810 "Nidhi Singh").
 We would love to hear from you about this chrome extension. Also, let us know if interested, we would love to add you as one of our collaborators.
 
+Download the chrome extension [Clear Page](https://chrome.google.com/webstore/detail/clear-page/ojafachbjhalpkehfnlfjihfniglcfaa "Clear Page")
+
 This chrome extension will impact the following elements 
 
 <table>
