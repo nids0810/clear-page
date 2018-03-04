@@ -1,12 +1,13 @@
-# Clear Page #
-Those needing a simple and plainer website may find this extension to be useful. It transforms the website completely devoid of distractions and makes it easy to read. This extension will remove all the unnecessary elements, scripts, style and formattings from the webpage.
+# [Clear Page](https://nids0810.github.io/clear-page/ "Clear Page") #
+
+Those needing a simple and plainer website may find this extension to be useful. It transforms the website completely devoid of distractions and makes it easy to read. This extension will remove all the unnecessary elements, scripts, style and formatting from the web page.
 
 This extension is developed by [@vipl0ve](https://github.com/vipl0ve "Viplove Prakash") and [@nids0810](https://github.com/nids0810 "Nidhi Singh").
-We would love to hear from you about this chrome extension. Also, let us know if interested, we would love to add you as one of our collaborators.
+We would love to hear from you about this chrome extension. Also, let us know if interested, we would love to add you as one of the collaborators.
 
-Download the chrome extension [Clear Page](https://chrome.google.com/webstore/detail/clear-page/ojafachbjhalpkehfnlfjihfniglcfaa "Clear Page")
+Download the Clear Page chrome extension [here](https://chrome.google.com/webstore/detail/clear-page/ojafachbjhalpkehfnlfjihfniglcfaa "Clear Page").
 
-This chrome extension will impact the following elements 
+This chrome extension will impact the following elements -
 
 <table>
     <tr>
@@ -49,6 +50,6 @@ This chrome extension will impact the following elements
 
 
 # Version 2.0 coming soon ... #
-* An _Option page_ to customzie the extension with our own preferences inluding fonts, background color and text color.
-* A _Developer website_ with how this chrome extension works and FAQs.
-* Any _bug fixes_ we will recieve from the users.
+* An _Option page_ to customize the extension and add your our own preferences including fonts, background color and text color.
+* A _Developer website_ which will include more information about how this chrome extension works and FAQs.
+* Any _bug fixes_ we will receive from our users.

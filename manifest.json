@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Clear Page",
-  "version": "1.0",
-  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",    
+  "version": "1.1",
+  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
     
   "description": "Those needing a simple website may find this extension to be useful. It transform the website completely devoid of distractions.",
   "icons": {
@@ -12,7 +12,7 @@
     "128": "icons/icon_128.png"
   },
   "background" : {
-    "scripts" : ["background.js"],
+    "scripts" : ["ga.js","background.js"],
     "persistent": false
   },
   "browser_action": {
