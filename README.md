@@ -1,9 +1,15 @@
 # [Clear Page](https://nids0810.github.io/clear-page/ "Clear Page") #
 
-Those needing a simple and plainer website may find this extension to be useful. It transforms the website completely devoid of distractions and makes it easy to read. This extension will remove all the unnecessary elements, scripts, style and formatting from the web page.
+Clear all the irrelevant distraction from your web page for an enjoyable reading experience.
+
+Stop getting annoyed/distracted by the bright colors, the weird styling, the distracting suggestions, the uncanny images, or the pre-loaded videos on the pages. One click on the clear page icon will remove all the distractions and will leave you with an essential and readable web page. A truly pleasant Internet browsing experience.
+
+Now, you can enjoy long reads of your favorite blogs, sports sites (ESPN), news sites(WSJ, NY Times, BBC, Guardian, CNN, HuffingtonPost, Forbes, Bloomberg), Reddit, Quora, Wikipedia, Google, Yahoo!, Tumblr, Myspace, Yelp, and other websites.
+
+### Note: This extension is currently on version 1.2 and is still developing based on user reviews. ###
 
 This extension is developed by [@vipl0ve](https://github.com/vipl0ve "Viplove Prakash") and [@nids0810](https://github.com/nids0810 "Nidhi Singh").
-We would love to hear from you about this chrome extension. Also, let us know if interested, we would love to add you as one of the collaborators.
+We would love to hear from you about this chrome extension. Also, let us know if interested in becoming one of the collaborators.
 
 Download the Clear Page chrome extension [here](https://chrome.google.com/webstore/detail/clear-page/ojafachbjhalpkehfnlfjihfniglcfaa "Clear Page").
 
