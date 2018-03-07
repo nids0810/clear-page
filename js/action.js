@@ -6,21 +6,21 @@
         element.style.background='none';
         element.style.backgroundImage='none';
         element.style.backgroundColor='#f9f9f9';
-        element.style.fontFamily = 'Comic Sans MS, Comic Sans, cursive';
+        element.style.fontFamily = 'sans-serif';
         element.style.color = '#333';
         element.style.border = 'none';
     };
     // Heading Action
     var headingAction = function(element) {
         element.style.background='none';
-        element.style.fontFamily = 'Comic Sans MS, Comic Sans, cursive';
+        element.style.fontFamily = 'sans-serif';
         element.style.color = '#333';
     }
     // Anchor Action
     var anchorAction = function(element) {
         element.style.background='none';
         element.style.backgroundColor='#f9f9f9';
-        element.style.fontFamily = 'Comic Sans MS, Comic Sans, cursive';
+        element.style.fontFamily = 'sans-serif';
         element.style.fontWeight = 'bold';
         element.style.textDecoration = 'underline';
         element.style.color = '#333';

@@ -49,7 +49,7 @@ This chrome extension will impact the following elements -
         <td>a, link, nav</td>
     </tr>
     <tr>
-        <td>Frames tagss</td>
+        <td>Frames tags</td>
         <td>frame, frameset, noframes, iframe</td>
     </tr>
 </table>
