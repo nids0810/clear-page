@@ -56,6 +56,6 @@ This chrome extension will impact the following elements -
 
 
 # Version 2.0 coming soon ... #
-* An _Option page_ to customize the extension and add your our own preferences including fonts, background color and text color.
+* An _Options page_ to customize the extension and add your our own preferences including fonts, background color, and text color.
 * A _Developer website_ which will include more information about how this chrome extension works and FAQs.
-* Any _bug fixes_ we will receive from our users.
+* Any _bug fixes_ which we will receive from our users.
