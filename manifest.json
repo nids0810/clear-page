@@ -12,7 +12,7 @@
     "128": "icons/icon_128.png"
   },
   "background" : {
-    "scripts" : ["ga.js","background.js"],
+    "scripts": ["third-party/jquery.min.js", "js/ga.js", "js/background.js"],
     "persistent": false
   },
   "browser_action": {

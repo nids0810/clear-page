@@ -4,6 +4,12 @@ ga('send', 'pageview', '/background.html', 'clicked');
 
 var activeTabs = [];
 chrome.browserAction.onClicked.addListener(function(tab) {
+    if (jQuery) {
+        console.log("Jquery on");
+    } else {
+        console.log("Jquery off");
+    }
+    
     if(activeTabs.length===0){
         activeTabs.push(tab.title);
         ga('send', 'event', 'Extension', 'Activated', 'One Page', activeTabs.length);
