@@ -121,11 +121,17 @@
                 .prop("type", "text/css")
                 .html("\
                     .web-edited {\
-                        color: red;\
+                        opacity: 0.4;\
+                        filter: alpha(opacity=50); /* For IE8 and earlier */\
+                        font-size: small;\
                     }\
                     .web-deleted {\
-                        color: red;\
-                        display: none;\
+                        opacity: 0.0;\
+                        filter: alpha(opacity=0); /* For IE8 and earlier */\
+                    }\
+                    .link-disabled {\
+                        pointer-events: none;\
+                        cursor: default;\
                     }")
                 .appendTo("head");
 
@@ -133,6 +139,7 @@
             $("a").each(function () {
                 //console.log(this);
                 //$(this).preventDefault();
+                $(this).addClass('link-disabled');
             });
 
             // Click elements in edit mode
@@ -154,7 +161,10 @@
         } else {
             $('.web-edited').each(function () {
                 //you can use this to access the current item
-                $(this).addClass("web-deleted");
+                $(this).addClass("web-deleted").removeClass('web-edited');;
+            });
+            $("a").each(function () {
+                $(this).removeClass('link-disabled');
             });
             $('#edit-btn').css("background-color", "yellow");
             $('#edit-mode').remove();
@@ -171,11 +181,10 @@
             highlightMode = true;
             $('#highlight-btn').css("background-color", "red");
             $("body").append("<h1 id='highlight-mode'>Highlight Mode On!</h1>");
-
             $("<style>")
                 .prop("type", "text/css")
                 .html("\
-                    ::-moz - selection {\
+                    ::-moz-selection {\
                         color: red;\
                         background: yellow;\
                     }\
@@ -185,6 +194,12 @@
                     }")
                 .appendTo("head");
         } else {
+            $("<style>")
+                .prop("type", "text/css")
+                .html("\
+                    ::-moz-selection {}\
+                    ::selection {}")
+                .appendTo("head");
             $('#highlight-btn').css("background-color", "yellow");
             $('#highlight-mode').remove();
             highlightMode = false;
