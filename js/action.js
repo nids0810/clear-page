@@ -81,30 +81,54 @@
     var createToolOptions = function () {
         //Create tool options
         var toolOpt = document.createElement("div");
-        toolOpt.style.backgroundColor = "red";
         toolOpt.setAttribute("id", "tool-option");
         document.body.appendChild(toolOpt);
+        $('#tool-option').css({
+            'backgroundColor' : '#999',
+            'position' : 'fixed',
+            'top' : '40%',
+            'right' : '6px',
+            'padding': '10px'
+        });
 
         //Create Edit Button
-        var editBtn = document.createElement("button");
-        editBtn.innerHTML = "Edit";
+        var editBtn = document.createElement("img");
         editBtn.setAttribute("id", "edit-btn");
+        editBtn.setAttribute("src", chrome.runtime.getURL('images/edit.png'));
         editBtn.onclick = editWebPage;
         document.getElementById("tool-option").appendChild(editBtn);
+        $('#edit-btn').css({
+            'width' : '20px',
+            'height' : '20px',
+            'display' : 'block',
+            'cursor' : 'pointer'
+        });
 
         //Create Highlight Button
-        var highlightBtn = document.createElement("button");
-        highlightBtn.innerHTML = "Highlight";
+        var highlightBtn = document.createElement("img");
         highlightBtn.setAttribute("id", "highlight-btn");
+        highlightBtn.setAttribute("src", chrome.runtime.getURL('images/highlight.png'));
         highlightBtn.onclick = highlightText;
         document.getElementById("tool-option").appendChild(highlightBtn);
+        $('#highlight-btn').css({
+            'width' : '20px',
+            'height' : '20px',
+            'display' : 'block',
+            'cursor' : 'pointer'
+        });
 
         //Create Save as PDF Button
-        var pdfBtn = document.createElement("button");
-        pdfBtn.innerHTML = "Save as PDF";
+        var pdfBtn = document.createElement("img");
         pdfBtn.setAttribute("id", "pdf-btn");
+        pdfBtn.setAttribute("src", chrome.runtime.getURL('images/pdf.png'));
         pdfBtn.onclick = convertToPDF;
         document.getElementById("tool-option").appendChild(pdfBtn);
+        $('#pdf-btn').css({
+            'width' : '20px',
+            'height' : '20px',
+            'display' : 'block',
+            'cursor' : 'pointer'
+        });
     }
 
     //Edit Button Function
@@ -115,7 +139,15 @@
         if (!editMode) {
             editMode = true;
             $('#edit-btn').css("background-color", "red");
-            $("body").append("<h1 id='edit-mode'>Edit Mode On!</h1>");
+            $("body").append("<div id='edit-mode'>Edit Mode On!</div>");
+            $('#edit-mode').css({
+                'position' : 'fixed',
+                'top' : '11%',
+                'left' : '48%',
+                'background-color' : '#333',
+                'color' : '#fff',
+                'padding' : '10px'
+            });
             //Add a new class "web-edited"
             $("<style>")
                 .prop("type", "text/css")
@@ -180,7 +212,15 @@
         if (!highlightMode) {
             highlightMode = true;
             $('#highlight-btn').css("background-color", "red");
-            $("body").append("<h1 id='highlight-mode'>Highlight Mode On!</h1>");
+            $("body").append("<div id='highlight-mode'>Highlight Mode On!</div>");
+            $('#highlight-mode').css({
+                'position' : 'fixed',
+                'top' : '11%',
+                'left' : '48%',
+                'background-color' : '#333',
+                'color' : '#fff',
+                'padding' : '10px'
+            });
             $("<style>")
                 .prop("type", "text/css")
                 .html("\
