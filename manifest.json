@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Clear Page",
   "version": "1.3",
-  "web_accessible_resources": ["images/*.png"],
+  "web_accessible_resources": ["images/*.png", "html/*.html", "css/*.css", "js/*.js"],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
     
   "description": "Clear all the irrelevant distraction from your web page for an enjoyable reading experience.",
@@ -12,6 +12,7 @@
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
+  "options_page": "html/options.html",
   "background" : {
     "scripts": ["third-party/jquery.min.js", "third-party/ga.js", "js/background.js"],
     "persistent": false

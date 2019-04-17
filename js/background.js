@@ -66,3 +66,8 @@ function executeScripts(tabId, injectDetailsArray) {
     if (callback !== null)
         callback(); // execute outermost function
 }
+
+chrome.runtime.onInstalled.addListener(function (){
+    console.log('Extension Installed - Welcome Page');
+    //window.open(chrome.runtime.getURL("html/welcome.html"));
+});

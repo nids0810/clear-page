@@ -133,9 +133,21 @@
         var helpBtn = document.createElement("img");
         helpBtn.setAttribute("id", "help-btn");
         helpBtn.setAttribute("src", chrome.runtime.getURL('images/help.png'));
-        helpBtn.onclick = helpUser;
+        helpBtn.onclick = openHelpOption;
         document.getElementById("tool-option").appendChild(helpBtn);
         $("#help-btn").css({
+            'width': '20px',
+            'height': '20px',
+            'display': 'block',
+            'cursor': 'pointer'
+        });
+
+        var optionBtn = document.createElement("img");
+        optionBtn.setAttribute("id", "option-btn");
+        optionBtn.setAttribute("src", chrome.runtime.getURL('images/option.png'));
+        optionBtn.onclick = openSettingOption;
+        document.getElementById("tool-option").appendChild(optionBtn);
+        $("#option-btn").css({
             'width': '20px',
             'height': '20px',
             'display': 'block',
@@ -335,48 +347,57 @@
 
     //Help Button Function
     var helpMode = false;
-    var helpUser = function () {
-        if (!helpMode) {
-            console.log('Help Function Activated');
-            helpMode = true;
-            $("#help-btn").css("background-color", "red");
-            if ($("#help-mode").length) {
-                $("#help-mode").css({"opacity": "1.0", "z-index": "3000"});
-
-            } else {
-                $("body").append("<div id='help-mode'></div>");
-                $("#help-mode").append(
-                "\
+    var openHelpOption = function() {
+      if (!helpMode) {
+        console.log("Help Function Activated");
+        helpMode = true;
+        $("#help-btn").css("background-color", "red");
+        if ($("#help-mode").length) {
+          $("#help-mode").css({ opacity: "1.0", "z-index": "3000" });
+        } else {
+          $("body").append("<div id='help-mode'></div>");
+          $("#help-mode").append(
+            "\
                 <h1>Help Doc</h1>\
                 <ul>\
                     <li><b>Edit Mode: </b><p>Under edit mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
                     <li><b>Highlight Mode:</b><p><br></p></li>\
                     <li><b>Save as PDF:</b><p><br></p></li>\
                 "
-                );
-                $("#help-mode").css({
-                    'position': 'fixed',
-                    'top': '25%',
-                    'left': '30%',
-                    'right': '10%',
-                    'background-color': '#333',
-                    'color': '#fff',
-                    'padding': '10px',
-                    'opacity': '1.0',
-                    'z-index': '3000'
-                });
-            }
-        } else {
-            $("#help-mode").animate({
-                    opacity: "0.0"
-                },
-                "slow"
-            );
-            $("#help-mode").css("z-index", -10);
-            $("#help-btn").css("background-color", "yellow");
-            helpMode = false;
+          );
+          $("#help-mode").css({
+            position: "fixed",
+            top: "25%",
+            left: "30%",
+            right: "10%",
+            "background-color": "#333",
+            color: "#fff",
+            padding: "10px",
+            opacity: "1.0",
+            "z-index": "3000"
+          });
         }
+      } else {
+        $("#help-mode").animate(
+          {
+            opacity: "0.0"
+          },
+          "slow"
+        );
+        $("#help-mode").css("z-index", -10);
+        $("#help-btn").css("background-color", "yellow");
+        helpMode = false;
+      }
     }
+
+    var openSettingOption = function() {
+        console.log("Option Mode Activated");
+        if (chrome.runtime.openOptionsPage) {
+            chrome.runtime.openOptionsPage();
+        } else {
+            window.open(chrome.runtime.getURL("html/options.html"));
+        }
+    };
 
     createToolOptions();
 
