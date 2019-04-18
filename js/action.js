@@ -2,6 +2,22 @@
 
 (function () {
 
+    var settingsObject;
+
+    if (localStorage.getItem("clear-page-settings") === null) {
+        console.log("Local Storage - settings not available");
+        $.getJSON(chrome.runtime.getURL("json/data.json"), function(data) {
+        localStorage.setItem("clear-page-settings", JSON.stringify(data));
+        settingsObject = JSON.parse(
+          localStorage.getItem("clear-page-settings")
+        );
+        
+      }); 
+    } else {
+        console.log("Local Storage - settings available");
+        settingsObject = JSON.parse(localStorage.getItem("clear-page-settings"));
+    }
+
     // Block Element Action
     var blockElementsAction = function (element) {
         element.style.background = 'none';
