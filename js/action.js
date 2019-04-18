@@ -103,11 +103,12 @@
         toolOpt.setAttribute("id", "tool-option");
         document.body.appendChild(toolOpt);
         $("#tool-option").css({
-          backgroundColor: "#999",
+          backgroundColor: "#F9CA0C",
           position: "fixed",
-          top: "40%",
+          top: "30%",
           right: "6px",
-          padding: "10px"
+          padding: "15px 15px 0 15px",
+          borderRadius: "5px 0px 0px 5px"
         });
 
         //Create Edit Button
@@ -120,10 +121,11 @@
         editBtn.onclick = editWebPage;
         document.getElementById("tool-option").appendChild(editBtn);
         $("#edit-btn").css({
-          width: "20px",
-          height: "20px",
+          width: "30px",
+          height: "33px",
           display: "block",
-          cursor: "pointer"
+          cursor: "pointer",
+          marginBottom: "15px"
         });
 
         //Create Highlight Button
@@ -136,10 +138,11 @@
         highlightBtn.onclick = highlightText;
         document.getElementById("tool-option").appendChild(highlightBtn);
         $("#highlight-btn").css({
-          width: "20px",
-          height: "20px",
+          width: "30px",
+          height: "30px",
           display: "block",
-          cursor: "pointer"
+          cursor: "pointer",
+          marginBottom: "15px"
         });
 
         //Create Save as PDF Button
@@ -149,10 +152,11 @@
         pdfBtn.onclick = convertToPDF;
         document.getElementById("tool-option").appendChild(pdfBtn);
         $("#pdf-btn").css({
-          width: "20px",
-          height: "20px",
+          width: "30px",
+          height: "30px",
           display: "block",
-          cursor: "pointer"
+          cursor: "pointer",
+          marginBottom: "15px"
         });
 
         var helpBtn = document.createElement("img");
@@ -164,10 +168,11 @@
         helpBtn.onclick = openHelpOption;
         document.getElementById("tool-option").appendChild(helpBtn);
         $("#help-btn").css({
-          width: "20px",
-          height: "20px",
+          width: "30px",
+          height: "30px",
           display: "block",
-          cursor: "pointer"
+          cursor: "pointer",
+          marginBottom: "15px"
         });
 
         var optionBtn = document.createElement("img");
@@ -179,10 +184,11 @@
         optionBtn.onclick = openSettingOption;
         document.getElementById("tool-option").appendChild(optionBtn);
         $("#option-btn").css({
-          width: "20px",
-          height: "20px",
+          width: "30px",
+          height: "30px",
           display: "block",
-          cursor: "pointer"
+          cursor: "pointer",
+          marginBottom: "15px"
         });
       };
 
@@ -194,17 +200,42 @@
         } else if (!editMode) {
           console.log("Edit Mode Activated");
           editMode = true;
-          $("#edit-btn").css("background-color", "red");
           $("body").append("<div id='edit-mode'></div>");
+          $("#tool-option").hide();
+          $("body").append("<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>");
           $("#edit-mode").text("Edit Mode On!");
           $("#edit-mode").css({
             position: "fixed",
             top: "11%",
-            left: "48%",
+            left: "44.5%",
             "background-color": "#333",
             color: "#fff",
             padding: "10px",
             opacity: "1.0"
+          });
+          $("#dialog-box").css({
+            position: "fixed",
+            top: "11%",
+            right: "4%"
+          });
+          $("#apply-btn").css({
+            border: "0",
+            background: "#4CA1B6",
+            color: "#fff",
+            padding: "9px",
+            cursor: "pointer",
+            fontSize: "17px",
+            borderRadius: "5px"
+          });
+          $("#cancel-btn").css({
+            border: "0",
+            background: "#CE5061",
+            color: "#fff",
+            padding: "9px",
+            cursor: "pointer",
+            fontSize: "17px",
+            borderRadius: "5px",
+            marginLeft: "10px"
           });
           //Add a new clas drives customers to engages "web-edited"
           $("<style>")
@@ -309,17 +340,29 @@
         } else if (!highlightMode) {
           console.log("Highlight Mode Activated");
           highlightMode = true;
-          $("#highlight-btn").css("background-color", "red");
           $("body").append("<div id='highlight-mode'></div>");
+          $("body").append("<button id='hg-cancel-btn'>Cancel</button>");
           $("#highlight-mode").text("Highlight Mode On!");
           $("#highlight-mode").css({
             position: "fixed",
             top: "11%",
-            left: "48%",
+            left: "44.5%",
             "background-color": "#333",
             color: "#fff",
             padding: "10px",
             opacity: "1.0"
+          });
+          $("#hg-cancel-btn").css({
+            position: "fixed",
+            top: "11%",
+            left: "57%",
+            border: "0",
+            background: "#CE5061",
+            color: "#fff",
+            padding: "9px",
+            cursor: "pointer",
+            fontSize: "17px",
+            borderRadius: "5px",
           });
           $("<style>")
             .prop("type", "text/css")
@@ -352,7 +395,6 @@
             },
             "slow"
           );
-          $("#highlight-btn").css("background-color", "yellow");
           //$('#highlight-mode').remove();
           highlightMode = false;
         }
@@ -386,30 +428,49 @@
         if (!helpMode) {
           console.log("Help Function Activated");
           helpMode = true;
-          $("#help-btn").css("background-color", "red");
           if ($("#help-mode").length) {
             $("#help-mode").css({ opacity: "1.0", "z-index": "3000" });
           } else {
             $("body").append("<div id='help-mode'></div>");
             $("#help-mode").append(
-              "\
+              "\<div id='cross-btn'>X</div>\
                     <h1>Help Doc</h1>\
                     <ul>\
                         <li><b>Edit Mode: </b><p>Under edit mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
                         <li><b>Highlight Mode:</b><p><br></p></li>\
                         <li><b>Save as PDF:</b><p><br></p></li>\
+                        </ul><div id='help-triangle'></div>\
                     "
             );
             $("#help-mode").css({
               position: "fixed",
-              top: "25%",
-              left: "30%",
-              right: "10%",
-              "background-color": "#333",
+              top: "30%",
+              backgroundColor: "#333",
               color: "#fff",
               padding: "10px",
-              opacity: "1.0",
-              "z-index": "3000"
+              width: "48%",
+              right: "5.5%"
+            });
+            $("#help-triangle").css({
+              position: "relative",
+              bottom: "51px",
+              left: "34px",
+              float: "right",
+              borderColor: "transparent transparent transparent #333",
+              borderStyle: "solid",
+              borderWidth: "12px",
+              height: "0px",
+              width: "0px"
+            });
+            $("#cross-btn").css({
+              background: "#fff",
+              fontSize: "20px",
+              color: "#000",
+              position: "relative",
+              float: "right",
+              borderRadius: "50%",
+              padding: "5px 10px",
+              cursor: "pointer"
             });
           }
         } else {
@@ -420,7 +481,6 @@
             "slow"
           );
           $("#help-mode").css("z-index", -10);
-          $("#help-btn").css("background-color", "yellow");
           helpMode = false;
         }
       };
