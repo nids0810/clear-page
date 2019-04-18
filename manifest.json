@@ -12,7 +12,11 @@
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
-  "options_page": "html/options.html",
+  "options_ui": {
+    "page": "html/options.html",
+    "open_in_tab": false,
+    "chrome_style": true
+  },
   "background" : {
     "scripts": ["third-party/jquery.min.js", "third-party/ga.js", "js/background.js"],
     "persistent": false

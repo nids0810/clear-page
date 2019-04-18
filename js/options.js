@@ -2,18 +2,14 @@
 
 (function(){
 
-  var settingsObject;
+  var settingsObject = {};
   
-  if (localStorage.getItem("clear-page-settings") === null) {
-    console.log("Local Storage - settings not available");
-    $.getJSON(chrome.runtime.getURL("json/data.json"), function(data) {
-      localStorage.setItem("clear-page-settings", JSON.stringify(data));
-      settingsObject = JSON.parse(localStorage.getItem("clear-page-settings"));
-    });
-  } else {
-    console.log("Local Storage - settings available");
-    settingsObject = JSON.parse(localStorage.getItem("clear-page-settings"));
-  }
+  chrome.runtime.sendMessage({ message: "send settings" }, function(response) {
+    console.log(response.message);
+    settingsObject = response.message;
+    loadSettingObject();
+    loadButtonObject();
+  });
 
   var loadSettingObject = function(){
     console.log('Load Setting Object');
@@ -58,9 +54,6 @@
     $("#reset").click(reset_options);
   }
 
-  loadSettingObject();
-  loadButtonObject();
-
   // Saves settings to local.storage
   function save_options() {
     console.log('Save button clicked');
@@ -75,7 +68,11 @@
     settingsObject['header-elements']['color'] = $("#header-elements-text-color").val();
     settingsObject['header-elements']['font-family'] = $("#header-elements-font").val();
 
-    localStorage.setItem("clear-page-settings", JSON.stringify(settingsObject));
+    chrome.runtime.sendMessage({ message: "update settings", data : settingsObject}, function(response) {
+      console.log(response.message);
+    });
+
+    //localStorage.setItem("clear-page-settings", JSON.stringify(settingsObject));
     
     // Update status to let user know options were saved.
     $("#status").css({opacity: "1.0"}); 

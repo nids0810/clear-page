@@ -3,6 +3,7 @@
 ga('send', 'pageview', '/background.html', 'clicked');
 
 var activeTabs = [];
+var settingsObject = {};
 chrome.browserAction.onClicked.addListener(function (tab) {
     if (activeTabs.length === 0) {
         activeTabs.push(tab.title);
@@ -67,7 +68,38 @@ function executeScripts(tabId, injectDetailsArray) {
         callback(); // execute outermost function
 }
 
-chrome.runtime.onInstalled.addListener(function (){
+chrome.runtime.onInstalled.addListener(function () {
     console.log('Extension Installed - Welcome Page');
     //window.open(chrome.runtime.getURL("html/welcome.html"));
+    if (localStorage.getItem("clear-page-settings") === null) {
+      console.log("Local Storage - settings not available");
+      $.getJSON(chrome.runtime.getURL("json/data.json"), function(data) {
+        localStorage.setItem("clear-page-settings", JSON.stringify(data));
+        settingsObject = JSON.parse(
+          localStorage.getItem("clear-page-settings", function() {
+            console.log("Settings retrived.");
+          })
+        );
+      });
+    } else {
+      console.log("Local Storage - settings available");
+      settingsObject = JSON.parse(
+        localStorage.getItem("clear-page-settings", function(params) {
+          console.log("Settings retrived.");
+        })
+      );
+    }
+});
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
+    if (request.message == "option page") sendResponse({farewell: "goodbye"});
+    if (request.message == "send settings") sendResponse({message: settingsObject});
+    if (request.message == "update settings")
+        settingsObject = request.data;
+        localStorage.setItem(
+          "clear-page-settings",
+          JSON.stringify(settingsObject)
+        );
+        sendResponse({ message: "Settings object updated." });
 });
