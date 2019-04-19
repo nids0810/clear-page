@@ -4,9 +4,9 @@
         "elements": ["body", "div", "table", "tr", "td", "header", "footer", "section", "aside", "p", "ul", "li", "span", "main", "article", "details", "dialog", "summary", "data", "cite", "pre", "code", "form"],
         "background": "none",
         "background-image": "none",
-        "background-color": "#f9f9f9",
         "font-family": "sans-serif",
-        "color": "#333",
+        "background-color": "#f9f9f9",
+        "color": "#333333",
         "border": "none"
     },
     "anchor-elements": {
@@ -14,11 +14,11 @@
         "elements": ["a", "link", "nav"],
         "background": "none",
         "background-image": "none",
-        "background-color": "#f9f9f9",
         "font-family": "sans-serif",
+        "background-color": "#f9f9f9",
+        "color": "#333333",
         "font-weight": "bold",
         "text-decoration": "underline",
-        "color": "#333",
         "border": "none",
         "has-attribute": "target"
     },
@@ -27,7 +27,7 @@
         "elements": ["h1", "h2", "h3", "h4", "h5", "h6"],
         "background": "none",
         "font-family": "sans-serif",
-        "color": "#333"
+        "color": "#333333"
     },
     "media-elements": {
         "name": "Media Elements",

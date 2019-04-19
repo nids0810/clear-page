@@ -69,11 +69,11 @@ function executeScripts(tabId, injectDetailsArray) {
 }
 
 chrome.runtime.onInstalled.addListener(function () {
-    console.log('Extension Installed - Welcome Page');
+    console.log("Welcome to Clear Page!");
     //window.open(chrome.runtime.getURL("html/welcome.html"));
-    if (localStorage.getItem("clear-page-settings") === null) {
-      console.log("Local Storage - settings not available");
-      $.getJSON(chrome.runtime.getURL("json/data.json"), function(data) {
+    if (localStorage.getItem("clear-page-settings") === null || localStorage.getItem("clear-page-settings") === "{}") {
+      console.log("local settings not available. Import from external data.");
+      $.getJSON(chrome.runtime.getURL("json/settings.json"), function(data) {
         localStorage.setItem("clear-page-settings", JSON.stringify(data));
         settingsObject = JSON.parse(
           localStorage.getItem("clear-page-settings", function() {
@@ -82,7 +82,7 @@ chrome.runtime.onInstalled.addListener(function () {
         );
       });
     } else {
-      console.log("Local Storage - settings available");
+      console.log("local settings available. Import from local data.");
       settingsObject = JSON.parse(
         localStorage.getItem("clear-page-settings", function(params) {
           console.log("Settings retrived.");
@@ -93,13 +93,39 @@ chrome.runtime.onInstalled.addListener(function () {
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
-    if (request.message == "option page") sendResponse({farewell: "goodbye"});
-    if (request.message == "send settings") sendResponse({message: settingsObject});
-    if (request.message == "update settings")
+    if (request.message == "option page") {
+        sendResponse({farewell: "goodbye"});
+    }
+    
+    //send settings object
+    if (request.message == "send settings") {
+        sendResponse({message: settingsObject});
+    }
+
+    //update settings object
+    if (request.message == "update settings"){
         settingsObject = request.data;
         localStorage.setItem(
           "clear-page-settings",
           JSON.stringify(settingsObject)
         );
         sendResponse({ message: "Settings object updated." });
+    }
+
+    //open settings
+    if (request.message == "open settings") {
+      if (chrome.runtime.openOptionsPage) {
+        chrome.runtime.openOptionsPage();
+      } else {
+        window.open(chrome.runtime.getURL("html/options.html"));
+      }
+      sendResponse({ message: "settings opened" });
+
+     }
+
+     //settings unavailable
+    if (request.message == "settings unavailable") {
+      sendResponse({ message: "Sorry! settings unavailable" });
+    }
+
 });
