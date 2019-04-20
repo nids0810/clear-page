@@ -59,6 +59,7 @@
   // Saves settings to local.storage
   function save_options() {
     console.log('Save button clicked');
+    ga("send", "event", "Settings", "Updated", "Save", "");
     settingsObject['block-elements']['background-color'] = $("#block-elements-bg-color").val();
     settingsObject['block-elements']['color'] = $("#block-elements-text-color").val();
 
@@ -87,6 +88,7 @@
   // Reset settings in local.storage
   function reset_options() {
     console.log("Reset button clicked");
+    ga("send", "event", "Settings", "Reset", "Reset", "");
     localStorage.removeItem("clear-page-settings");
 
     $("#status").css({

@@ -7,11 +7,11 @@
   chrome.runtime.sendMessage({
     message: "send settings"
   }, function (response) {
-     if (response.message !== "{}"){
+    if (response.message !== "{}") {
       settingsObject = response.message;
-     } else {
+    } else {
       console.log(response.message);
-     } 
+    }
 
     var formatElements = function () {
 
@@ -21,18 +21,18 @@
         $(settingsObject["block-elements"]["elements"].join(","))
           .css({
             background: "none",
-            "background-image": "none",
-            "font-family": "sans-serif",
+            backgroundImage: "none",
+            fontFamily: "sans-serif",
             border: "none",
-            "background-color": settingsObject["block-elements"]["background-color"],
-            "color": settingsObject["block-elements"]["color"]
+            backgroundColor: settingsObject["block-elements"]["background-color"],
+            color: settingsObject["block-elements"]["color"]
           });
 
         //Format Header Elements
         $(settingsObject["header-elements"]["elements"].join(","))
           .css({
             background: "none",
-            "font-family": "sans-serif",
+            fontFamily: "sans-serif",
             color: settingsObject["header-elements"]["color"]
           });
 
@@ -40,13 +40,13 @@
         $(settingsObject["anchor-elements"]["elements"].join(","))
           .css({
             background: "none",
-            "background-image": "none",
-            "font-family": "sans-serif",
+            backgroundImage: "none",
+            fontFamily: "sans-serif",
             border: "none",
-            "font-weight": "bold",
-            "text-decoration": "underline",
-            "background-color": settingsObject["anchor-elements"]["background-color"],
-            "color": settingsObject["anchor-elements"]["color"]
+            fontWeight: "bold",
+            textDecoration: "underline",
+            backgroundColor: settingsObject["anchor-elements"]["background-color"],
+            color: settingsObject["anchor-elements"]["color"]
           });
         /* .attr("target",function(){
           this.attr("target", "_blank");
@@ -98,6 +98,10 @@
       $("#tool-option").append("<img id='highlight-btn' title='Highlight Text' src='" + chrome.runtime.getURL("images/highlight.png") + "'/>");
       $("#highlight-btn").click(highlightText);
 
+      //Speak Button
+      $("#tool-option").append("<img id='speak-btn' title='Speak Text' src='" + chrome.runtime.getURL("images/speak.png") + "'/>");
+      $("#speak-btn").click(speakText);
+
       //Save as PDF Button
       $("#tool-option").append("<img id='pdf-btn' title='Save as PDF' src='" + chrome.runtime.getURL("images/pdf.png") + "'/>");
       $("#pdf-btn").click(saveAsPDF);
@@ -110,7 +114,7 @@
       $("#tool-option").append("<img id='help-btn' title='Help' src='" + chrome.runtime.getURL("images/help.png") + "'/>");
       $("#help-btn").click(openHelp);
 
-      $("#edit-btn, #highlight-btn, #pdf-btn, #option-btn, #help-btn").css({
+      $("#edit-btn, #highlight-btn, #speak-btn, #pdf-btn, #option-btn, #help-btn").css({
         width: "30px",
         height: "30px",
         display: "block",
@@ -122,11 +126,12 @@
     //Edit Page Button Function
     var editPage = function () {
       console.log("Edit mode is on");
+      ga("send", "event", "Edit Mode", "Clicked", "Main Button", "");
       var editMode = true;
       if ($("#help-mode").css("opacity") == 1) {
         $("#help-mode").css({
           opacity: 0,
-          "z-index": -20
+          zIndex: -20
         });
       }
 
@@ -140,7 +145,7 @@
           position: "fixed",
           top: "11%",
           left: "44.5%",
-          "background-color": "#333",
+          backgroundColor: "#333",
           color: "#fff",
           padding: "10px",
           opacity: "1.0"
@@ -233,6 +238,7 @@
           } else if (event.target.id === "apply-btn") {
             //apply button clicked
             console.log("Apply edits on all selected elements");
+            ga("send", "event", "Edit Mode", "Clicked", "Apply Changes", "");
             $(".web-edited").each(function () {
               $(this)
                 .removeClass("web-edited")
@@ -253,6 +259,7 @@
           } else if (event.target.id === "cancel-btn") {
             //cancel button clicked
             console.log("Cancel edits from all selected elements");
+            ga("send", "event", "Edit Mode", "Clicked", "Cancel Changes", "");
             $(".web-edited").each(function () {
               $(this).removeClass("web-edited");
             });
@@ -282,11 +289,12 @@
     //Highlight Button Function
     var highlightText = function () {
       console.log("Highlight mode is on");
+      ga("send", "event", "Highlight Mode", "Clicked", "Main Button", "");
       var highlightMode = true;
       if ($("#help-mode").css("opacity") == 1) {
         $("#help-mode").css({
           opacity: 0,
-          'z-index': -20
+          zIndex: -20
         });
       }
 
@@ -300,7 +308,7 @@
           position: "fixed",
           top: "11%",
           left: "44.5%",
-          "background-color": "#333",
+          backgroundColor: "#333",
           color: "#fff",
           padding: "10px",
           opacity: "1.0"
@@ -365,9 +373,8 @@
         if (highlightMode) {
           if (event.target.id === "apply-btn") {
             //apply button clicked
-            console.log(
-              "Apply highlights on all selected elements"
-            );
+            console.log("Apply highlights on all selected elements");
+            ga("send", "event", "Highlight Text", "Clicked", "Apply Changes", "");
             $("#highlight-mode").text("Changes are applied!");
             $("#highlight-mode").animate({
                 opacity: "0.0"
@@ -380,6 +387,7 @@
           } else if (event.target.id === "cancel-btn") {
             //cancel button clicked
             console.log("Cancel highlight from all selected elements");
+            ga("send", "event", "Highlight Text", "Clicked", "Cancel Changes", "");
             $("#highlight-mode").text("Changes are cancelled!");
             $("#highlight-mode").animate({
                 opacity: "0.0"
@@ -394,14 +402,296 @@
       });
     };
 
+    //Speak Text Button Function
+    var speakText = function() {
+      console.log("Speak mode is on");
+      ga("send", "event", "Speak Mode", "Clicked", "Main Button", "");
+
+      // check if speech synthesis is supported
+      if (!("speechSynthesis" in window)) {
+        console.log("browser don't support.");
+        return;
+      }
+
+      var speakMode = true;
+      if ($("#help-mode").css("opacity") == 1) {
+        $("#help-mode").css({
+          opacity: 0,
+          zIndex: -20
+        });
+      }
+
+      $("#tool-option").hide();
+
+      if ($("#speak-mode").length == 0) {
+        //speak-mode doesn't exist
+        $("body").append("<div id='speak-mode'></div>");
+        $("#speak-mode").text("Select text to speak.");
+        $("#speak-mode").css({
+          position: "fixed",
+          top: "11%",
+          left: "44.5%",
+          backgroundColor: "#333",
+          color: "#fff",
+          padding: "10px",
+          opacity: "1.0"
+        });
+      } else {
+        //edit-mode exist
+        $("#speak-mode").text("Select text to speak.");
+        $("#speak-mode").css({
+          opacity: "1.0"
+        });
+      }
+
+      if ($("#dialog-box").length == 0) {
+        //dialog-box doesn't exist
+        $("body").append(
+          "<div id='dialog-box'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button><select id='speech-voices'></select></div>"
+        );
+        $("#dialog-box").css({
+          position: "fixed",
+          top: "11%",
+          right: "4%"
+        });
+        $("#apply-btn").css({
+          border: "0",
+          background: "#4CA1B6",
+          color: "#fff",
+          padding: "9px",
+          cursor: "pointer",
+          fontSize: "17px",
+          borderRadius: "5px"
+        });
+        $("#cancel-btn").css({
+          border: "0",
+          background: "#CE5061",
+          color: "#fff",
+          padding: "9px",
+          cursor: "pointer",
+          fontSize: "17px",
+          borderRadius: "5px",
+          marginLeft: "10px"
+        });
+        $("#speech-voices").css({
+          border: "0",
+          background: "#0e8c41",
+          color: "#fff",
+          padding: "9px",
+          cursor: "pointer",
+          fontSize: "17px",
+          borderRadius: "5px",
+          marginLeft: "10px"
+        });
+      } else {
+        $("#dialog-box").show();
+      }
+
+      var voices = [];
+      var selectedVoice = {};
+
+      function loadVoiceList(){
+        if ($("#speech-voices").length == 0) {
+          $("#dialog-box").append(
+            "<select id='speech-voices'></select>"
+          );
+        }
+
+        if ($("#speech-voices option").length == 0) {  
+          var language = window.navigator.userLanguage || window.navigator.language; //en-US
+          $.each(voices, function() {
+            if (this.lang === language) {
+              selectedVoice = this;
+              $("#speech-voices").append(
+                $("<option>")
+                  .attr({
+                    dataLang: this.lang,
+                    "data-name": this.name,
+                    value: this.name
+                  })
+                  .text(this.name + "--DEFAULT")
+              );
+              $("#speech-voices").val(this.name);
+              console.log("Default voice: " + this.name + " , language: " + this.lang);
+            } else {
+              $("#speech-voices").append(
+                $("<option>")
+                  .attr({
+                    dataLang: this.lang,
+                    "data-name": this.name,
+                    value: this.name
+                  })
+                  .text(this.name)
+              );
+            }
+          });
+
+        if ($("#speech-voices option").length == 0) {
+          $("#speech-voices").hide();
+        } else {
+          $("#speech-voices").show();
+        }
+
+        $("#speech-voices").on("change", function() {
+          selectedVoice = voices.find(voice => voice.name === this.value);
+          console.log("New voice: " + selectedVoice.name + " , language: " + selectedVoice.lang);
+        });
+      }
+    }
+
+      var speakMode = true;
+      if ($("#help-mode").css("opacity") == 1) {
+        $("#help-mode").css({
+          opacity: 0,
+          zIndex: -20
+        });
+      }
+
+      var text2Speech = [];
+      var textArray = "";
+      var speaker;
+
+      if (typeof window.speechSynthesis !== 'undefined' && window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = function(){
+          voices = window.speechSynthesis.getVoices();
+          loadVoiceList();
+        };
+      }
+
+      window.speechSynthesis.cancel();
+
+      $(document).click(function(event) {
+        if (speakMode) {
+          if (event.target.id === "apply-btn" && event.target.innerText === "Speak") {
+            //apply button clicked
+            console.log("Speaks all selected text");
+            if (window.speechSynthesis.speaking) {
+              console.error("speechSynthesis.speaking");
+              //return;
+              window.speechSynthesis.cancel();
+            }
+
+            if (textArray.length != 0) {
+              $.each(textArray, function() {
+                speaker = new SpeechSynthesisUtterance(this.trim());
+                if (!($.isEmptyObject(selectedVoice))) {
+                  speaker.voice = selectedVoice;
+                }
+                window.speechSynthesis.speak(speaker);
+          
+                speaker.onstart = function(event) {
+                $("#speak-mode").text("Speaking ...");
+                $("#apply-btn").html("Pause");
+                console.log("Speech started.");
+                };
+
+                speaker.onerror = function(e) {
+                  $("#speak-mode").text("Error! Try again");
+                  $("#apply-btn").html("Speak");
+                  console.log("Error occured " + e.message);
+                };
+
+                speaker.onend = function(e) {
+                  $("#speak-mode").text("Select text to speak.");
+                  $("#apply-btn").html("Speak");
+                  console.log('Speach finished in ' + e.elapsedTime + ' seconds.');
+                  console.log("Speach finished.");
+                };
+
+                speaker.onpause = function(event) {                  
+                  console.log('Speech paused after ' + event.elapsedTime + ' milliseconds.');
+                };
+
+                speaker.onresume = function(event) {
+                  console.log('Speech resumed after ' + event.elapsedTime + ' milliseconds.');
+                };
+              });
+            } else {
+              console.log("No text available");
+            }
+          } else if (event.target.id === "apply-btn" && event.target.innerText === "Pause") {
+            console.log("Speech paused");
+            window.speechSynthesis.pause();
+            $("#speak-mode").text("Paused!");
+            $("#apply-btn").html("Resume");
+          } else if (event.target.id === "apply-btn" && event.target.innerText === "Resume") {
+            console.log("Speech resumed");
+            window.speechSynthesis.resume();
+            $("#speak-mode").text("Speaking ...");
+            $("#apply-btn").html("Pause");
+          } else if (event.target.id === "cancel-btn") {
+            //cancel button clicked
+            console.log("Cancel speak mode");
+            $("#speak-mode").text("Speak mode off!");
+            $("#speak-mode").animate(
+              {
+                opacity: "0.0"
+              },
+              "slow"
+            );
+            $("#apply-btn").html("Speak");
+            $("#dialog-box").hide();
+            $("#tool-option").show();
+            window.speechSynthesis.cancel();
+            text2Speech = "";
+            textArray = [];
+            speakMode = false;
+          } else {
+            text2Speech = window.getSelection().toString();
+            textArray = chuckText(text2Speech);
+            console.log(textArray);
+          }
+        }
+      });
+    };
+
+    function chuckText(text) {
+      /* text.replace(/(http).+/g, "") //http links
+        .replace(/(\/).+/g, "") //folder structure
+        .replace(/[^\w\s.,]/g, "") //all non-words & non-space
+        .replace(/\n+/g, ";");  //new lines
+      //.replace(/\s\s+/g, " ") //multiple spaces
+      var speechArray = text.split(";");
+      speechArray.map(Math.sqrt);
+      console.log(speechArray);
+      return speechArray; */
+      var arr = [];
+      var chunkLength = 120;
+      var pattRegex = new RegExp(
+        "^[\\s\\S]{" +
+          Math.floor(chunkLength / 2) +
+          "," +
+          chunkLength +
+          "}[.!?,]{1}|^[\\s\\S]{1," +
+          chunkLength +
+          "}$|^[\\s\\S]{1," +
+          chunkLength +
+          "} "
+      );
+
+      text = text
+        .replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi, "url") //http and other inks
+        .replace(/(\/).+/g, "") //folder structure
+        .replace(/(\r\n|\n|\r)/g, " ")
+        .replace(/\s\s+/g, " ") //multiple spaces
+        .replace(/[^\w\s.,!?]/g, ""); //all non-words & non-space
+      ;
+      while (text.length > 0) {
+        arr.push(text.match(pattRegex)[0]);
+        text = text.substring(arr[arr.length - 1].length);
+      }
+      return arr;
+    }
+
     //Save as PDF Button Function
     var saveAsPDF = function () {
       console.log("Save as PDF is on");
+      ga("send", "event", "Save as PDF", "Clicked", "Main Button", "");
 
       if ($("#help-mode").css("opacity") == 1) {
         $("#help-mode").css({
           opacity: 0,
-          "z-index": -20
+          zIndex: -20
         });
       }
 
@@ -424,6 +714,7 @@
     var openHelp = function () {
       var helpMode = true;
       console.log("Help mode is on");
+      ga("send", "event", "Help Mode", "Clicked", "Main Button", "");
       if ($("#help-mode").length == 0) {
         $("body").append("<div id='help-mode'></div>");
         $("#help-mode").append(
@@ -444,7 +735,7 @@
           padding: "10px",
           width: "48%",
           right: "5.5%",
-          "z-index": 300
+          zIndex: 300
         });
         $("#help-triangle").css({
           position: "relative",
@@ -470,7 +761,7 @@
       } else {
         $("#help-mode").css({
           opacity: 1,
-          "z-index": 300
+          zIndex: 300
         });
       }
 
@@ -482,7 +773,7 @@
             "slow"
           );
           $("#help-mode").css({
-            "z-index": -20
+            zIndex: -20
           });
           helpMode = false;
         }
@@ -491,11 +782,11 @@
 
     var openSettings = function () {
       console.log("Setting mode is on");
-
+      ga("send", "event", "Settings", "Clicked", "Main Button", "");
       if ($("#help-mode").css("opacity") == 1) {
         $("#help-mode").css({
           opacity: 0,
-          "z-index": -20
+          zIndex: -20
         });
       }
 
