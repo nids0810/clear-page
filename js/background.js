@@ -79,25 +79,23 @@ chrome.runtime.onInstalled.addListener(function () {
     console.log("Welcome to Clear Page!");
     ga("send", "event", "Extension", "Installed", "", "10");
     //window.open(chrome.runtime.getURL("html/welcome.html"));
-    if (localStorage.getItem("clear-page-settings") === null || localStorage.getItem("clear-page-settings") === "{}") {
+    var _settings = JSON.parse(localStorage.getItem("clear-page-settings"));
+    if (_settings === null || _settings === {}) {
       console.log("local settings not available. Importing from external source.");
       $.getJSON(chrome.runtime.getURL("json/settings.json"), function(data) {
         localStorage.setItem("clear-page-settings", JSON.stringify(data));
-        settingsObject = JSON.parse(
-          localStorage.getItem("clear-page-settings", function() {
-            console.log("settings retrived.");
-          })
-        );
         settingsLoaded = true;
       });
     } else {
       console.log("local settings available. Importing from local source.");
-      settingsObject = JSON.parse(
-        localStorage.getItem("clear-page-settings", function(params) {
-          console.log("settings retrived.");
-        })
-      );
       settingsLoaded = true;
+    }
+
+    var _savedlinks = JSON.parse(localStorage.getItem("clear-page-saved-links"));
+
+    if (_savedlinks === null || _savedlinks === "") {
+      console.log("Saved links list not available. Reset the list");
+      localStorage.setItem("clear-page-saved-links", JSON.stringify([]));
     }
 });
 
@@ -111,21 +109,26 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     //send settings object
     if (request.message == "send settings") {
       if (settingsLoaded){
-        sendResponse({ message: settingsObject });
+        var _settings = JSON.parse(localStorage.getItem("clear-page-settings"));
+        sendResponse({ message: _settings });
       } else {
         loadSettingsObject();
-        sendResponse({ message: settingsObject });
+        var _settings = JSON.parse(localStorage.getItem("clear-page-settings"));
+        sendResponse({ message: _settings });
       }
     }
 
     //update settings object
     if (request.message == "update settings"){
-        settingsObject = request.data;
-        localStorage.setItem(
-          "clear-page-settings",
-          JSON.stringify(settingsObject)
-        );
-        sendResponse({ message: "settings updated." });
+        if(request.data === null || request.data === "" || request.data === {}){
+          localStorage.setItem(
+            "clear-page-settings",
+            JSON.stringify(settingsObject)
+          );
+          sendResponse({ message: "settings updated." });
+        } else {
+          sendResponse({ message: "settings invalid." });
+        }
     }
 
     //open settings
@@ -140,8 +143,51 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
      //settings unavailable
     if (request.message == "settings unavailable") {
-      loadSettingsObject();
-      sendResponse({ message: "settings loaded" });
+        loadSettingsObject();
+        var _settings = JSON.parse(localStorage.getItem("clear-page-settings"));
+        sendResponse({ message: _settings });
+    }
+
+    if (request.message == "save link") {
+      if (!($.isEmptyObject(sender.tab))) {
+        var savedLink = {};
+        savedLink.title = sender.tab.title;
+        savedLink.url = sender.tab.url;
+        savedLink.favIconUrl = sender.tab.favIconUrl;
+        savedLink.dateSaved = Date.now();
+        console.log("Saved Link: " + JSON.stringify(savedLink));
+        if (pushUniqueLinks(savedLink)){
+          console.log("Link saved");
+          sendResponse({ message: "link saved" });
+        } else {
+          console.log("Link duplicate");
+          sendResponse({ message: "link duplicate" });
+        }
+      } else {
+        sendResponse({ message: "error" });
+      }
+    }
+
+    if (request.message == "send links") {
+      var _savedlinks = JSON.parse(localStorage.getItem("clear-page-saved-links"));
+      if (_savedlinks === null || _savedlinks === "" || _savedlinks === []) {
+        console.log("links sent");
+        sendResponse({ message: "links empty", data: JSON.parse([])});
+      } else {
+        console.log("links sent");
+        sendResponse({ message: "links sent", data: _savedlinks});
+      }
+    }
+
+    if (request.message == "open links page") {
+      var _savedlinks = JSON.parse(localStorage.getItem("clear-page-saved-links"));
+      if (_savedlinks.length !== 0) {
+        window.open(chrome.runtime.getURL("html/savedlinks.html"));
+        sendResponse({ message: "opened page" });
+      } else {
+        console.error("No links available");
+        sendResponse({ message: "error: links empty" });
+      }
     }
 
 });
@@ -153,5 +199,36 @@ function loadSettingsObject(){
 chrome.runtime.setUninstallURL(exitURL, function (){
   console.log("extention uninstalled.");
   localStorage.removeItem("clear-page-settings");
+  localStorage.removeItem("clear-page-saved-links");
   ga('send', 'event', 'Extension', 'Uninstalled', '', '');  
 });
+
+function pushUniqueLinks(newLink){
+  var _savedlinks = JSON.parse(localStorage.getItem("clear-page-saved-links"));
+
+  if (_savedlinks === null || _savedlinks === "") {
+    _savedlinks = [];
+    _savedlinks.push(newLink);
+    console.log("List updated. " + JSON.stringify(_savedlinks));
+    localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
+    return true;
+  } else if (_savedlinks === []) {
+    _savedlinks.push(newLink);
+    console.log("List updated. " + JSON.stringify(_savedlinks));
+    localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
+    return true;
+  } else if (Array.isArray(_savedlinks)) {
+    for (var item of _savedlinks) {
+      if (item.url === newLink.url) {
+        return false;
+      }
+    }
+    _savedlinks.push(newLink);
+    console.log("List updated. " + JSON.stringify(_savedlinks));    
+    localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
+    return true;
+  } else {
+    console.error("List not updated. " + _savedlinks);
+    return false;
+  }
+}

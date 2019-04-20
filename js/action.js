@@ -102,6 +102,10 @@
       $("#tool-option").append("<img id='speak-btn' title='Speak Text' src='" + chrome.runtime.getURL("images/speak.png") + "'/>");
       $("#speak-btn").click(speakText);
 
+      //Save for later Button
+      $("#tool-option").append("<img id='save-btn' title='Save for Later' src='" + chrome.runtime.getURL("images/save.png") + "'/>");
+      $("#save-btn").click(saveLinks);
+
       //Save as PDF Button
       $("#tool-option").append("<img id='pdf-btn' title='Save as PDF' src='" + chrome.runtime.getURL("images/pdf.png") + "'/>");
       $("#pdf-btn").click(saveAsPDF);
@@ -114,7 +118,7 @@
       $("#tool-option").append("<img id='help-btn' title='Help' src='" + chrome.runtime.getURL("images/help.png") + "'/>");
       $("#help-btn").click(openHelp);
 
-      $("#edit-btn, #highlight-btn, #speak-btn, #pdf-btn, #option-btn, #help-btn").css({
+      $("#edit-btn, #highlight-btn, #speak-btn, #save-btn, #pdf-btn, #option-btn, #help-btn").css({
         width: "30px",
         height: "30px",
         display: "block",
@@ -225,6 +229,8 @@
             event.target.id === "tool-option" ||
             event.target.id === "edit-btn" ||
             event.target.id === "highlight-btn" ||
+            event.target.id === "speak-btn" ||
+            event.target.id === "save-btn" ||
             event.target.id === "pdf-btn" ||
             event.target.id === "option-btn" ||
             event.target.id === "edit-mode" ||
@@ -238,17 +244,25 @@
           } else if (event.target.id === "apply-btn") {
             //apply button clicked
             console.log("Apply edits on all selected elements");
-            ga("send", "event", "Edit Mode", "Clicked", "Apply Changes", "");
-            $(".web-edited").each(function () {
+            ga(
+              "send",
+              "event",
+              "Edit Mode",
+              "Clicked",
+              "Apply Changes",
+              ""
+            );
+            $(".web-edited").each(function() {
               $(this)
                 .removeClass("web-edited")
                 .addClass("web-deleted");
             });
-            $("a").each(function () {
+            $("a").each(function() {
               $(this).removeClass("link-disabled");
             });
             $("#edit-mode").text("Changes are applied!");
-            $("#edit-mode").animate({
+            $("#edit-mode").animate(
+              {
                 opacity: "0.0"
               },
               "slow"
@@ -259,15 +273,23 @@
           } else if (event.target.id === "cancel-btn") {
             //cancel button clicked
             console.log("Cancel edits from all selected elements");
-            ga("send", "event", "Edit Mode", "Clicked", "Cancel Changes", "");
-            $(".web-edited").each(function () {
+            ga(
+              "send",
+              "event",
+              "Edit Mode",
+              "Clicked",
+              "Cancel Changes",
+              ""
+            );
+            $(".web-edited").each(function() {
               $(this).removeClass("web-edited");
             });
-            $("a").each(function () {
+            $("a").each(function() {
               $(this).removeClass("link-disabled");
             });
             $("#edit-mode").text("Changes are cancelled!");
-            $("#edit-mode").animate({
+            $("#edit-mode").animate(
+              {
                 opacity: "0.0"
               },
               "slow"
@@ -683,6 +705,62 @@
       return arr;
     }
 
+    var saveLinks = function() {
+      console.log("Save link mode is on");
+      ga("send", "event", "Save Link", "Clicked", "Main Button", "");
+      if ($("#help-mode").css("opacity") == 1) {
+        $("#help-mode").css({
+          opacity: 0,
+          zIndex: -20
+        });
+      }
+
+      if ($("#save-mode").length == 0) {
+        //save-mode doesn't exist
+        $("body").append("<div id='save-mode'></div>");
+        //$("#save-mode").text("Select text to speak.");
+        $("#save-mode").css({
+          position: "fixed",
+          top: "11%",
+          left: "44.5%",
+          backgroundColor: "#333",
+          color: "#fff",
+          padding: "10px",
+          opacity: "0.0"
+        });
+      } else {
+        //save-mode exist
+        $("#save-mode").css({
+          opacity: "0.0"
+        });
+      }
+
+      chrome.runtime.sendMessage({message: "save link"},
+        function(response) {
+          console.log(response.message);
+          if (response.message === "link saved") {
+            $("#save-mode").text("Link saved.");
+          } else if (response.message === "link duplicate") {
+            $("#save-mode").text("Duplicate link aren't Saved.");
+          } else {
+            $("#save-mode").text("Error: Try again.");
+          }
+          $("#save-mode").animate(
+            {
+              opacity: "1.0"
+            },
+            "slow"
+          );
+          $("#save-mode").animate(
+            {
+              opacity: "0.0"
+            },
+            "slow"
+          );
+        }
+      );
+    };
+
     //Save as PDF Button Function
     var saveAsPDF = function () {
       console.log("Save as PDF is on");
@@ -724,7 +802,9 @@
               <li><b>Edit Mode: </b><p>Under edit mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
               <li><b>Highlight Mode:</b><p><br></p></li>\
               <li><b>Save as PDF:</b><p><br></p></li>\
-              </ul><div id='help-triangle'></div>\
+              <li><b>All Saved Link:</b><p><button id='show-links'>Show Saved Links</button><br></p></li>\
+            </ul>\
+            <div id='help-triangle'></div>\
             "
         );
         $("#help-mode").css({
@@ -776,6 +856,30 @@
             zIndex: -20
           });
           helpMode = false;
+        }
+      });
+
+      $("#show-links").click(function(event) {
+        if (helpMode) {
+          $("#help-mode").animate(
+            {
+              opacity: "0.0"
+            },
+            "slow"
+          );
+          $("#help-mode").css({
+            zIndex: -20
+          });
+          helpMode = false;
+
+          chrome.runtime.sendMessage(
+            {
+              message: "open links page"
+            },
+            function(response) {
+              console.log(response.message);
+            }
+          );
         }
       });
     };

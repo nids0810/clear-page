@@ -1,0 +1,53 @@
+body {
+    display: inline;
+}
+
+#saved-links-list {
+    background-color: antiquewhite;
+}
+
+.links {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    padding: 10px;
+    text-align: left;
+}
+
+.links img {
+    width: 20px;
+    height: 20px;
+}
+
+.links a {
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}
+
+.links a:link {
+    color: green;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+.links a:visited {
+    color: purple;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+.links a:hover {
+    color: red;
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+.links a:active {
+    color: yellow;
+    background-color: transparent;
+    text-decoration: underline;
+}
+
+.links span {
+    color: blue;
+}
