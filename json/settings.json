@@ -1,45 +1,45 @@
 {
-    "block-elements": {
+    "blockElements": {
         "name": "Block Elements",
         "elements": ["body", "div", "table", "tr", "td", "header", "footer", "section", "aside", "p", "ul", "li", "span", "main", "article", "details", "dialog", "summary", "data", "cite", "pre", "code", "form"],
         "background": "none",
-        "background-image": "none",
-        "font-family": "sans-serif",
-        "background-color": "#f9f9f9",
+        "backgroundImage": "none",
+        "fontFamily": "sans-serif",
+        "backgroundColor": "#f9f9f9",
         "color": "#333333",
         "border": "none"
     },
-    "anchor-elements": {
+    "anchorElements": {
         "name": "Anchor Elements",
         "elements": ["a", "link", "nav"],
         "background": "none",
-        "background-image": "none",
-        "font-family": "sans-serif",
-        "background-color": "#f9f9f9",
+        "backgroundImage": "none",
+        "fontFamily": "sans-serif",
+        "backgroundColor": "#f9f9f9",
         "color": "#333333",
-        "font-weight": "bold",
-        "text-decoration": "underline",
+        "fontWeight": "bold",
+        "textDecoration": "underline",
         "border": "none",
-        "has-attribute": "target"
+        "hasAttribute": "target"
     },
-    "header-elements": {
+    "headerElements": {
         "name": "Header Elements",
         "elements": ["h1", "h2", "h3", "h4", "h5", "h6"],
         "background": "none",
-        "font-family": "sans-serif",
+        "fontFamily": "sans-serif",
         "color": "#333333"
     },
-    "media-elements": {
+    "mediaElements": {
         "name": "Media Elements",
         "elements": ["img", "source", "picture", "svg", "map", "area", "canvas", "figure", "figcaption", "audio", "source", "track", "video", "textarea", "i"],
         "display": "none"
     },
-    "frame-elements": {
+    "frameElements": {
         "name": "Frame Elements",
         "elements": ["frame", "frameset", "noframes", "iframe"],
         "display": "none"
     },
-    "program-elements": {
+    "programElements": {
         "name": "Program Elements",
         "elements": ["script", "noscript", "applet", "embed", "object", "param"],
         "display": "none"

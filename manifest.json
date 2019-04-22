@@ -15,7 +15,11 @@
     "page": "html/options.html",
     "open_in_tab": false,
     "chrome_style": true
-  },
+  },"content_scripts": [{
+    "matches": ["*://*/*"],
+    "exclude_globs": ["*://*facebook.com/*", "https://www.reddit.*/*", "https://twitter.*/*"],
+    "js": ["third-party/jquery.min.js", "third-party/ga.js", "js/content.js"]
+  }],
   "background" : {
     "scripts": ["third-party/jquery.min.js", "third-party/ga.js", "js/background.js"],
     "persistent": false

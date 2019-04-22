@@ -2,38 +2,40 @@
 
 (function () {
 
-  var settingsObject = {};
+  var _settings = {};
 
   chrome.runtime.sendMessage({
     message: "send settings"
   }, function (response) {
-    if (response.message !== "{}") {
-      settingsObject = response.message;
+    if (response.message === "setting sent") {
+      _settings = response.data;
       loadSettingObject();
       loadButtonObject();
     } else {
-      console.log(response.message);
+      console.error("Setting not available");
     }
   });
 
   var loadSettingObject = function () {
-    console.log('Setting loaded');
+    console.log('Loading settings on website');
+    console.log(JSON.stringify(_settings));
     var html = '';
     html += '<h1>Settings</h1>';
-    for (var elements in settingsObject) {
-      if (settingsObject.hasOwnProperty(elements)) {
-        for (var key in settingsObject[elements]) {
-          if (settingsObject[elements].hasOwnProperty(key)) {
+    for (var elements in _settings) {
+      if (_settings.hasOwnProperty(elements)) {
+        for (var key in _settings[elements]) {
+          if (_settings[elements].hasOwnProperty(key)) {
             if (key === "name") {
-              html += '<div id=' + elements + '><b>' + settingsObject[elements][key] + '</b>';
+              html += '<div id=' + elements + '><b>' + _settings[elements][key] + '</b>';
+              console.log(_settings[elements][key]);
             } else if (key === "elements") {
-              html += "<p>" + settingsObject[elements][key].join(", ") + "</p>";
+              html += "<p>" + _settings[elements][key].join(", ") + "</p>";
             } else if (key === "font-family") {
-              html += '<label> Font Family: ' + settingsObject[elements][key] + '</label><br>';
+              html += '<label> Font Family: ' + _settings[elements][key] + '</label><br>';
             } else if (key === "background-color") {
-              html += '<label> Background Color: <input type="color" id="' + elements + '-bg-color' + '" value="' + settingsObject[elements][key] + '"></label><br>';
+              html += '<label> Background Color: <input type="color" id="' + elements + '-bg-color' + '" value="' + _settings[elements][key] + '"></label><br>';
             } else if (key === "color") {
-              html += '<label> Text Color: <input type="color" id="' + elements + '-text-color' + '" value="' + settingsObject[elements][key] + '"></label><br>';
+              html += '<label> Text Color: <input type="color" id="' + elements + '-text-color' + '" value="' + _settings[elements][key] + '"></label><br>';
             }
           }
         }
@@ -60,17 +62,17 @@
   function save_options() {
     console.log('Save button clicked');
     ga("send", "event", "Settings", "Updated", "Save", "");
-    settingsObject['block-elements']['background-color'] = $("#block-elements-bg-color").val();
-    settingsObject['block-elements']['color'] = $("#block-elements-text-color").val();
+    _settings.blockElements.backgroundColor = $("#block-elements-bg-color").val();
+    _settings.blockElements.color = $("#block-elements-text-color").val();
 
-    settingsObject['anchor-elements']['background-color'] = $("#anchor-elements-bg-color").val();
-    settingsObject['anchor-elements']['color'] = $("#anchor-elements-text-color").val();
+    _settings.anchorElements.backgroundColor = $("#anchor-elements-bg-color").val();
+    _settings.anchorElements.color = $("#anchor-elements-text-color").val();
 
-    settingsObject['header-elements']['color'] = $("#header-elements-text-color").val();
+    _settings.headerElements.color = $("#header-elements-text-color").val();
 
     chrome.runtime.sendMessage({
       message: "update settings",
-      data: settingsObject
+      data: _settings
     }, function (response) {
       console.log(response.message);
     });

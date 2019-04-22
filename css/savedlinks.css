@@ -8,14 +8,34 @@ body {
 
 .links {
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: 30px auto auto 40px 40px 40px;
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     padding: 10px;
     text-align: left;
+    border: 0.5px dashed blue;
 }
 
 .links img {
     width: 20px;
     height: 20px;
+}
+
+.links span {
+    color: blue;
+    text-align: left;
+}
+
+.delete {
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.delete :hover {
+    color: red;
+    background-color: transparent;
+    text-decoration: underline;
 }
 
 .links a {
@@ -46,8 +66,4 @@ body {
     color: yellow;
     background-color: transparent;
     text-decoration: underline;
-}
-
-.links span {
-    color: blue;
 }
