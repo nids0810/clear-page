@@ -2,19 +2,50 @@ body {
     display: inline;
 }
 
-#saved-links-list {
-    background-color: antiquewhite;
+#reading-queue {
+    padding: 0 30px;
+}
+
+#reading-queue h1 {
+    text-align: center;
+    color: #333;
+    margin: 5px;
+}
+
+#sort-buttons {
+    text-align: right;
+    position: relative;
+    bottom: 33px;
+}
+
+#sort-buttons button {
+    border: 0;
+    border-radius: 2px;
+    padding: 8px 20px;
+    background-color: #33b5e5;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: #fff;
+    margin-left: 5px;
+}
+
+#sort-buttons button:hover {
+    background: #666;
+}
+
+#sort-buttons button:focus {
+    outline: 0;
 }
 
 .links {
     display: grid;
-    grid-template-columns: 30px auto auto 40px 40px 40px;
-    word-wrap: break-word;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    grid-template-columns: 3% 20% 47% 10% 10% 10%;
     padding: 10px;
     text-align: left;
-    border: 0.5px dashed blue;
+    border: 1px solid #eee;
+    margin-bottom: 10px;
+    background-color: #f1f2f2;
+    border-radius: 4px;
 }
 
 .links img {
@@ -23,8 +54,15 @@ body {
 }
 
 .links span {
-    color: blue;
     text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.links span.heading {
+    font-weight: bold;
+    font-size: 13px;
 }
 
 .delete {
@@ -35,35 +73,23 @@ body {
 .delete :hover {
     color: red;
     background-color: transparent;
-    text-decoration: underline;
 }
 
 .links a {
-    text-decoration: underline;
-    color: blue;
+    text-decoration: none;
+    color: #000;
     cursor: pointer;
 }
 
 .links a:link {
     color: green;
-    background-color: transparent;
-    text-decoration: none;
 }
 
 .links a:visited {
     color: purple;
-    background-color: transparent;
-    text-decoration: none;
 }
 
 .links a:hover {
-    color: red;
-    background-color: transparent;
-    text-decoration: underline;
-}
-
-.links a:active {
-    color: yellow;
-    background-color: transparent;
+    color: #33b5e5;
     text-decoration: underline;
 }
