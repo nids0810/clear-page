@@ -1,3 +1,5 @@
 _config.yml
 .vscode/
 .DS_Store
+*.log
+docs/*
