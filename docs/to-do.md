@@ -3,7 +3,7 @@
 * ! On Click, it should get activated in every page
 
 ## Edit Mode ##
-* On select, text should not be small. ~
+* ~~On select, text should not be small.~~
 * Link should not be clickable
 
 ## Clear Page ##
@@ -19,7 +19,7 @@
 * On Change, speaker voice should change ~
 
 ## Save Links ##
-* ! Design Saved Links html Page
+* ! ~~Design Saved Links html Page~~
 
 ## Settings Page ##
 * Design settings Window similar to help page?
