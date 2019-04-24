@@ -1,77 +1,70 @@
 "use strict";
 //ga('send','event','category','action','label','value');
 
-var activeTabs = [];
-var extensionActive = false;
+var _activeTabs = [];
+var _extensionActive = false;
 var exitURL = "https://nids0810.github.io/clear-page/exit.html";
 
 chrome.browserAction.onClicked.addListener(function (tab) {
-  if (activeTabs.length === 0) {
+  if (!_extensionActive) {
     console.log(tab);
-    activeTabs.push(tab.title);
+    _activeTabs.push({
+      "tab": tab
+    });
     ga("send", "event", "Icon", "Activated", "", "1");
     //chrome.tabs.executeScript(tab.id, {file:"js/action.js"});
     executeScripts(null, [{
-        file: "third-party/jquery.min.js"
-      }, {
-        file: "third-party/ga.js"
-      }, {
-        file: "js/content.js"
-      }
-      //{ file: "helper.js" },
-      //{ code: "transformPage();" }
-    ]);
+      file: "third-party/jquery.min.js"
+    }, {
+      file: "third-party/ga.js"
+    }, {
+      file: "js/content.js"
+    }]);
     chrome.browserAction.setIcon({
       path: "icons/icon_on_16.png",
       tabId: tab.id
     });
-    extensionActive = true;
+    chrome.browserAction.setBadgeText({
+      text: "on"
+    }, function () {
+      console.log("Badge On");
+    });
+    _extensionActive = true;
   } else {
-    var tabIndex = activeTabs.indexOf(tab.title);
-    if (tabIndex >= 0) {
-      activeTabs = activeTabs.filter(item => item !== tab.title);
-      ga("send", "event", "Icon", "Deactivated", "", "1");
-      /* chrome.tabs.executeScript(tab.id, {
+    //if (_activeTabs.indexOf(tab.title) >= 0) {_activeTabs = _activeTabs.filter(item => item !== tab.title);}
+    ga("send", "event", "Icon", "Deactivated", "", "1");
+    _activeTabs.forEach(function (items) {
+      console.log(items.tab.title + " - off");
+      chrome.tabs.executeScript(
+        items.tab.id, {
           file: "js/no-action.js"
-      }); */
-      executeScripts(null, [{
-          file: "third-party/jquery.min.js"
         },
-        {
-          file: "js/no-action.js"
+        result => {
+          const lastErr = chrome.runtime.lastError;
+          if (lastErr)
+            console.log(
+              "tab: " + tab.id + " lastError: " + JSON.stringify(lastErr)
+            );
         }
-      ]);
+      );
+      _activeTabs = [];
       chrome.browserAction.setIcon({
         path: "icons/icon_16.png",
-        tabId: tab.id
+        tabId: items.id
       });
-      extensionActive = false;
-    } else {
-      activeTabs.push(tab.title);
-      ga("send", "event", "Icon", "Activated", "", "1");
-      /* chrome.tabs.executeScript(tab.id, {
-          file: "js/action.js"
-      }); */
-      executeScripts(null, [{
-          file: "third-party/jquery.min.js"
-        },
-        {
-          file: "third-party/ga.js"
-        },
-        {
-          file: "js/content.js"
-        }
-      ]);
-      chrome.browserAction.setIcon({
-        path: "icons/icon_on_16.png",
-        tabId: tab.id
-      });
-      extensionActive = true;
-    }
+    });
+    chrome.browserAction.setBadgeText({
+      text: "Off"
+    }, function () {
+      console.log("Badge Off");
+    });
+    _extensionActive = false;
   }
 });
 
+// fucntion to execute multiple files in a row
 function executeScripts(tabId, injectDetailsArray) {
+
   function createCallback(tabId, injectDetails, innerCallback) {
     return function () {
       chrome.tabs.executeScript(tabId, injectDetails, innerCallback);
@@ -90,7 +83,7 @@ function executeScripts(tabId, injectDetailsArray) {
 chrome.runtime.onInstalled.addListener(function () {
   console.log("Welcome to Clear Page!");
   ga("send", "event", "Extension", "Installed", "", "10");
-  extensionActive = false;
+  _extensionActive = false;
 
   //window.open(chrome.runtime.getURL("html/welcome.html"));
   var _settings = JSON.parse(localStorage.getItem("clear-page-settings"));
@@ -121,11 +114,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   }
 
   if (request.message == "extension active?") {
-    console.log("context script - answer: " + extensionActive);
-    if (extensionActive) {
+    console.log("context script - answer: " + _extensionActive);
+    if (_extensionActive) {
       chrome.browserAction.setIcon({
         path: "icons/icon_on_16.png",
         tabId: sender.tab.id
+      });
+      _activeTabs.push({
+        tab: sender.tab
       });
     } else {
       chrome.browserAction.setIcon({
@@ -134,7 +130,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       });
     }
     sendResponse({
-      message: extensionActive
+      message: _extensionActive
     });
   }
 
@@ -279,9 +275,10 @@ function loadSettingsObject() {
   console.log("load settings again");
 }
 
+//function when chrome is uninstalled
 /* chrome.runtime.setUninstallURL(exitURL, function () {
   console.log("extention uninstalled.");
-  extensionActive = false;
+  _extensionActive = false;
   localStorage.removeItem("clear-page-settings");
   localStorage.removeItem("clear-page-saved-links");
   ga('send', 'event', 'Extension', 'Uninstalled', '', '');
