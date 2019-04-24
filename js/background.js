@@ -3,7 +3,7 @@
 
 var _activeTabs = [];
 var _extensionActive = false;
-var exitURL = "https://nids0810.github.io/clear-page/exit.html";
+var _exitURL = "https://nids0810.github.io/clear-page/exit.html";
 
 chrome.browserAction.onClicked.addListener(function (tab) {
   if (!_extensionActive) {
@@ -12,7 +12,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
       "tab": tab
     });
     ga("send", "event", "Icon", "Activated", "", "1");
-    //chrome.tabs.executeScript(tab.id, {file:"js/action.js"});
+    //chrome.tabs.executeScript(tab.id, {file:"js/content.js"});
     executeScripts(null, [{
       file: "third-party/jquery.min.js"
     }, {
@@ -54,7 +54,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
       });
     });
     chrome.browserAction.setBadgeText({
-      text: "Off"
+      text: ""
     }, function () {
       console.log("Badge Off");
     });
@@ -195,15 +195,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
   if (request.message == "save link") {
     if (!($.isEmptyObject(sender.tab))) {
-      var savedLink = {};
+      var _savedLink = {};
       //var url = new URL(sender.tab.url);
-      savedLink.title = sender.tab.title;
-      savedLink.domain = new URL(sender.tab.url).hostname;
-      savedLink.url = sender.tab.url;
-      savedLink.favIconUrl = sender.tab.favIconUrl;
-      savedLink.dateSaved = Date.now();
-      console.log("Saved Link: " + JSON.stringify(savedLink));
-      if (pushUniqueLinks(savedLink)) {
+      _savedLink.title = sender.tab.title;
+      _savedLink.domain = new URL(sender.tab.url).hostname;
+      _savedLink.url = sender.tab.url;
+      _savedLink.favIconUrl = sender.tab.favIconUrl;
+      _savedLink.dateSaved = Date.now();
+      console.log("Saved Link: " + JSON.stringify(_savedLink));
+      if (pushUniqueLinks(_savedLink)) {
         console.log("Link saved");
         sendResponse({
           message: "link saved"
@@ -262,7 +262,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         message: "opened page"
       });
     } else {
-      console.error("No links available");
+      console.warn("No links available");
       sendResponse({
         message: "error: links empty"
       });
@@ -276,7 +276,7 @@ function loadSettingsObject() {
 }
 
 //function when chrome is uninstalled
-/* chrome.runtime.setUninstallURL(exitURL, function () {
+/* chrome.runtime.setUninstallURL(_exitURL, function () {
   console.log("extention uninstalled.");
   _extensionActive = false;
   localStorage.removeItem("clear-page-settings");
@@ -309,7 +309,7 @@ function pushUniqueLinks(newLink) {
     localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
     return true;
   } else {
-    console.error("List not updated. " + _savedlinks);
+    console.warn("List not updated. " + _savedlinks);
     return false;
   }
 }

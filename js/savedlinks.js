@@ -117,8 +117,8 @@
     if (_linksArray.length !== 0) {
       html += "<div class='links'>";
       html += "<span class='heading'>Icon</span>";
-      html += "<span class='heading'>Domain Name</span>";
-      html += "<span class='heading'>Link Title</span>";
+      html += "<span class='heading'>Domain</span>";
+      html += "<span class='heading'>Title</span>";
       html += "<span class='heading'>Url</span>";
       html += "<span class='heading'>Date</span>";
       html += "<span class='heading'>Delete</span>";

@@ -70,7 +70,7 @@ body {
     background-color: transparent;
 }
 
-.delete :hover {
+.delete:hover {
     color: red;
     background-color: transparent;
 }
