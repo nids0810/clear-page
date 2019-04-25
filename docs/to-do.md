@@ -1,29 +1,35 @@
 # To Dos #
 ## Browser Action ##
-* ! On Click, it should get activated in every page
+* ~~! On browser icon click, it should be activated on the current page, icon should turn red
+* ~~! When active, it should automatically get activated on the every new page, icon should turn red
+* ~~! When active, on browser icon click, it should be deactivate from all existing pages, icon should turn gray
+* ~~! When deactive, it should get activated on any new page, icon should remain gray
 
 ## Edit Mode ##
-* ~~On select, text should not be small.~~
-* Link should not be clickable
+* ~~On select, text should not be small
+* All clickable elements should not be clickable
 
-## Clear Page ##
-* ! On click, the icon should be disabled for another click
-* Settings object should be available in script
+## Read Mode ##
+* ~~! On click, the page should turn into readable mode
+* ~~! On click again, the page should be relaod to normal state
+* ! design the read-text content css
 
-## Highlight Mode##
+## Highlight Mode ##
 * Implement Highlight Text functionality
 
-## Sound ##
-* Remove Voices option from tab when canceled ~
+## Speak Mode ##
+* ~~Remove Voices option from tab when canceled
+* ! On Change, speaker voice should change
 * Improve chucking function
-* On Change, speaker voice should change ~
 
-## Save Links ##
-* ! ~~Design Saved Links html Page~~
+## Save page for Later ##
 
-## Settings Page ##
-* Design settings Window similar to help page?
-* Save settings window input
+## Open Saved links ##
+* ! ~~Design Saved Links html Page
+
+~~## Settings Page ## (not required anymore)~~
+* ~~Design settings Window similar to help page
+* ~~Save settings window input
 
 ## Help Page ##
 * Design Help Window
