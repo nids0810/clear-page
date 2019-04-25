@@ -27,7 +27,7 @@
 ## Open Saved links ##
 * ! ~~Design Saved Links html Page~~
 
-~~## Settings Page ## (not required anymore)~~
+## Settings Page ## ~~(not required anymore)~~
 * ~~Design settings Window similar to help page~~
 * ~~Save settings window input~~
 
