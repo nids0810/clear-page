@@ -26,13 +26,6 @@
             zIndex: "300"
           });
 
-          //Edit Mode Button
-          $("#tool-option").append(
-            "<img id='edit-btn' title='Edit Mode' src='" +
-            chrome.runtime.getURL("images/edit.png") +
-            "'/>"
-          );
-          $("#edit-btn").click(editMode);
 
           //Read Mode Button
           $("#tool-option").append(
@@ -42,14 +35,6 @@
           );
           $("#read-btn").click(readMode);
 
-          //Highlight Mode Button
-          $("#tool-option").append(
-            "<img id='highlight-btn' title='Highlight Mode' src='" +
-            chrome.runtime.getURL("images/highlight.png") +
-            "'/>"
-          );
-          $("#highlight-btn").click(highlightMode);
-
           //Text to Speak Mode Button
           $("#tool-option").append(
             "<img id='tts-btn' title='Text to Speech Mode' src='" +
@@ -57,6 +42,22 @@
             "'/>"
           );
           $("#tts-btn").click(ttsMode);
+
+          //Edit Mode Button
+          $("#tool-option").append(
+            "<img id='edit-btn' title='Edit Mode' src='" +
+            chrome.runtime.getURL("images/edit.png") +
+            "'/>"
+          );
+          $("#edit-btn").click(editMode);
+
+          //Highlight Mode Button
+          $("#tool-option").append(
+            "<img id='highlight-btn' title='Highlight Mode' src='" +
+            chrome.runtime.getURL("images/highlight.png") +
+            "'/>"
+          );
+          $("#highlight-btn").click(highlightMode);
 
           //Save page for later Button
           $("#tool-option").append(
@@ -91,7 +92,7 @@
           $("#help-btn").click(openHelp);
 
           $(
-            "#edit-btn, #read-btn, #highlight-btn, #tts-btn, #save-btn, #open-btn, #pdf-btn, #help-btn"
+            "#read-btn, #tts-btn, #edit-btn, #highlight-btn, #save-btn, #open-btn, #pdf-btn, #help-btn"
           ).css({
             width: "30px",
             height: "30px",
@@ -101,6 +102,493 @@
           });
         };
 
+        var readingMode = true;
+        //Read Mode Button Function
+        var readMode = function () {
+          console.log("Reading Mode On");
+
+          if (readingMode) {
+            var loc = document.location;
+            var uri = {
+              spec: loc.href,
+              host: loc.host,
+              prePath: loc.protocol + "//" + loc.host,
+              scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
+              pathBase: loc.protocol +
+                "//" +
+                loc.host +
+                loc.pathname.substr(
+                  0,
+                  loc.pathname.lastIndexOf("/") + 1
+                )
+            };
+
+            var wordCount = function (str) {
+              var _commonWords = [
+                "a",
+                "the",
+                "an",
+                "am",
+                "is",
+                "are",
+                "and",
+                "or",
+                "of",
+                "by",
+                "for",
+                "in",
+                "on",
+                "as",
+                "to",
+                "at",
+                "with",
+                "i",
+                "my",
+                "me",
+                "you",
+                "we",
+                "he",
+                "she",
+                "it",
+                "her",
+                "his",
+                "has",
+                "have",
+                "had"
+              ];
+              str = str.replace(/[\W_]+/g, " ");
+              _commonWords.forEach(function (word, index) {
+                str = str.replace(
+                  new RegExp("\\b(" + word + ")\\b", "gi"),
+                  ""
+                );
+              });
+              var words = str.trim().split(/\s+/g);
+              var _totalWords = words.length;
+              return _totalWords;
+            };
+
+            var estimatedReadingTime = function (wordCount) {
+              var _wordsPerMinute = 250,
+                _wordsPerSecond,
+                _totalReadingTimeSeconds,
+                _readingTimeMinutes;
+              if (wordCount > 0) {
+                _wordsPerSecond = _wordsPerMinute / 60;
+                _totalReadingTimeSeconds = wordCount / _wordsPerSecond;
+                _readingTimeMinutes = Math.floor(
+                  _totalReadingTimeSeconds / 60
+                );
+                return _readingTimeMinutes;
+              } else {
+                return 0;
+              }
+            };
+
+            //console.log(uri);
+            var article = new Readability(uri, document).parse();
+
+            // Remove alll or most stylesheets.
+            //document.head.outerHTML = "";
+            document.head.innerHTML = "";
+
+            // Remove everything.
+            //document.body.outerHTML = "";
+            document.body.innerHTML = "";
+
+            if ($("#read-mode").length == 0) {
+              //read-mode doesn't exist
+              $("body").append("<div id='read-mode'></div>");
+              $("#read-mode").text("Reading Mode On");
+              $("#read-mode").css({
+                position: "fixed",
+                top: "6%",
+                left: "44.5%",
+                backgroundColor: "#333",
+                color: "#fff",
+                padding: "10px",
+                opacity: "1.0",
+                zIndex: "20"
+              });
+              $("#read-mode").animate({
+                  opacity: "0.0"
+                },
+                "slow"
+              );
+            } else {
+              //read-mode exist
+              $("#read-mode").text("Reading Mode On");
+              $("#read-mode").css({
+                opacity: 1,
+                zIndex: "20"
+              });
+              $("#read-mode").animate({
+                  opacity: "0.0"
+                },
+                "slow"
+              );
+            }
+
+            //create a element to display article
+            $("body").append("<div id='read-text'></div>");
+            $("#read-text").css({
+              background: "#fff",
+              color: "#000",
+              padding: "10px 60px 10px 10px",
+              width: "55%",
+              margin: "0 auto",
+              fontFamily: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif',
+              lineHeight: "35px"
+            });
+
+            if (article === null) {
+              $("#read-text").text(
+                "<h1 id='read-text-error'>Sorry! Couldn't make this page readable</h1>"
+              );
+              console.warn("Article is not readable");
+            } else {
+              $("#read-text").append("<h1 id='read-text-title'></h1>");
+              $("#read-text").append(
+                "<span id='read-text-words'></span>"
+              );
+              $("#read-text").append(
+                "<span id='read-text-eta'></span>"
+              );
+              $("#read-text").append("<p id='read-text-content'></p>");
+              $("#read-text-title").text(article.title);
+              $("#read-text-content").html(article.content);
+              var _articleWCount = wordCount(article.textContent);
+              var _articleETA = estimatedReadingTime(_articleWCount);
+              $("#read-text-words").text(
+                "Total words: " + _articleWCount
+              );
+              $("#read-text-eta").text(
+                " Reading time: " + _articleETA + " mins"
+              );
+            }
+            readingMode = false;
+            createToolOptions();
+          } else {
+            $("#read-mode").text("Reading Mode Off");
+            $("#read-mode").css({
+              opacity: 1,
+              zIndex: "20"
+            });
+            $("#read-mode").animate({
+                opacity: "0.0"
+              },
+              "slow"
+            );
+            removeExtensionElements();
+            window.location.reload();
+            createToolOptions();
+          }
+        };
+
+        //Text to Speech Mode Button Function
+        var ttsMode = function () {
+          console.log("Text to Speech mode is on");
+          ga("send", "event", "Speak Mode", "Clicked", "Main Button", "");
+
+          var ttsMode = true;
+          var selectedVoice = {};
+          $("#tool-option").hide();
+
+          if ($("#tts-mode").length == 0) {
+            //tts-mode doesn't exist
+            $("body").append("<div id='tts-mode'></div>");
+            $("#tts-mode").text("Select text to speech.");
+            $("#tts-mode").css({
+              position: "fixed",
+              top: "11%",
+              left: "44.5%",
+              backgroundColor: "#333",
+              color: "#fff",
+              padding: "10px",
+              opacity: "1.0"
+            });
+          } else {
+            //tts-mode exist
+            $("#tts-mode").text("Select text to speech.");
+            $("#tts-mode").css({
+              opacity: "1.0"
+            });
+          }
+
+          if ($("#dialog-box").length == 0) {
+            //dialog-box doesn't exist
+            $("body").append(
+              "<div id='dialog-box'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button><select id='speech-voices'></select></div>"
+            );
+
+            $("#dialog-box").css({
+              position: "fixed",
+              top: "11%",
+              right: "4%",
+              zIndex: "300"
+            });
+            $("#apply-btn").css({
+              border: "0",
+              background: "#4CA1B6",
+              color: "#fff",
+              padding: "9px",
+              cursor: "pointer",
+              fontSize: "17px",
+              borderRadius: "5px"
+            });
+            $("#cancel-btn").css({
+              border: "0",
+              background: "#CE5061",
+              color: "#fff",
+              padding: "9px",
+              cursor: "pointer",
+              fontSize: "17px",
+              borderRadius: "5px",
+              marginLeft: "10px"
+            });
+            $("#speech-voices").css({
+              border: "0",
+              background: "#0e8c41",
+              color: "#fff",
+              padding: "9px",
+              cursor: "pointer",
+              fontSize: "17px",
+              borderRadius: "5px",
+              marginLeft: "10px"
+            });
+          } else {
+            if ($("#speech-voices").length == 0) {
+              $("#dialog-box").append("<select id='speech-voices'></select>");
+              $("#speech-voices").css({
+                border: "0",
+                background: "#0e8c41",
+                color: "#fff",
+                padding: "9px",
+                cursor: "pointer",
+                fontSize: "17px",
+                borderRadius: "5px",
+                marginLeft: "10px"
+              });
+              $("#apply-btn").html("Speak");
+            }
+            $("#dialog-box").show();
+          }
+
+          // check if speech synthesis is supported
+          if (!("speechSynthesis" in window)) {
+            console.warn("browser don't support.");
+            $("#tts-mode").text("browser don't support Text to Speech");
+          } else {
+            loadVoiceList();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+              speechSynthesis.onvoiceschanged = loadVoiceList;
+            }
+          }
+
+          function loadVoiceList() {
+            var voices = speechSynthesis.getVoices();
+            if ($("#speech-voices option").length == 0) {
+              var language =
+                window.navigator.userLanguage || window.navigator.language; //en-US
+              voices.forEach(function (voice, index) {
+                if (voice.lang === language) {
+                  selectedVoice = voice;
+                  var option = $("<option>")
+                    .val(index)
+                    .html(voice.name + "--DEFAULT")
+                    .prop("selected", true);
+                  $("#speech-voices").append(option);
+                } else {
+                  var option = $("<option>")
+                    .val(index)
+                    .html(voice.name);
+                  $("#speech-voices").append(option);
+                }
+              });
+
+              if ($("#speech-voices option").length == 0) {
+                $("#speech-voices").hide();
+              } else {
+                $("#speech-voices").show();
+              }
+
+              $("#speech-voices").on("change", function () {
+                var voiceIndex = this.value;
+                if (voices.length !== 0) {
+                  selectedVoice = voices[voiceIndex];
+                  console.log(
+                    "New voice: " +
+                    selectedVoice.name +
+                    " , language: " +
+                    selectedVoice.lang
+                  );
+                }
+              });
+
+              if (
+                voices.length > 0 &&
+                speechSynthesis.onvoiceschanged !== undefined
+              ) {
+                // unregister event listener (it is fired multiple times)
+                speechSynthesis.onvoiceschanged = null;
+              }
+            }
+          }
+
+          var text2Speech = [];
+          var textArray = "";
+          var speaker;
+
+          window.speechSynthesis.cancel();
+
+          $(document).click(function (event) {
+            if (ttsMode) {
+              if (
+                event.target.id === "apply-btn" &&
+                event.target.innerText === "Speak"
+              ) {
+                //apply button clicked
+                console.log("Speaks all selected text");
+                if (window.speechSynthesis.speaking) {
+                  console.error("speechSynthesis.speaking");
+                  //return;
+                  window.speechSynthesis.cancel();
+                }
+
+                if (textArray.length != 0) {
+                  $.each(textArray, function () {
+                    speaker = new SpeechSynthesisUtterance(this.trim());
+                    if (!$.isEmptyObject(selectedVoice)) {
+                      speaker.voice = selectedVoice;
+                      console.log(
+                        "Current voice: " +
+                        selectedVoice.name
+                      );
+                    }
+                    window.speechSynthesis.speak(speaker);
+
+                    speaker.onstart = function () {
+                      $("#tts-mode").text(
+                        "Speaking in " +
+                        speaker.voice.name +
+                        " ..."
+                      );
+                      $("#apply-btn").html("Pause");
+                      console.log("Speech started.");
+                    };
+
+                    speaker.onerror = function (event) {
+                      $("#tts-mode").text("Error! Try again");
+                      $("#apply-btn").html("Speak");
+                      console.log("Error occured " + event.message);
+                    };
+
+                    speaker.onend = function (event) {
+                      $("#tts-mode").text("Select Text to Speech.");
+                      $("#apply-btn").html("Speak");
+                      console.log(
+                        "Speach finished in " +
+                        event.elapsedTime +
+                        " seconds."
+                      );
+                      console.log("Speach finished.");
+                    };
+
+                    speaker.onpause = function (event) {
+                      console.log(
+                        "Speech paused after " +
+                        event.elapsedTime +
+                        " milliseconds."
+                      );
+                    };
+
+                    speaker.onresume = function (event) {
+                      console.log(
+                        "Speech resumed after " +
+                        event.elapsedTime +
+                        " milliseconds."
+                      );
+                    };
+                  });
+                } else {
+                  $("#tts-mode").text("No text available. Select Text.");
+                  console.log("No text available");
+                }
+              } else if (
+                event.target.id === "apply-btn" &&
+                event.target.innerText === "Pause"
+              ) {
+                console.log("Speech paused");
+                window.speechSynthesis.pause();
+                $("#tts-mode").text("Speech Paused");
+                $("#apply-btn").html("Resume");
+              } else if (
+                event.target.id === "apply-btn" &&
+                event.target.innerText === "Resume"
+              ) {
+                console.log("Speech resumed");
+                window.speechSynthesis.resume();
+                $("#tts-mode").text(
+                  "Speaking in " + speaker.voice.name + " ..."
+                );
+                $("#apply-btn").html("Pause");
+              } else if (event.target.id === "cancel-btn") {
+                //cancel button clicked
+                console.log("Cancel Text to Speech mode");
+                $("#tts-mode").text("Text to Speech mode off!");
+                $("#tts-mode").animate({
+                    opacity: "0.0"
+                  },
+                  "slow"
+                );
+                $("#apply-btn").html("Apply Changes");
+                $("#dialog-box").remove();
+                $("#tool-option").show();
+                window.speechSynthesis.cancel();
+                text2Speech = "";
+                textArray = [];
+                selectedVoice = {};
+                ttsMode = false;
+              } else {
+                text2Speech = window.getSelection().toString();
+                textArray = chuckText(text2Speech);
+                //console.log(textArray);
+              }
+            }
+          });
+        };
+
+        function chuckText(text) {
+          var arr = [];
+          var chunkLength = 120;
+          var pattRegex = new RegExp(
+            "^[\\s\\S]{" +
+            Math.floor(chunkLength / 2) +
+            "," +
+            chunkLength +
+            "}[.!?,]{1}|^[\\s\\S]{1," +
+            chunkLength +
+            "}$|^[\\s\\S]{1," +
+            chunkLength +
+            "} "
+          );
+
+          text = text
+            .replace(
+              /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi,
+              "url"
+            ) //http and other inks
+            .replace(/(\/).+/g, "") //folder structure
+            .replace(/(\r\n|\n|\r)/g, " ")
+            .replace(/\s\s+/g, " ") //multiple spaces
+            .replace(/[^\w\s.,!?]/g, ""); //all non-words & non-space
+          while (text.length > 0) {
+            arr.push(text.match(pattRegex)[0]);
+            text = text.substring(arr[arr.length - 1].length);
+          }
+          return arr;
+        }
+        
         //Edit Mode Button Function
         var editMode = function () {
           console.log("Edit mode is on");
@@ -224,17 +712,16 @@
                   "Apply Changes",
                   ""
                 );
-                $(".web-edited").each(function() {
+                $(".web-edited").each(function () {
                   $(this)
                     .removeClass("web-edited")
                     .addClass("web-deleted");
                 });
-                $("a").each(function() {
+                $("a").each(function () {
                   $(this).removeClass("link-disabled");
                 });
                 $("#edit-mode").text("Changes are applied!");
-                $("#edit-mode").animate(
-                  {
+                $("#edit-mode").animate({
                     opacity: "0.0"
                   },
                   "slow"
@@ -255,15 +742,14 @@
                   "Cancel Changes",
                   ""
                 );
-                $(".web-edited").each(function() {
+                $(".web-edited").each(function () {
                   $(this).removeClass("web-edited");
                 });
-                $("a").each(function() {
+                $("a").each(function () {
                   $(this).removeClass("link-disabled");
                 });
                 $("#edit-mode").text("Changes are cancelled!");
-                $("#edit-mode").animate(
-                  {
+                $("#edit-mode").animate({
                     opacity: "0.0"
                   },
                   "slow"
@@ -280,155 +766,6 @@
               }
             }
           });
-        };
-
-        var readingMode = true;
-        //Read Mode Button Function
-        var readMode = function () {
-
-          console.log('Reading Mode On');
-
-          if (readingMode) {
-
-            var loc = document.location;
-            var uri = {
-              spec: loc.href,
-              host: loc.host,
-              prePath: loc.protocol + "//" + loc.host,
-              scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
-              pathBase: loc.protocol +
-                "//" +
-                loc.host +
-                loc.pathname.substr(
-                  0,
-                  loc.pathname.lastIndexOf("/") + 1
-                )
-            };
-
-            var wordCount = function(str) {
-              var _commonWords = ["a", "the", "an", "am", "is", "are", "and", "or", "of", "by", "for", "in", "on", "as", "to", "at", "with", "i", "my", "me", "you", "we", "he", "she", "it", "her", "his", "has", "have", "had"];
-              str = str.replace(/[\W_]+/g, " ");
-              _commonWords.forEach(function(word, index) {
-                str = str.replace(new RegExp("\\b(" + word + ")\\b", "gi"), "");
-              });
-              var words = str.trim().split(/\s+/g);
-              var _totalWords = words.length;
-              return _totalWords;
-            };
-
-            var estimatedReadingTime = function(wordCount) {
-              var _wordsPerMinute = 250,
-                _wordsPerSecond,
-                _totalReadingTimeSeconds,
-                _readingTimeMinutes;
-              if (wordCount > 0) {       
-                _wordsPerSecond = _wordsPerMinute / 60;
-                _totalReadingTimeSeconds = wordCount / _wordsPerSecond;
-                _readingTimeMinutes = Math.floor(_totalReadingTimeSeconds / 60);
-                return _readingTimeMinutes;
-              } else {
-                return 0;
-              }
-            };
-
-            //console.log(uri);
-            var article = new Readability(uri, document).parse();
-
-            // Remove alll or most stylesheets.
-            //document.head.outerHTML = "";
-            document.head.innerHTML = "";
-
-            // Remove everything.
-            //document.body.outerHTML = "";
-            document.body.innerHTML = "";
-
-
-            if ($("#read-mode").length == 0) {
-              //read-mode doesn't exist
-              $("body").append("<div id='read-mode'></div>");
-              $("#read-mode").text("Reading Mode On");
-              $("#read-mode").css({
-                position: "fixed",
-                top: "6%",
-                left: "44.5%",
-                backgroundColor: "#333",
-                color: "#fff",
-                padding: "10px",
-                opacity: "1.0",
-                zIndex: "20"
-              });
-              $("#read-mode").animate(
-                {
-                  opacity: "0.0"
-                },
-                "slow"
-              );
-            } else {
-              //read-mode exist
-              $("#read-mode").text("Reading Mode On");
-              $("#read-mode").css({
-                opacity: 1,
-                zIndex: "20"
-              });
-              $("#read-mode").animate(
-                {
-                  opacity: "0.0"
-                },
-                "slow"
-              );
-            }
-
-            //create a element to display article
-            $("body").append("<div id='read-text'></div>");
-            $("#read-text").css({
-              background: "#fff",
-              color: "#000",
-              padding: "10px 60px 10px 10px",
-              width: "55%",
-              margin: "0 auto",
-              fontFamily: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif',
-              lineHeight: "35px"
-            });
-
-            if (article === null) {
-              $("#read-text").text("<h1 id='read-text-error'>Sorry! Couldn't make this page readable</h1>");
-              console.warn("Article is not readable");
-            } else {
-              $("#read-text").append("<h1 id='read-text-title'></h1>");
-              $("#read-text").append(
-                "<span id='read-text-words'></span>"
-              );
-              $("#read-text").append(
-                "<span id='read-text-eta'></span>"
-              );
-              $("#read-text").append(
-                "<p id='read-text-content'></p>"
-              );
-              $("#read-text-title").text(article.title);
-              $("#read-text-content").html(article.content);
-              var _articleWCount = wordCount(article.textContent);
-              var _articleETA = estimatedReadingTime(_articleWCount);
-              $("#read-text-words").text("Total words: " + _articleWCount);
-              $("#read-text-eta").text(" Reading time: " + _articleETA + " mins");
-            }
-            readingMode = false;
-            createToolOptions();
-          } else {
-            $("#read-mode").text("Reading Mode Off");
-            $("#read-mode").css({
-              opacity: 1,
-              zIndex: "20"
-            });
-            $("#read-mode").animate({
-                opacity: "0.0"
-              },
-              "slow"
-            );
-            removeExtensionElements();
-            window.location.reload();
-            createToolOptions();
-          }
-
         };
 
         //Highlight Button Function
@@ -557,310 +894,6 @@
           });
         };
 
-        //Text to Speech Mode Button Function
-        var ttsMode = function () {
-          console.log("Text to Speech mode is on");
-          ga("send", "event", "Speak Mode", "Clicked", "Main Button", "");
-
-          var ttsMode = true;
-          var selectedVoice = {};
-          $("#tool-option").hide();
-
-          if ($("#tts-mode").length == 0) {
-            //tts-mode doesn't exist
-            $("body").append("<div id='tts-mode'></div>");
-            $("#tts-mode").text("Select text to speech.");
-            $("#tts-mode").css({
-              position: "fixed",
-              top: "11%",
-              left: "44.5%",
-              backgroundColor: "#333",
-              color: "#fff",
-              padding: "10px",
-              opacity: "1.0"
-            });
-          } else {
-            //tts-mode exist
-            $("#tts-mode").text("Select text to speech.");
-            $("#tts-mode").css({
-              opacity: "1.0"
-            });
-          }
-
-          if ($("#dialog-box").length == 0) {
-            //dialog-box doesn't exist
-            $("body").append(
-              "<div id='dialog-box'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button><select id='speech-voices'></select></div>"
-            );
-
-            $("#dialog-box").css({
-              position: "fixed",
-              top: "11%",
-              right: "4%",
-              zIndex: "300"
-            });
-            $("#apply-btn").css({
-              border: "0",
-              background: "#4CA1B6",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px"
-            });
-            $("#cancel-btn").css({
-              border: "0",
-              background: "#CE5061",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px",
-              marginLeft: "10px"
-            });
-            $("#speech-voices").css({
-              border: "0",
-              background: "#0e8c41",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px",
-              marginLeft: "10px"
-            });
-          } else {
-            if ($("#speech-voices").length == 0) {
-              $("#dialog-box").append("<select id='speech-voices'></select>");
-              $("#speech-voices").css({
-                border: "0",
-                background: "#0e8c41",
-                color: "#fff",
-                padding: "9px",
-                cursor: "pointer",
-                fontSize: "17px",
-                borderRadius: "5px",
-                marginLeft: "10px"
-              });
-              $("#apply-btn").html("Speak");
-            }
-            $("#dialog-box").show();
-          }
-
-          // check if speech synthesis is supported
-          if (!("speechSynthesis" in window)) {
-            console.warn("browser don't support.");
-            $("#tts-mode").text("browser don't support Text to Speech");
-          } else {
-            loadVoiceList();
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-              speechSynthesis.onvoiceschanged = loadVoiceList;
-            }
-          }     
-
-          function loadVoiceList() {
-            var voices = speechSynthesis.getVoices();
-            if ($("#speech-voices option").length == 0) {
-              var language =
-                window.navigator.userLanguage || window.navigator.language; //en-US
-              voices.forEach(function(voice, index) {
-                if (voice.lang === language) {
-                  selectedVoice = voice;
-                  var option = $("<option>")
-                    .val(index)
-                    .html(voice.name + "--DEFAULT")
-                    .prop("selected", true);
-                  $("#speech-voices").append(option);
-                } else {
-                  var option = $("<option>")
-                    .val(index)
-                    .html(voice.name);
-                  $("#speech-voices").append(option);
-                }
-              });
-
-              if ($("#speech-voices option").length == 0) {
-                $("#speech-voices").hide();
-              } else {
-                $("#speech-voices").show();
-              }
-
-              $("#speech-voices").on("change", function() {
-                var voiceIndex = this.value;
-                if (voices.length !== 0) {
-                  selectedVoice = voices[voiceIndex];
-                  console.log(
-                    "New voice: " +
-                      selectedVoice.name +
-                      " , language: " +
-                      selectedVoice.lang
-                  );
-                }             
-              });
-
-              if (
-                voices.length > 0 &&
-                speechSynthesis.onvoiceschanged !== undefined
-              ) {
-                // unregister event listener (it is fired multiple times)
-                speechSynthesis.onvoiceschanged = null;
-              }
-            }
-          }
-
-          var text2Speech = [];
-          var textArray = "";
-          var speaker;
-
-          window.speechSynthesis.cancel();
-
-          $(document).click(function (event) {
-            if (ttsMode) {
-              if (
-                event.target.id === "apply-btn" &&
-                event.target.innerText === "Speak"
-              ) {
-                //apply button clicked
-                console.log("Speaks all selected text");
-                if (window.speechSynthesis.speaking) {
-                  console.error("speechSynthesis.speaking");
-                  //return;
-                  window.speechSynthesis.cancel();
-                }
-
-                if (textArray.length != 0) {
-                  $.each(textArray, function () {
-                    speaker = new SpeechSynthesisUtterance(this.trim());
-                    if (!$.isEmptyObject(selectedVoice)) {
-                      speaker.voice = selectedVoice;
-                      console.log(
-                        "Current voice: " +
-                          selectedVoice.name
-                      );
-                    }
-                    window.speechSynthesis.speak(speaker);
-
-                    speaker.onstart = function () {
-                      $("#tts-mode").text(
-                        "Speaking in " +
-                          speaker.voice.name +
-                          " ..."
-                      );
-                      $("#apply-btn").html("Pause");
-                      console.log("Speech started.");
-                    };
-
-                    speaker.onerror = function (event) {
-                      $("#tts-mode").text("Error! Try again");
-                      $("#apply-btn").html("Speak");
-                      console.log("Error occured " + event.message);
-                    };
-
-                    speaker.onend = function (event) {
-                      $("#tts-mode").text("Select Text to Speech.");
-                      $("#apply-btn").html("Speak");
-                      console.log(
-                        "Speach finished in " +
-                        event.elapsedTime +
-                        " seconds."
-                      );
-                      console.log("Speach finished.");
-                    };
-
-                    speaker.onpause = function (event) {
-                      console.log(
-                        "Speech paused after " +
-                        event.elapsedTime +
-                        " milliseconds."
-                      );
-                    };
-
-                    speaker.onresume = function (event) {
-                      console.log(
-                        "Speech resumed after " +
-                        event.elapsedTime +
-                        " milliseconds."
-                      );
-                    };
-                  });
-                } else {
-                  $("#tts-mode").text("No text available. Select Text.");
-                  console.log("No text available");
-                }
-              } else if (
-                event.target.id === "apply-btn" &&
-                event.target.innerText === "Pause"
-              ) {
-                console.log("Speech paused");
-                window.speechSynthesis.pause();
-                $("#tts-mode").text("Speech Paused");
-                $("#apply-btn").html("Resume");
-              } else if (
-                event.target.id === "apply-btn" &&
-                event.target.innerText === "Resume"
-              ) {
-                console.log("Speech resumed");
-                window.speechSynthesis.resume();
-                $("#tts-mode").text(
-                  "Speaking in " + speaker.voice.name + " ..."
-                );
-                $("#apply-btn").html("Pause");
-              } else if (event.target.id === "cancel-btn") {
-                //cancel button clicked
-                console.log("Cancel Text to Speech mode");
-                $("#tts-mode").text("Text to Speech mode off!");
-                $("#tts-mode").animate({
-                    opacity: "0.0"
-                  },
-                  "slow"
-                );
-                $("#apply-btn").html("Apply Changes");
-                $("#dialog-box").remove();
-                $("#tool-option").show();
-                window.speechSynthesis.cancel();
-                text2Speech = "";
-                textArray = [];
-                selectedVoice = {};
-                ttsMode = false;
-              } else {
-                text2Speech = window.getSelection().toString();
-                textArray = chuckText(text2Speech);
-                //console.log(textArray);
-              }
-            }
-          });
-        };
-
-        function chuckText(text) {
-          var arr = [];
-          var chunkLength = 120;
-          var pattRegex = new RegExp(
-            "^[\\s\\S]{" +
-            Math.floor(chunkLength / 2) +
-            "," +
-            chunkLength +
-            "}[.!?,]{1}|^[\\s\\S]{1," +
-            chunkLength +
-            "}$|^[\\s\\S]{1," +
-            chunkLength +
-            "} "
-          );
-
-          text = text
-            .replace(
-              /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi,
-              "url"
-            ) //http and other inks
-            .replace(/(\/).+/g, "") //folder structure
-            .replace(/(\r\n|\n|\r)/g, " ")
-            .replace(/\s\s+/g, " ") //multiple spaces
-            .replace(/[^\w\s.,!?]/g, ""); //all non-words & non-space
-          while (text.length > 0) {
-            arr.push(text.match(pattRegex)[0]);
-            text = text.substring(arr[arr.length - 1].length);
-          }
-          return arr;
-        }
-
         var saveLinks = function () {
           console.log("Save link mode is on");
           ga("send", "event", "Save Link", "Clicked", "Main Button", "");
@@ -949,21 +982,20 @@
           ga("send", "event", "Help Mode", "Clicked", "Main Button", "");
           if ($("#help-mode").length == 0) {
             $("body").append("<div id='help-mode'></div>");
-            var helpHtml = (
+            var helpHtml =
               "<div id='cross-btn'>X</div>\
-          <h1>Help Doc</h1>\
-          <ul>\
-            <li><b>Edit Mode: </b><p>Under Edit mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
-            <li><b>Read Mode: </b><p>Under Read mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
-            <li><b>Highlight Mode:</b><p><br></p></li>\
-            <li><b>Text to Speak Mode:</b><p><br></p></li>\
-            <li><b>Save Page for Later:</b><p><br></p></li>\
-            <li><b>Open Saved Links:</b><p><br></p></li>\
-            <li><b>Save as PDF:</b><p><br></p></li>\
-          </ul>\
-          <div id='help-triangle'></div>\
-          "
-            );
+              <h1>Help Doc</h1>\
+              <ul>\
+                <li><b>Read Mode: </b><p>Under Read mode, user can transform the website into a readable magzine page.</p><br></li>\
+                <li><b>Text to Speak Mode:</b><p>Under Text to Speech mode, user the transform the selected into speech and listen to the speech. Voice will be default based on user browser language. However, user can also choose different voices.</p><br></li>\
+                <li><b>Edit Mode: </b><p>Under Edit mode, user can delete any unnecesary web element from the view. Select the respective element by click and press apply button to delete the element. User can also deselect an existing selection by clicking again on the element. User can also press cancel to cancel the action.</p><br></li>\
+                <li><b>Highlight Mode:</b><p>Under Highlight mode, user can highlight any portion of the text on the webpage to distinguish it from rest of the text.<br></p></li>\
+                <li><b>Save Page for Later:</b><p>Under Save page for Later, user can save the current page in a reading queue. Already saved pages will through a duplication message on screen.<br></p></li>\
+                <li><b>Open Saved Links:</b><p>Under Open Saved Links, user can view the reading queue in a new tab. User can also sort the queue as well as delete any link which user has already completed reading.<br></p></li>\
+                <li><b>Save as PDF:</b><p>Under Save as PDF, user can save the current webpage along with all the changes in a PDF locally for future use.<br></p></li>\
+              </ul>\
+              <div id='help-triangle'></div>\
+              ";
             $("#help-mode").append($.parseHTML(helpHtml));
             $("#help-mode").css({
               position: "fixed",
@@ -998,6 +1030,7 @@
               cursor: "pointer"
             });
           } else {
+            $("#help-mode").show();
             $("#help-mode").css({
               opacity: 1,
               zIndex: "300"
@@ -1011,6 +1044,7 @@
                 },
                 "slow"
               );
+              $("#help-mode").hide();
               $("#help-mode").css({
                 zIndex: "-20"
               });
@@ -1027,39 +1061,39 @@
       }
     });
 
-    var removeExtensionElements = function() {
-      console.log("Remove all extension elements.");
-      //remove the tool options if available
-      if ($("#tool-option").length != 0) {
-        $("#tool-option").remove();
-      }
+  var removeExtensionElements = function () {
+    console.log("Remove all extension elements.");
+    //remove the tool options if available
+    if ($("#tool-option").length != 0) {
+      $("#tool-option").remove();
+    }
 
-      if ($("#dialog-box").length != 0) {
-        $("#dialog-box").remove();
-      }
+    if ($("#dialog-box").length != 0) {
+      $("#dialog-box").remove();
+    }
 
-      if ($("#edit-mode").length != 0) {
-        $("#edit-mode").remove();
-      }
+    if ($("#read-mode").length != 0) {
+      $("#read-mode").remove();
+    }
 
-      if ($("#read-mode").length != 0) {
-        $("#read-mode").remove();
-      }
+    if ($("#tts-mode").length != 0) {
+      $("#tts-mode").remove();
+    }
 
-      if ($("#highlight-mode").length != 0) {
-        $("#highlight-mode").remove();
-      }
+    if ($("#edit-mode").length != 0) {
+      $("#edit-mode").remove();
+    }
 
-      if ($("#tts-mode").length != 0) {
-        $("#tts-mode").remove();
-      }
+    if ($("#highlight-mode").length != 0) {
+      $("#highlight-mode").remove();
+    }
 
-      if ($("#save-mode").length != 0) {
-        $("#save-mode").remove();
-      }
+    if ($("#save-mode").length != 0) {
+      $("#save-mode").remove();
+    }
 
-      if ($("#help-mode").length != 0) {
-        $("#help-mode").remove();
-      }
-    };
+    if ($("#help-mode").length != 0) {
+      $("#help-mode").remove();
+    }
+  };
 })();
