@@ -52,7 +52,7 @@
 
           //Text to Speak Mode Button
           $("#tool-option").append(
-            "<img id='tts-btn' title='Test to Speech Mode' src='" +
+            "<img id='tts-btn' title='Text to Speech Mode' src='" +
             chrome.runtime.getURL("images/speak.png") +
             "'/>"
           );
@@ -305,13 +305,43 @@
                 )
             };
 
+            var wordCount = function(str) {
+              var _commonWords = ["a", "the", "an", "am", "is", "are", "and", "or", "of", "by", "for", "in", "on", "as", "to", "at", "with", "i", "my", "me", "you", "we", "he", "she", "it", "her", "his", "has", "have", "had"];
+              str = str.replace(/[\W_]+/g, " ");
+              _commonWords.forEach(function(word, index) {
+                str = str.replace(new RegExp("\\b(" + word + ")\\b", "gi"), "");
+              });
+              var words = str.trim().split(/\s+/g);
+              var _totalWords = words.length;
+              return _totalWords;
+            };
+
+            var estimatedReadingTime = function(wordCount) {
+              var _wordsPerMinute = 250,
+                _wordsPerSecond,
+                _totalReadingTimeSeconds,
+                _readingTimeMinutes;
+              if (wordCount > 0) {       
+                _wordsPerSecond = _wordsPerMinute / 60;
+                _totalReadingTimeSeconds = wordCount / _wordsPerSecond;
+                _readingTimeMinutes = Math.floor(_totalReadingTimeSeconds / 60);
+                return _readingTimeMinutes;
+              } else {
+                return 0;
+              }
+            };
+
             //console.log(uri);
             var article = new Readability(uri, document).parse();
 
-            // Remove everything.
-            document.body.outerHTML = "";
             // Remove alll or most stylesheets.
-            document.head.outerHTML = "";
+            //document.head.outerHTML = "";
+            document.head.innerHTML = "";
+
+            // Remove everything.
+            //document.body.outerHTML = "";
+            document.body.innerHTML = "";
+
 
             if ($("#read-mode").length == 0) {
               //read-mode doesn't exist
@@ -327,12 +357,25 @@
                 opacity: "1.0",
                 zIndex: "20"
               });
+              $("#read-mode").animate(
+                {
+                  opacity: "0.0"
+                },
+                "slow"
+              );
             } else {
               //read-mode exist
               $("#read-mode").text("Reading Mode On");
               $("#read-mode").css({
-                opacity: "1.0"
+                opacity: 1,
+                zIndex: "20"
               });
+              $("#read-mode").animate(
+                {
+                  opacity: "0.0"
+                },
+                "slow"
+              );
             }
 
             //create a element to display article
@@ -353,23 +396,35 @@
             } else {
               $("#read-text").append("<h1 id='read-text-title'></h1>");
               $("#read-text").append(
+                "<span id='read-text-words'></span>"
+              );
+              $("#read-text").append(
+                "<span id='read-text-eta'></span>"
+              );
+              $("#read-text").append(
                 "<p id='read-text-content'></p>"
               );
               $("#read-text-title").text(article.title);
               $("#read-text-content").html(article.content);
-              console.log(
-                $("#read-text").html()
-              );
+              var _articleWCount = wordCount(article.textContent);
+              var _articleETA = estimatedReadingTime(_articleWCount);
+              $("#read-text-words").text("Total words: " + _articleWCount);
+              $("#read-text-eta").text(" Reading time: " + _articleETA + " mins");
             }
             readingMode = false;
             createToolOptions();
           } else {
             $("#read-mode").text("Reading Mode Off");
+            $("#read-mode").css({
+              opacity: 1,
+              zIndex: "20"
+            });
             $("#read-mode").animate({
                 opacity: "0.0"
               },
               "slow"
             );
+            removeExtensionElements();
             window.location.reload();
             createToolOptions();
           }
@@ -769,7 +824,7 @@
               } else {
                 text2Speech = window.getSelection().toString();
                 textArray = chuckText(text2Speech);
-                console.log(textArray);
+                //console.log(textArray);
               }
             }
           });
@@ -855,9 +910,9 @@
           );
         };
 
-        //Open saved linksButton Function
+        //Open saved links Button Function
         var openLinks = function () {
-          console.log("Setting mode is on");
+          console.log("Open saved links page is on");
           ga("send", "event", "Open Links", "Clicked", "Main Button", "");
 
           chrome.runtime.sendMessage({
@@ -877,10 +932,10 @@
           var mediaQueryList = window.matchMedia("print");
           mediaQueryList.addListener(function (mql) {
             if (mql.matches) {
-              console.log("Hide tool-option before the print dialog opened");
+              console.log("Hide tool-option");
               $("#tool-option").hide();
             } else {
-              console.log("Show tool-option after the print dialog closed");
+              console.log("Show tool-option");
               $("#tool-option").show();
             }
           });
@@ -968,42 +1023,43 @@
         createToolOptions();
       } else {
         console.log("Extension Active? " + response.message);
-        var removeExtensionElements = function() {
-          console.log("Remove all extension elements.");
-          //remove the tool options if available
-          if ($("#tool-option").length != 0) {
-            $("#tool-option").remove();
-          }
-
-          if ($("#dialog-box").length != 0) {
-            $("#dialog-box").remove();
-          }
-
-          if ($("#edit-mode").length != 0) {
-            $("#edit-mode").remove();
-          }
-
-          if ($("#read-mode").length != 0) {
-            $("#read-mode").remove();
-          }
-
-          if ($("#highlight-mode").length != 0) {
-            $("#highlight-mode").remove();
-          }
-
-          if ($("#tts-mode").length != 0) {
-            $("#tts-mode").remove();
-          }
-
-          if ($("#save-mode").length != 0) {
-            $("#save-mode").remove();
-          }
-
-          if ($("#help-mode").length != 0) {
-            $("#help-mode").remove();
-          }
-        };
         removeExtensionElements();
       }
     });
+
+    var removeExtensionElements = function() {
+      console.log("Remove all extension elements.");
+      //remove the tool options if available
+      if ($("#tool-option").length != 0) {
+        $("#tool-option").remove();
+      }
+
+      if ($("#dialog-box").length != 0) {
+        $("#dialog-box").remove();
+      }
+
+      if ($("#edit-mode").length != 0) {
+        $("#edit-mode").remove();
+      }
+
+      if ($("#read-mode").length != 0) {
+        $("#read-mode").remove();
+      }
+
+      if ($("#highlight-mode").length != 0) {
+        $("#highlight-mode").remove();
+      }
+
+      if ($("#tts-mode").length != 0) {
+        $("#tts-mode").remove();
+      }
+
+      if ($("#save-mode").length != 0) {
+        $("#save-mode").remove();
+      }
+
+      if ($("#help-mode").length != 0) {
+        $("#help-mode").remove();
+      }
+    };
 })();
