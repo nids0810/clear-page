@@ -19,13 +19,15 @@ chrome.browserAction.onClicked.addListener(function (tab) {
       file: "third-party/ga.js"
     }, {
       file: "third-party/readability.js"
-    },{
+    }, {
       file: "js/content.js"
-    }]);    
+    }]);
     chrome.browserAction.setIcon({
-      path: "icons/icon_on_16.png",
-      tabId: tab.id
-    });
+        path: "icons/icon_on_16.png",
+        tabId: tab.id
+      },
+      extensionCallback
+    );
     /* chrome.browserAction.setBadgeText({
       text: "on"
     }, function () {
@@ -51,9 +53,11 @@ chrome.browserAction.onClicked.addListener(function (tab) {
       );
       _activeTabs = [];
       chrome.browserAction.setIcon({
-        path: "icons/icon_16.png",
-        tabId: items.id
-      });
+          path: "icons/icon_16.png",
+          tabId: items.id
+        },
+        extensionCallback
+      );
     });
     /* chrome.browserAction.setBadgeText({
       text: ""
@@ -75,6 +79,12 @@ function executeScripts(tabId, injectDetailsArray) {
 
   var callback = null;
 
+  /* if (chrome.runtime.lastError) {
+    console.log(chrome.runtime.lastError.message);
+  } else {
+    // Tab exists
+  } */
+
   for (var i = injectDetailsArray.length - 1; i >= 0; --i)
     callback = createCallback(tabId, injectDetailsArray[i], callback);
 
@@ -87,17 +97,6 @@ chrome.runtime.onInstalled.addListener(function () {
   ga("send", "event", "Extension", "Installed", "", "10");
   _extensionActive = false;
 
-  //window.open(chrome.runtime.getURL("html/welcome.html"));
-  var _settings = JSON.parse(localStorage.getItem("clear-page-settings"));
-  if (_settings === null || _settings === {}) {
-    console.log("local settings not available. Importing from external source.");
-    $.getJSON(chrome.runtime.getURL("json/settings.json"), function (data) {
-      localStorage.setItem("clear-page-settings", JSON.stringify(data));
-    });
-  } else {
-    console.log("local settings available. Importing from local source.");
-  }
-
   var _savedlinks = JSON.parse(localStorage.getItem("clear-page-saved-links"));
 
   if (_savedlinks === null || _savedlinks === "") {
@@ -107,7 +106,11 @@ chrome.runtime.onInstalled.addListener(function () {
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
+  console.log(
+    sender.tab ?
+    "from a content script:" + sender.tab.url :
+    "from the extension"
+  );
   //Test message
   if (request.grettings == "hello") {
     sendResponse({
@@ -115,8 +118,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     });
   }
 
-  if (request.message == "extension active?") {
-    console.log("context script - answer: " + _extensionActive);
+  if (request.message == "Extension Active?") {
+    console.log("Extension Active? " + _extensionActive);
     if (_extensionActive) {
       chrome.browserAction.setIcon({
         path: "icons/icon_on_16.png",
@@ -136,65 +139,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     });
   }
 
-  //send settings object
-  if (request.message == "send settings") {
-    var _settings = JSON.parse(localStorage.getItem("clear-page-settings"));
-    if (_settings !== null || _settings !== {}) {
-      sendResponse({
-        message: "setting sent",
-        data: _settings
-      });
-    } else {
-      loadSettingsObject();
-      var _settings = JSON.parse(
-        localStorage.getItem("clear-page-settings")
-      );
-      sendResponse({
-        message: "setting sent",
-        data: _settings
-      });
-    }
-  }
-
-  //update settings object
-  if (request.message == "update settings") {
-    if (request.data === null || request.data === "" || request.data === {}) {
-      localStorage.setItem(
-        "clear-page-settings",
-        JSON.stringify(request.data)
-      );
-      sendResponse({
-        message: "settings updated."
-      });
-    } else {
-      sendResponse({
-        message: "settings invalid."
-      });
-    }
-  }
-
-  //open settings
-  if (request.message == "open settings") {
-    if (chrome.runtime.openOptionsPage) {
-      chrome.runtime.openOptionsPage();
-    } else {
-      window.open(chrome.runtime.getURL("html/options.html"));
-    }
-    sendResponse({
-      message: "settings opened"
-    });
-  }
-
-  //settings unavailable
-  if (request.message == "settings unavailable") {
-    loadSettingsObject();
-    var _settings = JSON.parse(localStorage.getItem("clear-page-settings"));
-    sendResponse({
-      message: "settings reloaded",
-      data: _settings
-    });
-  }
-
+  //Add a new link
   if (request.message == "save link") {
     if (!($.isEmptyObject(sender.tab))) {
       var _savedLink = {};
@@ -223,12 +168,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
   }
 
+  //Delete a saved link
   if (request.message == "delete link") {
     //_savedlinks = JSON.parse(request.data);
     _savedlinks = request.data;
     if (Array.isArray(_savedlinks)) {
       console.log("List updated." + JSON.stringify(_savedlinks));
-      localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
+      localStorage.setItem(
+        "clear-page-saved-links",
+        JSON.stringify(_savedlinks)
+      );
       sendResponse({
         message: "Success"
       });
@@ -239,8 +188,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
   }
 
+  //Send the saved links
   if (request.message == "send links") {
-    var _savedlinks = JSON.parse(localStorage.getItem("clear-page-saved-links"));
+    var _savedlinks = JSON.parse(
+      localStorage.getItem("clear-page-saved-links")
+    );
     if (_savedlinks === null || _savedlinks === "" || _savedlinks === []) {
       console.log("links sent");
       sendResponse({
@@ -256,8 +208,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
   }
 
+  //Open Saved links page
   if (request.message == "open links page") {
-    var _savedlinks = JSON.parse(localStorage.getItem("clear-page-saved-links"));
+    var _savedlinks = JSON.parse(
+      localStorage.getItem("clear-page-saved-links")
+    );
     if (_savedlinks.length !== 0) {
       window.open(chrome.runtime.getURL("html/savedlinks.html"));
       sendResponse({
@@ -270,18 +225,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       });
     }
   }
-
 });
-
-function loadSettingsObject() {
-  console.log("load settings again");
-}
 
 //function when chrome is uninstalled
 /* chrome.runtime.setUninstallURL(_exitURL, function () {
   console.log("extention uninstalled.");
   _extensionActive = false;
-  localStorage.removeItem("clear-page-settings");
   localStorage.removeItem("clear-page-saved-links");
   ga('send', 'event', 'Extension', 'Uninstalled', '', '');
 }); */
@@ -313,5 +262,13 @@ function pushUniqueLinks(newLink) {
   } else {
     console.warn("List not updated. " + _savedlinks);
     return false;
+  }
+}
+
+function extensionCallback() {
+  if (chrome.runtime.lastError) {
+    console.log(chrome.runtime.lastError.message);
+  } else {
+    // Tab exists
   }
 }

@@ -2,335 +2,338 @@
 
 (function () {
 
-    chrome.runtime.sendMessage({
-        message: "extension active?"
-      },
-      function (response) {
-        if (response.message) {
-          //Create Tool Option
-          var createToolOptions = function () {
-            //tool options
-            if ($("#tool-option").length != 0) {
-              $("#tool-option").remove();
-            }
-            $("body").append("<div id='tool-option'></div>");
-            $("#tool-option").css({
-              backgroundColor: "#F9CA0C",
+  chrome.runtime.sendMessage({
+      message: "Extension Active?"
+    },
+    function (response) {
+      if (response.message) {
+        console.log("Extension Active? " + response.message);
+        //Create Tool Option
+        var createToolOptions = function () {
+          //tool options
+          if ($("#tool-option").length != 0) {
+            $("#tool-option").remove();
+          }
+
+          $("body").append("<div id='tool-option'></div>");
+          $("#tool-option").css({
+            backgroundColor: "#F9CA0C",
+            position: "fixed",
+            top: "30%",
+            right: "6px",
+            padding: "15px 15px 0 15px",
+            borderRadius: "5px 0px 0px 5px",
+            zIndex: "300"
+          });
+
+          //Edit Mode Button
+          $("#tool-option").append(
+            "<img id='edit-btn' title='Edit Mode' src='" +
+            chrome.runtime.getURL("images/edit.png") +
+            "'/>"
+          );
+          $("#edit-btn").click(editMode);
+
+          //Read Mode Button
+          $("#tool-option").append(
+            "<img id='read-btn' title='Read Mode' src='" +
+            chrome.runtime.getURL("images/book.png") +
+            "'/>"
+          );
+          $("#read-btn").click(readMode);
+
+          //Highlight Mode Button
+          $("#tool-option").append(
+            "<img id='highlight-btn' title='Highlight Mode' src='" +
+            chrome.runtime.getURL("images/highlight.png") +
+            "'/>"
+          );
+          $("#highlight-btn").click(highlightMode);
+
+          //Text to Speak Mode Button
+          $("#tool-option").append(
+            "<img id='tts-btn' title='Test to Speech Mode' src='" +
+            chrome.runtime.getURL("images/speak.png") +
+            "'/>"
+          );
+          $("#tts-btn").click(ttsMode);
+
+          //Save page for later Button
+          $("#tool-option").append(
+            "<img id='save-btn' title='Save page for Later' src='" +
+            chrome.runtime.getURL("images/save.png") +
+            "'/>"
+          );
+          $("#save-btn").click(saveLinks);
+
+          //Open saved links Button
+          $("#tool-option").append(
+            "<img id='open-btn' title='Open Saved Links' src='" +
+            chrome.runtime.getURL("images/open.png") +
+            "'/>"
+          );
+          $("#open-btn").click(openLinks);
+
+          //Save as PDF Button
+          $("#tool-option").append(
+            "<img id='pdf-btn' title='Save as PDF' src='" +
+            chrome.runtime.getURL("images/pdf.png") +
+            "'/>"
+          );
+          $("#pdf-btn").click(saveAsPDF);
+
+          //Help Button
+          $("#tool-option").append(
+            "<img id='help-btn' title='Help Mode' src='" +
+            chrome.runtime.getURL("images/help.png") +
+            "'/>"
+          );
+          $("#help-btn").click(openHelp);
+
+          $(
+            "#edit-btn, #read-btn, #highlight-btn, #tts-btn, #save-btn, #open-btn, #pdf-btn, #help-btn"
+          ).css({
+            width: "30px",
+            height: "30px",
+            display: "block",
+            cursor: "pointer",
+            marginBottom: "15px"
+          });
+        };
+
+        //Edit Mode Button Function
+        var editMode = function () {
+          console.log("Edit mode is on");
+          ga("send", "event", "Edit Mode", "Clicked", "Main Button", "");
+          var editMode = true;
+          $("#tool-option").hide();
+
+          if ($("#edit-mode").length == 0) {
+            //edit-mode doesn't exist
+            $("body").append("<div id='edit-mode'></div>");
+            $("#edit-mode").text("Edit Mode On!");
+            $("#edit-mode").css({
               position: "fixed",
-              top: "30%",
-              right: "6px",
-              padding: "15px 15px 0 15px",
-              borderRadius: "5px 0px 0px 5px",
-              zIndex:"300"
+              top: "11%",
+              left: "44.5%",
+              backgroundColor: "#333",
+              color: "#fff",
+              padding: "10px",
+              opacity: "1.0"
             });
+          } else {
+            //edit-mode exist
+            $("#edit-mode").text("Edit Mode On!");
+            $("#edit-mode").css({
+              opacity: "1.0"
+            });
+          }
 
-            //Edit Button
-            $("#tool-option").append(
-              "<img id='edit-btn' title='Edit Mode' src='" +
-              chrome.runtime.getURL("images/edit.png") +
-              "'/>"
+          if ($("#dialog-box").length == 0) {
+            //dialog-box doesn't exist
+            $("body").append(
+              "<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>"
             );
-            $("#edit-btn").click(editPage);
-
-            //Read Button
-            $("#tool-option").append(
-              "<img id='read-btn' title='Read Mode' src='" +
-              chrome.runtime.getURL("images/book.png") +
-              "'/>"
-            );
-            $("#read-btn").click(readPage);
-
-            //Highlight Button
-            $("#tool-option").append(
-              "<img id='highlight-btn' title='Highlight Mode' src='" +
-              chrome.runtime.getURL("images/highlight.png") +
-              "'/>"
-            );
-            $("#highlight-btn").click(highlightText);
-
-            //Speak Button
-            $("#tool-option").append(
-              "<img id='speak-btn' title='Speak Mode' src='" +
-              chrome.runtime.getURL("images/speak.png") +
-              "'/>"
-            );
-            $("#speak-btn").click(speakText);
-
-            //Save for later Button
-            $("#tool-option").append(
-              "<img id='save-btn' title='Save page for Later' src='" +
-              chrome.runtime.getURL("images/save.png") +
-              "'/>"
-            );
-            $("#save-btn").click(saveLinks);
-
-            //Open saved links Button
-            $("#tool-option").append(
-              "<img id='open-btn' title='Open Saved Links' src='" +
-              chrome.runtime.getURL("images/open.png") +
-              "'/>"
-            );
-            $("#open-btn").click(openLinks);
-
-            //Save as PDF Button
-            $("#tool-option").append(
-              "<img id='pdf-btn' title='Save as PDF' src='" +
-              chrome.runtime.getURL("images/pdf.png") +
-              "'/>"
-            );
-            $("#pdf-btn").click(saveAsPDF);
-
-            //Settings Button
-            $("#tool-option").append(
-              "<img id='option-btn' title='Settings' src='" +
-              chrome.runtime.getURL("images/option.png") +
-              "'/>"
-            );
-            $("#option-btn").click(openSettings);
-
-            //Help Button
-            $("#tool-option").append(
-              "<img id='help-btn' title='Help Mode' src='" +
-              chrome.runtime.getURL("images/help.png") +
-              "'/>"
-            );
-            $("#help-btn").click(openHelp);
-
-            $(
-              "#edit-btn, #read-btn, #highlight-btn, #speak-btn, #save-btn, #open-btn, #pdf-btn, #option-btn, #help-btn"
-            ).css({
-              width: "30px",
-              height: "30px",
-              display: "block",
+            $("#dialog-box").css({
+              position: "fixed",
+              top: "11%",
+              right: "4%",
+              zIndex: "300"
+            });
+            $("#apply-btn").css({
+              border: "0",
+              background: "#4CA1B6",
+              color: "#fff",
+              padding: "9px",
               cursor: "pointer",
-              marginBottom: "15px"
+              fontSize: "17px",
+              borderRadius: "5px"
             });
-          };
+            $("#cancel-btn").css({
+              border: "0",
+              background: "#CE5061",
+              color: "#fff",
+              padding: "9px",
+              cursor: "pointer",
+              fontSize: "17px",
+              borderRadius: "5px",
+              marginLeft: "10px"
+            });
+          } else {
+            $("#dialog-box").show();
+          }
 
-          //Edit Page Button Function
-          var editPage = function () {
-            console.log("Edit mode is on");
-            ga("send", "event", "Edit Mode", "Clicked", "Main Button", "");
-            var editMode = true;
-            $("#tool-option").hide();
+          //Add new class "web-edited", "web-deleted", "link-disabled" and push in the css
+          $("<style>")
+            .prop("type", "text/css")
+            .html(
+              "\
+              .web-edited {\
+                  opacity: 0.4;\
+                  filter: alpha(opacity=50);\
+              }\
+              .web-deleted {\
+                  opacity: 0.0;\
+                  filter: alpha(opacity=0);\
+              }\
+              .link-disabled {\
+                  pointer-events: none;\
+                  cursor: default;\
+              }"
+            )
+            .appendTo("head");
 
-            if ($("#edit-mode").length == 0) {
-              //edit-mode doesn't exist
-              $("body").append("<div id='edit-mode'></div>");
-              $("#edit-mode").text("Edit Mode On!");
-              $("#edit-mode").css({
+          // transform all links as unclickable
+          $("a").each(function () {
+            //$(this).preventDefault();
+            $(this).addClass("link-disabled");
+          });
+
+          // Click an element in edit mode
+          $(document).click(function (event) {
+            if (editMode) {
+              if (
+                event.target.id === "tool-option" ||
+                event.target.id === "edit-btn" ||
+                event.target.id === "highlight-btn" ||
+                event.target.id === "tts-btn" ||
+                event.target.id === "save-btn" ||
+                event.target.id === "pdf-btn" ||
+                event.target.id === "dialog-box" ||
+                event.target.id === "speech-voices" ||
+                event.target.id === "edit-mode" ||
+                event.target.id === "read-mode" ||
+                event.target.id === "highlight-mode" ||
+                event.target.id === "tts-mode" ||
+                event.target.id === "save-mode" ||
+                event.target.id === "help-mode"
+              ) {
+                //Don't select hidden elements
+              } else if (event.target.tagName === "BODY") {
+                //Can't delete body
+              } else if (event.target.id === "apply-btn") {
+                //apply button clicked
+                console.log(
+                  "Apply edits on all selected elements"
+                );
+                ga(
+                  "send",
+                  "event",
+                  "Edit Mode",
+                  "Clicked",
+                  "Apply Changes",
+                  ""
+                );
+                $(".web-edited").each(function() {
+                  $(this)
+                    .removeClass("web-edited")
+                    .addClass("web-deleted");
+                });
+                $("a").each(function() {
+                  $(this).removeClass("link-disabled");
+                });
+                $("#edit-mode").text("Changes are applied!");
+                $("#edit-mode").animate(
+                  {
+                    opacity: "0.0"
+                  },
+                  "slow"
+                );
+                $("#dialog-box").hide();
+                $("#tool-option").show();
+                editMode = false;
+              } else if (event.target.id === "cancel-btn") {
+                //cancel button clicked
+                console.log(
+                  "Cancel edits from all selected elements"
+                );
+                ga(
+                  "send",
+                  "event",
+                  "Edit Mode",
+                  "Clicked",
+                  "Cancel Changes",
+                  ""
+                );
+                $(".web-edited").each(function() {
+                  $(this).removeClass("web-edited");
+                });
+                $("a").each(function() {
+                  $(this).removeClass("link-disabled");
+                });
+                $("#edit-mode").text("Changes are cancelled!");
+                $("#edit-mode").animate(
+                  {
+                    opacity: "0.0"
+                  },
+                  "slow"
+                );
+                $("#dialog-box").remove();
+                $("#tool-option").show();
+                editMode = false;
+              } else if ($(event.target).hasClass("web-edited")) {
+                //Unselect already selected elements
+                $(event.target).removeClass("web-edited");
+              } else {
+                //Select any other elements
+                $(event.target).addClass("web-edited");
+              }
+            }
+          });
+        };
+
+        var readingMode = true;
+        //Read Mode Button Function
+        var readMode = function () {
+
+          console.log('Reading Mode On');
+
+          if (readingMode) {
+
+            var loc = document.location;
+            var uri = {
+              spec: loc.href,
+              host: loc.host,
+              prePath: loc.protocol + "//" + loc.host,
+              scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
+              pathBase: loc.protocol +
+                "//" +
+                loc.host +
+                loc.pathname.substr(
+                  0,
+                  loc.pathname.lastIndexOf("/") + 1
+                )
+            };
+
+            //console.log(uri);
+            var article = new Readability(uri, document).parse();
+
+            // Remove everything.
+            document.body.outerHTML = "";
+            // Remove alll or most stylesheets.
+            document.head.outerHTML = "";
+
+            if ($("#read-mode").length == 0) {
+              //read-mode doesn't exist
+              $("body").append("<div id='read-mode'></div>");
+              $("#read-mode").text("Reading Mode On");
+              $("#read-mode").css({
                 position: "fixed",
-                top: "11%",
+                top: "6%",
                 left: "44.5%",
                 backgroundColor: "#333",
                 color: "#fff",
                 padding: "10px",
-                opacity: "1.0"
+                opacity: "1.0",
+                zIndex: "20"
               });
             } else {
-              //edit-mode exist
-              $("#edit-mode").text("Edit Mode On!");
-              $("#edit-mode").css({
+              //read-mode exist
+              $("#read-mode").text("Reading Mode On");
+              $("#read-mode").css({
                 opacity: "1.0"
               });
             }
-
-            if ($("#dialog-box").length == 0) {
-              //dialog-box doesn't exist
-              $("body").append(
-                "<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>"
-              );
-              $("#dialog-box").css({
-                position: "fixed",
-                top: "11%",
-                right: "4%",
-                zIndex: "300"
-              });
-              $("#apply-btn").css({
-                border: "0",
-                background: "#4CA1B6",
-                color: "#fff",
-                padding: "9px",
-                cursor: "pointer",
-                fontSize: "17px",
-                borderRadius: "5px"
-              });
-              $("#cancel-btn").css({
-                border: "0",
-                background: "#CE5061",
-                color: "#fff",
-                padding: "9px",
-                cursor: "pointer",
-                fontSize: "17px",
-                borderRadius: "5px",
-                marginLeft: "10px"
-              });
-            } else {
-              $("#dialog-box").show();
-            }
-
-            //Add new class "web-edited", "web-deleted", "link-disabled" and push in the css
-            $("<style>")
-              .prop("type", "text/css")
-              .html(
-                "\
-          .web-edited {\
-              opacity: 0.4;\
-              filter: alpha(opacity=50);\
-          }\
-          .web-deleted {\
-              opacity: 0.0;\
-              filter: alpha(opacity=0);\
-          }\
-          .link-disabled {\
-              pointer-events: none;\
-              cursor: default;\
-          }"
-              )
-              .appendTo("head");
-
-            // transform all links as unclickable
-            $("a").each(function () {
-              //$(this).preventDefault();
-              $(this).addClass("link-disabled");
-            });
-
-            // Click an element in edit mode
-            $(document).click(function (event) {
-              if (editMode) {
-                if (
-                  event.target.id === "tool-option" ||
-                  event.target.id === "edit-btn" ||
-                  event.target.id === "highlight-btn" ||
-                  event.target.id === "speak-btn" ||
-                  event.target.id === "save-btn" ||
-                  event.target.id === "pdf-btn" ||
-                  event.target.id === "option-btn" ||
-                  event.target.id === "edit-mode" ||
-                  event.target.id === "highlight-mode" ||
-                  event.target.id === "help-mode" ||
-                  event.target.id === "dialog-box"
-                ) {
-                  //Don't select hidden elements
-                } else if (event.target.tagName === "BODY") {
-                  //Can't delete body
-                } else if (event.target.id === "apply-btn") {
-                  //apply button clicked
-                  console.log("Apply edits on all selected elements");
-                  ga(
-                    "send",
-                    "event",
-                    "Edit Mode",
-                    "Clicked",
-                    "Apply Changes",
-                    ""
-                  );
-                  $(".web-edited").each(function () {
-                    $(this)
-                      .removeClass("web-edited")
-                      .addClass("web-deleted");
-                  });
-                  $("a").each(function () {
-                    $(this).removeClass("link-disabled");
-                  });
-                  $("#edit-mode").text("Changes are applied!");
-                  $("#edit-mode").animate({
-                      opacity: "0.0"
-                    },
-                    "slow"
-                  );
-                  $("#dialog-box").hide();
-                  $("#tool-option").show();
-                  editMode = false;
-                } else if (event.target.id === "cancel-btn") {
-                  //cancel button clicked
-                  console.log("Cancel edits from all selected elements");
-                  ga(
-                    "send",
-                    "event",
-                    "Edit Mode",
-                    "Clicked",
-                    "Cancel Changes",
-                    ""
-                  );
-                  $(".web-edited").each(function () {
-                    $(this).removeClass("web-edited");
-                  });
-                  $("a").each(function () {
-                    $(this).removeClass("link-disabled");
-                  });
-                  $("#edit-mode").text("Changes are cancelled!");
-                  $("#edit-mode").animate({
-                      opacity: "0.0"
-                    },
-                    "slow"
-                  );
-                  $("#dialog-box").remove();
-                  $("#tool-option").show();
-                  editMode = false;
-                } else if ($(event.target).hasClass("web-edited")) {
-                  //Unselect already selected elements
-                  $(event.target).removeClass("web-edited");
-                } else {
-                  //Select any other elements
-                  $(event.target).addClass("web-edited");
-                }
-              }
-            });
-          };
-
-          var readingMode = true;
-          //Read Page Button Function
-          var readPage = function () {
-
-            console.log('Reading Mode On');
-            
-            if(readingMode) {
-
-              var loc = document.location;
-              var uri = {
-                spec: loc.href,
-                host: loc.host,
-                prePath: loc.protocol + "//" + loc.host,
-                scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
-                pathBase: loc.protocol +
-                  "//" +
-                  loc.host +
-                  loc.pathname.substr(
-                    0,
-                    loc.pathname.lastIndexOf("/") + 1
-                  )
-              };
-
-              //console.log(uri);
-              var article = new Readability(uri, document).parse();
-
-              // Remove everything.
-              document.body.outerHTML = "";
-              // Remove alll or most stylesheets.
-              document.head.outerHTML = "";
-
-              if ($("#read-mode").length == 0) {
-                //read-mode doesn't exist
-                $("body").append("<div id='read-mode'></div>");
-                $("#read-mode").text("Reading Mode On");
-                $("#read-mode").css({
-                  position: "fixed",
-                  top: "6%",
-                  left: "44.5%",
-                  backgroundColor: "#333",
-                  color: "#fff",
-                  padding: "10px",
-                  opacity: "1.0",
-                  zIndex: "20"
-                });
-              } else {
-                //read-mode exist
-                $("#read-mode").text("Reading Mode On");
-                $("#read-mode").css({
-                  opacity: "1.0"
-                });
-              }
 
             //create a element to display article
             $("body").append("<div id='read-text'></div>");
@@ -343,7 +346,7 @@
               padding: "10px 60px 10px 10px",
               border: "1px solid",
               boxShadow: "5px 10px 8px #888888"
-            });         
+            });
 
             if (article === null) {
               $("#read-text").text("<h1 id='read-text-error'>Sorry! Couldn't make this page readable</h1>");
@@ -363,8 +366,7 @@
             createToolOptions();
           } else {
             $("#read-mode").text("Reading Mode Off");
-            $("#read-mode").animate(
-              {
+            $("#read-mode").animate({
                 opacity: "0.0"
               },
               "slow"
@@ -376,7 +378,7 @@
         };
 
         //Highlight Button Function
-        var highlightText = function () {
+        var highlightMode = function () {
           console.log("Highlight mode is on");
           ga("send", "event", "Highlight Mode", "Clicked", "Main Button", "");
           var highlightMode = true;
@@ -438,20 +440,21 @@
             $("#dialog-box").show();
           }
 
-          $("<style>")
+          //Add style for highlight
+          /* $("<style>")
             .prop("type", "text/css")
             .html(
               "\
-          ::-moz-selection {\
-              color: red;\
-              background: yellow;\
-          }\
-          ::selection {\
-              color: red;\
-              background: yellow;\
-          }"
+              ::-moz-selection {\
+                  color: red;\
+                  background: yellow;\
+              }\
+              ::selection {\
+                  color: red;\
+                  background: yellow;\
+              }"
             )
-            .appendTo("head");
+            .appendTo("head"); */
 
           $(document).click(function (event) {
             if (highlightMode) {
@@ -500,25 +503,20 @@
           });
         };
 
-        //Speak Text Button Function
-        var speakText = function () {
-          console.log("Speak mode is on");
+        //Text to Speech Mode Button Function
+        var ttsMode = function () {
+          console.log("Text to Speech mode is on");
           ga("send", "event", "Speak Mode", "Clicked", "Main Button", "");
 
-          // check if speech synthesis is supported
-          if (!("speechSynthesis" in window)) {
-            console.warn("browser don't support.");
-            return;
-          }
-
-          var speakMode = true;
+          var ttsMode = true;
+          var selectedVoice = {};
           $("#tool-option").hide();
 
-          if ($("#speak-mode").length == 0) {
-            //speak-mode doesn't exist
-            $("body").append("<div id='speak-mode'></div>");
-            $("#speak-mode").text("Select text to speak.");
-            $("#speak-mode").css({
+          if ($("#tts-mode").length == 0) {
+            //tts-mode doesn't exist
+            $("body").append("<div id='tts-mode'></div>");
+            $("#tts-mode").text("Select text to speech.");
+            $("#tts-mode").css({
               position: "fixed",
               top: "11%",
               left: "44.5%",
@@ -528,9 +526,9 @@
               opacity: "1.0"
             });
           } else {
-            //speak-mode exist
-            $("#speak-mode").text("Select text to speak.");
-            $("#speak-mode").css({
+            //tts-mode exist
+            $("#tts-mode").text("Select text to speech.");
+            $("#tts-mode").css({
               opacity: "1.0"
             });
           }
@@ -594,49 +592,35 @@
             $("#dialog-box").show();
           }
 
-          var selectedVoice = {};
-
-          if (
-            typeof window.speechSynthesis !== "undefined" &&
-            window.speechSynthesis.onvoiceschanged !== undefined
-          ) {
-            window.speechSynthesis.onvoiceschanged = loadVoiceList();
-          }
+          // check if speech synthesis is supported
+          if (!("speechSynthesis" in window)) {
+            console.warn("browser don't support.");
+            $("#tts-mode").text("browser don't support Text to Speech");
+          } else {
+            loadVoiceList();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+              speechSynthesis.onvoiceschanged = loadVoiceList;
+            }
+          }     
 
           function loadVoiceList() {
-            var voices = window.speechSynthesis.getVoices();
+            var voices = speechSynthesis.getVoices();
             if ($("#speech-voices option").length == 0) {
               var language =
                 window.navigator.userLanguage || window.navigator.language; //en-US
-              $.each(voices, function () {
-                if (this.lang === language) {
-                  selectedVoice = this;
-                  $("#speech-voices").append(
-                    $("<option>")
-                    .attr({
-                      dataLang: this.lang,
-                      "data-name": this.name,
-                      value: this.name
-                    })
-                    .text(this.name + "--DEFAULT")
-                  );
-                  $("#speech-voices").val(this.name);
-                  console.log(
-                    "Default voice: " +
-                    this.name +
-                    " , language: " +
-                    this.lang
-                  );
+              voices.forEach(function(voice, index) {
+                if (voice.lang === language) {
+                  selectedVoice = voice;
+                  var option = $("<option>")
+                    .val(index)
+                    .html(voice.name + "--DEFAULT")
+                    .prop("selected", true);
+                  $("#speech-voices").append(option);
                 } else {
-                  $("#speech-voices").append(
-                    $("<option>")
-                    .attr({
-                      dataLang: this.lang,
-                      "data-name": this.name,
-                      value: this.name
-                    })
-                    .text(this.name)
-                  );
+                  var option = $("<option>")
+                    .val(index)
+                    .html(voice.name);
+                  $("#speech-voices").append(option);
                 }
               });
 
@@ -646,16 +630,26 @@
                 $("#speech-voices").show();
               }
 
-              $("#speech-voices").on("change", function () {
-                var newVal = this.value;
-                selectedVoice = voices.find(voice => voice.name === newVal);
-                console.log(
-                  "New voice: " +
-                  selectedVoice.name +
-                  " , language: " +
-                  selectedVoice.lang
-                );
+              $("#speech-voices").on("change", function() {
+                var voiceIndex = this.value;
+                if (voices.length !== 0) {
+                  selectedVoice = voices[voiceIndex];
+                  console.log(
+                    "New voice: " +
+                      selectedVoice.name +
+                      " , language: " +
+                      selectedVoice.lang
+                  );
+                }             
               });
+
+              if (
+                voices.length > 0 &&
+                speechSynthesis.onvoiceschanged !== undefined
+              ) {
+                // unregister event listener (it is fired multiple times)
+                speechSynthesis.onvoiceschanged = null;
+              }
             }
           }
 
@@ -666,7 +660,7 @@
           window.speechSynthesis.cancel();
 
           $(document).click(function (event) {
-            if (speakMode) {
+            if (ttsMode) {
               if (
                 event.target.id === "apply-btn" &&
                 event.target.innerText === "Speak"
@@ -684,23 +678,31 @@
                     speaker = new SpeechSynthesisUtterance(this.trim());
                     if (!$.isEmptyObject(selectedVoice)) {
                       speaker.voice = selectedVoice;
+                      console.log(
+                        "Current voice: " +
+                          selectedVoice.name
+                      );
                     }
                     window.speechSynthesis.speak(speaker);
 
                     speaker.onstart = function () {
-                      $("#speak-mode").text("Speaking ...");
+                      $("#tts-mode").text(
+                        "Speaking in " +
+                          speaker.voice.name +
+                          " ..."
+                      );
                       $("#apply-btn").html("Pause");
                       console.log("Speech started.");
                     };
 
                     speaker.onerror = function (event) {
-                      $("#speak-mode").text("Error! Try again");
+                      $("#tts-mode").text("Error! Try again");
                       $("#apply-btn").html("Speak");
                       console.log("Error occured " + event.message);
                     };
 
                     speaker.onend = function (event) {
-                      $("#speak-mode").text("Select text to speak.");
+                      $("#tts-mode").text("Select Text to Speech.");
                       $("#apply-btn").html("Speak");
                       console.log(
                         "Speach finished in " +
@@ -727,7 +729,7 @@
                     };
                   });
                 } else {
-                  $("#speak-mode").text("No text available. Select Text.");
+                  $("#tts-mode").text("No text available. Select Text.");
                   console.log("No text available");
                 }
               } else if (
@@ -736,7 +738,7 @@
               ) {
                 console.log("Speech paused");
                 window.speechSynthesis.pause();
-                $("#speak-mode").text("Paused!");
+                $("#tts-mode").text("Speech Paused");
                 $("#apply-btn").html("Resume");
               } else if (
                 event.target.id === "apply-btn" &&
@@ -744,26 +746,27 @@
               ) {
                 console.log("Speech resumed");
                 window.speechSynthesis.resume();
-                $("#speak-mode").text("Speaking ...");
+                $("#tts-mode").text(
+                  "Speaking in " + speaker.voice.name + " ..."
+                );
                 $("#apply-btn").html("Pause");
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
-                console.log("Cancel speak mode");
-                $("#speak-mode").text("Speak mode off!");
-                $("#speak-mode").animate({
+                console.log("Cancel Text to Speech mode");
+                $("#tts-mode").text("Text to Speech mode off!");
+                $("#tts-mode").animate({
                     opacity: "0.0"
                   },
                   "slow"
                 );
                 $("#apply-btn").html("Apply Changes");
-                //$("#speech-voices").remove();
                 $("#dialog-box").remove();
                 $("#tool-option").show();
                 window.speechSynthesis.cancel();
                 text2Speech = "";
                 textArray = [];
-                var selectedVoice = {};
-                speakMode = false;
+                selectedVoice = {};
+                ttsMode = false;
               } else {
                 text2Speech = window.getSelection().toString();
                 textArray = chuckText(text2Speech);
@@ -885,29 +888,29 @@
           window.print();
         };
 
-        //Help Button Function
+        //Help Mode Button Function
         var openHelp = function () {
           var helpMode = true;
-          console.log("Help mode is on");
+          console.log("Help mode on");
           ga("send", "event", "Help Mode", "Clicked", "Main Button", "");
           if ($("#help-mode").length == 0) {
             $("body").append("<div id='help-mode'></div>");
-            $("#help-mode").append(
+            var helpHtml = (
               "<div id='cross-btn'>X</div>\
-            <h1>Help Doc</h1>\
-            <ul>\
-              <li><b>Edit Mode: </b><p>Under edit mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
-              <li><b>read Page: </b><p>Under edit mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
-              <li><b>Highlight Text:</b><p><br></p></li>\
-              <li><b>Speak Mode:</b><p><br></p></li>\
-              <li><b>Save for Later:</b><p><br></p></li>\
-              <li><b>Open Saved Links:</b><p><br></p></li>\
-              <li><b>Save as PDF:</b><p><br></p></li>\
-              <li><b>Settings:</b><p><br></p></li>\
-            </ul>\
-            <div id='help-triangle'></div>\
-            "
+          <h1>Help Doc</h1>\
+          <ul>\
+            <li><b>Edit Mode: </b><p>Under Edit mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
+            <li><b>Read Mode: </b><p>Under Read mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
+            <li><b>Highlight Mode:</b><p><br></p></li>\
+            <li><b>Text to Speak Mode:</b><p><br></p></li>\
+            <li><b>Save Page for Later:</b><p><br></p></li>\
+            <li><b>Open Saved Links:</b><p><br></p></li>\
+            <li><b>Save as PDF:</b><p><br></p></li>\
+          </ul>\
+          <div id='help-triangle'></div>\
+          "
             );
+            $("#help-mode").append($.parseHTML(helpHtml));
             $("#help-mode").css({
               position: "fixed",
               top: "30%",
@@ -916,7 +919,7 @@
               padding: "10px",
               width: "48%",
               right: "5.5%",
-              overflow: auto,
+              overflow: "auto",
               zIndex: "300"
             });
             $("#help-triangle").css({
@@ -958,67 +961,23 @@
                 zIndex: "-20"
               });
               helpMode = false;
+              console.log("Help mode off");
             }
           });
         };
 
-        var openSettings = function () {
-          console.log("Setting mode is on");
-          ga("send", "event", "Settings", "Clicked", "Main Button", "");
-
-          chrome.runtime.sendMessage({
-              message: "open settings"
-            },
-            function (response) {
-              console.log(response.message);
-            }
-          );
-        };
-
-        var removeExtensionElements = function() {
-          console.log("Remove all extension elements.");
-          //remove the tool options if available
-          if ($("#tool-option").length != 0) {
-            $("#tool-option").remove();
-          }
-
-          if ($("#edit-mode").length != 0) {
-            $("#edit-mode").remove();
-          }
-
-          if ($("#read-mode").length != 0) {
-            $("#read-mode").remove();
-          }
-
-          if ($("#highlight-mode").length != 0) {
-            $("#highlight-mode").remove();
-          }
-
-          if ($("#speak-mode").length != 0) {
-            $("#speak-mode").remove();
-          }
-
-          if ($("#dialog-box").length != 0) {
-            $("#dialog-box").remove();
-          }
-
-          if ($("#save-mode").length != 0) {
-            $("#save-mode").remove();
-          }
-
-          if ($("#help-mode").length != 0) {
-            $("#help-mode").remove();
-          }
-        };
-
         createToolOptions();
       } else {
-        console.log(response.message);
+        console.log("Extension Active? " + response.message);
         var removeExtensionElements = function() {
           console.log("Remove all extension elements.");
           //remove the tool options if available
           if ($("#tool-option").length != 0) {
             $("#tool-option").remove();
+          }
+
+          if ($("#dialog-box").length != 0) {
+            $("#dialog-box").remove();
           }
 
           if ($("#edit-mode").length != 0) {
@@ -1033,12 +992,8 @@
             $("#highlight-mode").remove();
           }
 
-          if ($("#speak-mode").length != 0) {
-            $("#speak-mode").remove();
-          }
-
-          if ($("#dialog-box").length != 0) {
-            $("#dialog-box").remove();
+          if ($("#tts-mode").length != 0) {
+            $("#tts-mode").remove();
           }
 
           if ($("#save-mode").length != 0) {
@@ -1051,6 +1006,5 @@
         };
         removeExtensionElements();
       }
-    }
-  );
+    });
 })();

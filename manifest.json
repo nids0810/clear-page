@@ -4,17 +4,12 @@
   "version": "2.1",
   "web_accessible_resources": ["images/*.png", "html/*.html", "css/*.css", "json/*.json", "js/*.js"],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
-  "description": "A powerful extension tool to improve web readability and make the web experience enjoyable.",
+  "description": "A powerful browser extension tool to improve web readability and provide an enjoyable web experience .",
   "icons": {
     "16": "icons/icon_16.png",
     "32": "icons/icon_32.png",
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
-  },
-  "options_ui": {
-    "page": "html/options.html",
-    "open_in_tab": false,
-    "chrome_style": true
   },
   "content_scripts": [{
     "matches": ["*://*/*"],

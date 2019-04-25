@@ -1,4 +1,10 @@
 # To Dos #
+
+## Manifest ##
+* !Extension Name
+* Keyboard shortcut for all platforms
+
+
 ## Browser Action ##
 * ~~! On browser icon click, it should be activated on the current page, icon should turn red~~
 * ~~! When active, it should automatically get activated on the every new page, icon should turn red~~
