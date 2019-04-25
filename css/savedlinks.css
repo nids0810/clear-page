@@ -58,11 +58,13 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-right: 15px;
 }
 
 .links span.heading {
     font-weight: bold;
     font-size: 13px;
+    padding-right: 0;
 }
 
 .delete {

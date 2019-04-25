@@ -338,14 +338,13 @@
             //create a element to display article
             $("body").append("<div id='read-text'></div>");
             $("#read-text").css({
-              backgroundColor: "white",
-              color: "black",
-              top: "10px",
-              left: "0px",
-              position: "relative",
+              background: "#fff",
+              color: "#000",
               padding: "10px 60px 10px 10px",
-              border: "1px solid",
-              boxShadow: "5px 10px 8px #888888"
+              width: "55%",
+              margin: "0 auto",
+              fontFamily: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif',
+              lineHeight: "35px"
             });
 
             if (article === null) {
