@@ -2,184 +2,178 @@
 
 (function () {
 
-  chrome.runtime.sendMessage({
-      message: "extension active?"
-    },
-    function (response) {
-      if (response.message) {
-        //Create Tool Option
-        var createToolOptions = function () {
-          //tool options
-          if ($("#tool-option").length != 0) {
-            $("#tool-option").remove();
-          }
-          $("body").append("<div id='tool-option'></div>");
-          $("#tool-option").css({
-            backgroundColor: "#F9CA0C",
-            position: "fixed",
-            top: "30%",
-            right: "6px",
-            padding: "15px 15px 0 15px",
-            borderRadius: "5px 0px 0px 5px"
-          });
-
-          //Edit Button
-          $("#tool-option").append(
-            "<img id='edit-btn' title='Edit Page' src='" +
-            chrome.runtime.getURL("images/edit.png") +
-            "'/>"
-          );
-          $("#edit-btn").click(editPage);
-
-          //Clear Button
-          $("#tool-option").append(
-            "<img id='clear-btn' title='Clear Page' src='" +
-            chrome.runtime.getURL("images/clear.png") +
-            "'/>"
-          );
-          $("#clear-btn").click(clearPage);
-
-          //Highlight Button
-          $("#tool-option").append(
-            "<img id='highlight-btn' title='Highlight Text' src='" +
-            chrome.runtime.getURL("images/highlight.png") +
-            "'/>"
-          );
-          $("#highlight-btn").click(highlightText);
-
-          //Speak Button
-          $("#tool-option").append(
-            "<img id='speak-btn' title='Speak Text' src='" +
-            chrome.runtime.getURL("images/speak.png") +
-            "'/>"
-          );
-          $("#speak-btn").click(speakText);
-
-          //Save for later Button
-          $("#tool-option").append(
-            "<img id='save-btn' title='Save for Later' src='" +
-            chrome.runtime.getURL("images/save.png") +
-            "'/>"
-          );
-          $("#save-btn").click(saveLinks);
-
-          //Open saved links Button
-          $("#tool-option").append(
-            "<img id='open-btn' title='Open Saved Links' src='" +
-            chrome.runtime.getURL("images/open.png") +
-            "'/>"
-          );
-          $("#open-btn").click(openLinks);
-
-          //Save as PDF Button
-          $("#tool-option").append(
-            "<img id='pdf-btn' title='Save as PDF' src='" +
-            chrome.runtime.getURL("images/pdf.png") +
-            "'/>"
-          );
-          $("#pdf-btn").click(saveAsPDF);
-
-          //Settings Button
-          $("#tool-option").append(
-            "<img id='option-btn' title='Settings' src='" +
-            chrome.runtime.getURL("images/option.png") +
-            "'/>"
-          );
-          $("#option-btn").click(openSettings);
-
-          //Help Button
-          $("#tool-option").append(
-            "<img id='help-btn' title='Help' src='" +
-            chrome.runtime.getURL("images/help.png") +
-            "'/>"
-          );
-          $("#help-btn").click(openHelp);
-
-          $(
-            "#edit-btn, #clear-btn, #highlight-btn, #speak-btn, #save-btn, #open-btn, #pdf-btn, #option-btn, #help-btn"
-          ).css({
-            width: "30px",
-            height: "30px",
-            display: "block",
-            cursor: "pointer",
-            marginBottom: "15px"
-          });
-        };
-
-        //Edit Page Button Function
-        var editPage = function () {
-          console.log("Edit mode is on");
-          ga("send", "event", "Edit Mode", "Clicked", "Main Button", "");
-          var editMode = true;
-          if ($("#help-mode").css("opacity") == 1) {
-            $("#help-mode").css({
-              opacity: 0,
-              zIndex: -20
-            });
-          }
-
-          $("#tool-option").hide();
-
-          if ($("#edit-mode").length == 0) {
-            //edit-mode doesn't exist
-            $("body").append("<div id='edit-mode'></div>");
-            $("#edit-mode").text("Edit Mode On!");
-            $("#edit-mode").css({
+    chrome.runtime.sendMessage({
+        message: "extension active?"
+      },
+      function (response) {
+        if (response.message) {
+          //Create Tool Option
+          var createToolOptions = function () {
+            //tool options
+            if ($("#tool-option").length != 0) {
+              $("#tool-option").remove();
+            }
+            $("body").append("<div id='tool-option'></div>");
+            $("#tool-option").css({
+              backgroundColor: "#F9CA0C",
               position: "fixed",
-              top: "11%",
-              left: "44.5%",
-              backgroundColor: "#333",
-              color: "#fff",
-              padding: "10px",
-              opacity: "1.0"
+              top: "30%",
+              right: "6px",
+              padding: "15px 15px 0 15px",
+              borderRadius: "5px 0px 0px 5px",
+              zIndex:"300"
             });
-          } else {
-            //edit-mode exist
-            $("#edit-mode").text("Edit Mode On!");
-            $("#edit-mode").css({
-              opacity: "1.0"
-            });
-          }
 
-          if ($("#dialog-box").length == 0) {
-            //dialog-box doesn't exist
-            $("body").append(
-              "<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>"
+            //Edit Button
+            $("#tool-option").append(
+              "<img id='edit-btn' title='Edit Mode' src='" +
+              chrome.runtime.getURL("images/edit.png") +
+              "'/>"
             );
-            $("#dialog-box").css({
-              position: "fixed",
-              top: "11%",
-              right: "4%",
-              zIndex: 300
-            });
-            $("#apply-btn").css({
-              border: "0",
-              background: "#4CA1B6",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px"
-            });
-            $("#cancel-btn").css({
-              border: "0",
-              background: "#CE5061",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px",
-              marginLeft: "10px"
-            });
-          } else {
-            $("#dialog-box").show();
-          }
+            $("#edit-btn").click(editPage);
 
-          //Add new class "web-edited", "web-deleted", "link-disabled" and push in the css
-          $("<style>")
-            .prop("type", "text/css")
-            .html(
-              "\
+            //Read Button
+            $("#tool-option").append(
+              "<img id='read-btn' title='Read Mode' src='" +
+              chrome.runtime.getURL("images/book.png") +
+              "'/>"
+            );
+            $("#read-btn").click(readPage);
+
+            //Highlight Button
+            $("#tool-option").append(
+              "<img id='highlight-btn' title='Highlight Mode' src='" +
+              chrome.runtime.getURL("images/highlight.png") +
+              "'/>"
+            );
+            $("#highlight-btn").click(highlightText);
+
+            //Speak Button
+            $("#tool-option").append(
+              "<img id='speak-btn' title='Speak Mode' src='" +
+              chrome.runtime.getURL("images/speak.png") +
+              "'/>"
+            );
+            $("#speak-btn").click(speakText);
+
+            //Save for later Button
+            $("#tool-option").append(
+              "<img id='save-btn' title='Save page for Later' src='" +
+              chrome.runtime.getURL("images/save.png") +
+              "'/>"
+            );
+            $("#save-btn").click(saveLinks);
+
+            //Open saved links Button
+            $("#tool-option").append(
+              "<img id='open-btn' title='Open Saved Links' src='" +
+              chrome.runtime.getURL("images/open.png") +
+              "'/>"
+            );
+            $("#open-btn").click(openLinks);
+
+            //Save as PDF Button
+            $("#tool-option").append(
+              "<img id='pdf-btn' title='Save as PDF' src='" +
+              chrome.runtime.getURL("images/pdf.png") +
+              "'/>"
+            );
+            $("#pdf-btn").click(saveAsPDF);
+
+            //Settings Button
+            $("#tool-option").append(
+              "<img id='option-btn' title='Settings' src='" +
+              chrome.runtime.getURL("images/option.png") +
+              "'/>"
+            );
+            $("#option-btn").click(openSettings);
+
+            //Help Button
+            $("#tool-option").append(
+              "<img id='help-btn' title='Help Mode' src='" +
+              chrome.runtime.getURL("images/help.png") +
+              "'/>"
+            );
+            $("#help-btn").click(openHelp);
+
+            $(
+              "#edit-btn, #read-btn, #highlight-btn, #speak-btn, #save-btn, #open-btn, #pdf-btn, #option-btn, #help-btn"
+            ).css({
+              width: "30px",
+              height: "30px",
+              display: "block",
+              cursor: "pointer",
+              marginBottom: "15px"
+            });
+          };
+
+          //Edit Page Button Function
+          var editPage = function () {
+            console.log("Edit mode is on");
+            ga("send", "event", "Edit Mode", "Clicked", "Main Button", "");
+            var editMode = true;
+            $("#tool-option").hide();
+
+            if ($("#edit-mode").length == 0) {
+              //edit-mode doesn't exist
+              $("body").append("<div id='edit-mode'></div>");
+              $("#edit-mode").text("Edit Mode On!");
+              $("#edit-mode").css({
+                position: "fixed",
+                top: "11%",
+                left: "44.5%",
+                backgroundColor: "#333",
+                color: "#fff",
+                padding: "10px",
+                opacity: "1.0"
+              });
+            } else {
+              //edit-mode exist
+              $("#edit-mode").text("Edit Mode On!");
+              $("#edit-mode").css({
+                opacity: "1.0"
+              });
+            }
+
+            if ($("#dialog-box").length == 0) {
+              //dialog-box doesn't exist
+              $("body").append(
+                "<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>"
+              );
+              $("#dialog-box").css({
+                position: "fixed",
+                top: "11%",
+                right: "4%",
+                zIndex: "300"
+              });
+              $("#apply-btn").css({
+                border: "0",
+                background: "#4CA1B6",
+                color: "#fff",
+                padding: "9px",
+                cursor: "pointer",
+                fontSize: "17px",
+                borderRadius: "5px"
+              });
+              $("#cancel-btn").css({
+                border: "0",
+                background: "#CE5061",
+                color: "#fff",
+                padding: "9px",
+                cursor: "pointer",
+                fontSize: "17px",
+                borderRadius: "5px",
+                marginLeft: "10px"
+              });
+            } else {
+              $("#dialog-box").show();
+            }
+
+            //Add new class "web-edited", "web-deleted", "link-disabled" and push in the css
+            $("<style>")
+              .prop("type", "text/css")
+              .html(
+                "\
           .web-edited {\
               opacity: 0.4;\
               filter: alpha(opacity=50);\
@@ -192,209 +186,193 @@
               pointer-events: none;\
               cursor: default;\
           }"
-            )
-            .appendTo("head");
+              )
+              .appendTo("head");
 
-          // transform all links as unclickable
-          $("a").each(function () {
-            //$(this).preventDefault();
-            $(this).addClass("link-disabled");
-          });
+            // transform all links as unclickable
+            $("a").each(function () {
+              //$(this).preventDefault();
+              $(this).addClass("link-disabled");
+            });
 
-          /*     $("link, nav, img").each(function() {
-      $(this).click(function (e) {
-        e.preventDefault();
-      });
-    }); */
-
-          // Click an element in edit mode
-          $(document).click(function (event) {
-            if (editMode) {
-              if (
-                event.target.id === "tool-option" ||
-                event.target.id === "edit-btn" ||
-                event.target.id === "highlight-btn" ||
-                event.target.id === "speak-btn" ||
-                event.target.id === "save-btn" ||
-                event.target.id === "pdf-btn" ||
-                event.target.id === "option-btn" ||
-                event.target.id === "edit-mode" ||
-                event.target.id === "highlight-mode" ||
-                event.target.id === "help-mode" ||
-                event.target.id === "dialog-box"
-              ) {
-                //Don't select hidden elements
-              } else if (event.target.tagName === "BODY") {
-                //Can't delete body
-              } else if (event.target.id === "apply-btn") {
-                //apply button clicked
-                console.log("Apply edits on all selected elements");
-                ga(
-                  "send",
-                  "event",
-                  "Edit Mode",
-                  "Clicked",
-                  "Apply Changes",
-                  ""
-                );
-                $(".web-edited").each(function () {
-                  $(this)
-                    .removeClass("web-edited")
-                    .addClass("web-deleted");
-                });
-                $("a").each(function () {
-                  $(this).removeClass("link-disabled");
-                });
-                $("#edit-mode").text("Changes are applied!");
-                $("#edit-mode").animate({
-                    opacity: "0.0"
-                  },
-                  "slow"
-                );
-                $("#dialog-box").hide();
-                $("#tool-option").show();
-                editMode = false;
-              } else if (event.target.id === "cancel-btn") {
-                //cancel button clicked
-                console.log("Cancel edits from all selected elements");
-                ga(
-                  "send",
-                  "event",
-                  "Edit Mode",
-                  "Clicked",
-                  "Cancel Changes",
-                  ""
-                );
-                $(".web-edited").each(function () {
-                  $(this).removeClass("web-edited");
-                });
-                $("a").each(function () {
-                  $(this).removeClass("link-disabled");
-                });
-                $("#edit-mode").text("Changes are cancelled!");
-                $("#edit-mode").animate({
-                    opacity: "0.0"
-                  },
-                  "slow"
-                );
-                $("#dialog-box").remove();
-                $("#tool-option").show();
-                editMode = false;
-              } else if ($(event.target).hasClass("web-edited")) {
-                //Unselect already selected elements
-                $(event.target).removeClass("web-edited");
-              } else {
-                //Select any other elements
-                $(event.target).addClass("web-edited");
-              }
-            }
-          });
-        };
-
-        //Clear Page Button Function
-        var clearPage = function () {
-          var _settings = {};
-
-          chrome.runtime.sendMessage({
-              message: "send settings"
-            },
-            function (response) {
-              if (response.message === "setting sent") {
-                _settings = response.data;
-                console.log(
-                  "settings available: " + JSON.stringify(_settings)
-                );
-
+            // Click an element in edit mode
+            $(document).click(function (event) {
+              if (editMode) {
                 if (
-                  jQuery.isEmptyObject(_settings) ||
-                  _settings.blockElements.elements !== undefined
+                  event.target.id === "tool-option" ||
+                  event.target.id === "edit-btn" ||
+                  event.target.id === "highlight-btn" ||
+                  event.target.id === "speak-btn" ||
+                  event.target.id === "save-btn" ||
+                  event.target.id === "pdf-btn" ||
+                  event.target.id === "option-btn" ||
+                  event.target.id === "edit-mode" ||
+                  event.target.id === "highlight-mode" ||
+                  event.target.id === "help-mode" ||
+                  event.target.id === "dialog-box"
                 ) {
-                  $("#clear-btn").disabled = true;
-                  //Format Block Elements
-                  $(_settings.blockElements.elements.join(",")).css({
-                    background: "none",
-                    backgroundImage: "none",
-                    fontFamily: "sans-serif",
-                    border: "none",
-                    backgroundColor: _settings.blockElements.backgroundColor,
-                    color: _settings.blockElements.color
+                  //Don't select hidden elements
+                } else if (event.target.tagName === "BODY") {
+                  //Can't delete body
+                } else if (event.target.id === "apply-btn") {
+                  //apply button clicked
+                  console.log("Apply edits on all selected elements");
+                  ga(
+                    "send",
+                    "event",
+                    "Edit Mode",
+                    "Clicked",
+                    "Apply Changes",
+                    ""
+                  );
+                  $(".web-edited").each(function () {
+                    $(this)
+                      .removeClass("web-edited")
+                      .addClass("web-deleted");
                   });
-
-                  //Format Header Elements
-                  $(_settings.headerElements.elements.join(",")).css({
-                    background: "none",
-                    fontFamily: "sans-serif",
-                    color: _settings.headerElements.color
+                  $("a").each(function () {
+                    $(this).removeClass("link-disabled");
                   });
-
-                  //Format Anchor Elements
-                  $(_settings.anchorElements.elements.join(",")).css({
-                    background: "none",
-                    backgroundImage: "none",
-                    fontFamily: "sans-serif",
-                    border: "none",
-                    fontWeight: "bold",
-                    textDecoration: "underline",
-                    backgroundColor: _settings.anchorElements.backgroundColor,
-                    color: _settings.anchorElements.color
-                  });
-
-                  //Format Media Elements
-                  $(_settings.mediaElements.elements.join(",")).css({
-                    display: "none"
-                  });
-
-                  //Format Frame Elements
-                  $(_settings.frameElements.elements.join(",")).css({
-                    display: "none"
-                  });
-
-                  //Format Program Elements
-                  $(_settings.programElements.elements.join(",")).css({
-                    display: "none"
-                  });
-
-                  createToolOptions();
-
-                  if ($("#clear-mode").length == 0) {
-                    //clear-mode doesn't exist
-                    $("body").append("<div id='clear-mode'></div>");
-                    $("#clear-mode").text("The page has been cleared!");
-                    $("#clear-mode").css({
-                      position: "fixed",
-                      top: "11%",
-                      left: "44.5%",
-                      backgroundColor: "#333",
-                      color: "#fff",
-                      padding: "10px",
-                      opacity: "1.0"
-                    });
-                  } else {
-                    //clear-mode exist
-                    $("#clear-mode").text("The page has been cleared!");
-                    $("#edit-mode").css({
-                      opacity: "1.0"
-                    });
-                  }
-
-                  $("#clear-mode").animate({
+                  $("#edit-mode").text("Changes are applied!");
+                  $("#edit-mode").animate({
                       opacity: "0.0"
                     },
                     "slow"
                   );
+                  $("#dialog-box").hide();
+                  $("#tool-option").show();
+                  editMode = false;
+                } else if (event.target.id === "cancel-btn") {
+                  //cancel button clicked
+                  console.log("Cancel edits from all selected elements");
+                  ga(
+                    "send",
+                    "event",
+                    "Edit Mode",
+                    "Clicked",
+                    "Cancel Changes",
+                    ""
+                  );
+                  $(".web-edited").each(function () {
+                    $(this).removeClass("web-edited");
+                  });
+                  $("a").each(function () {
+                    $(this).removeClass("link-disabled");
+                  });
+                  $("#edit-mode").text("Changes are cancelled!");
+                  $("#edit-mode").animate({
+                      opacity: "0.0"
+                    },
+                    "slow"
+                  );
+                  $("#dialog-box").remove();
+                  $("#tool-option").show();
+                  editMode = false;
+                } else if ($(event.target).hasClass("web-edited")) {
+                  //Unselect already selected elements
+                  $(event.target).removeClass("web-edited");
+                } else {
+                  //Select any other elements
+                  $(event.target).addClass("web-edited");
                 }
-              } else {
-                console.error("Settings unavailable. Try again");
-                chrome.runtime.sendMessage({
-                    message: "settings unavailable"
-                  },
-                  function (response) {
-                    console.log(response.message);
-                  }
-                );
               }
+            });
+          };
+
+          var readingMode = true;
+          //Read Page Button Function
+          var readPage = function () {
+
+            console.log('Reading Mode On');
+            
+            if(readingMode) {
+
+              var loc = document.location;
+              var uri = {
+                spec: loc.href,
+                host: loc.host,
+                prePath: loc.protocol + "//" + loc.host,
+                scheme: loc.protocol.substr(0, loc.protocol.indexOf(":")),
+                pathBase: loc.protocol +
+                  "//" +
+                  loc.host +
+                  loc.pathname.substr(
+                    0,
+                    loc.pathname.lastIndexOf("/") + 1
+                  )
+              };
+
+              //console.log(uri);
+              var article = new Readability(uri, document).parse();
+
+              // Remove everything.
+              document.body.outerHTML = "";
+              // Remove alll or most stylesheets.
+              document.head.outerHTML = "";
+
+              if ($("#read-mode").length == 0) {
+                //read-mode doesn't exist
+                $("body").append("<div id='read-mode'></div>");
+                $("#read-mode").text("Reading Mode On");
+                $("#read-mode").css({
+                  position: "fixed",
+                  top: "6%",
+                  left: "44.5%",
+                  backgroundColor: "#333",
+                  color: "#fff",
+                  padding: "10px",
+                  opacity: "1.0",
+                  zIndex: "20"
+                });
+              } else {
+                //read-mode exist
+                $("#read-mode").text("Reading Mode On");
+                $("#read-mode").css({
+                  opacity: "1.0"
+                });
+              }
+
+            //create a element to display article
+            $("body").append("<div id='read-text'></div>");
+            $("#read-text").css({
+              backgroundColor: "white",
+              color: "black",
+              top: "10px",
+              left: "0px",
+              position: "relative",
+              padding: "10px 60px 10px 10px",
+              border: "1px solid",
+              boxShadow: "5px 10px 8px #888888"
+            });         
+
+            if (article === null) {
+              $("#read-text").text("<h1 id='read-text-error'>Sorry! Couldn't make this page readable</h1>");
+              console.warn("Article is not readable");
+            } else {
+              $("#read-text").append("<h1 id='read-text-title'></h1>");
+              $("#read-text").append(
+                "<p id='read-text-content'></p>"
+              );
+              $("#read-text-title").text(article.title);
+              $("#read-text-content").html(article.content);
+              console.log(
+                $("#read-text").html()
+              );
             }
-          );
+            readingMode = false;
+            createToolOptions();
+          } else {
+            $("#read-mode").text("Reading Mode Off");
+            $("#read-mode").animate(
+              {
+                opacity: "0.0"
+              },
+              "slow"
+            );
+            window.location.reload();
+            createToolOptions();
+          }
+
         };
 
         //Highlight Button Function
@@ -435,7 +413,7 @@
               position: "fixed",
               top: "11%",
               right: "4%",
-              zIndex: 300
+              zIndex: "300"
             });
             $("#apply-btn").css({
               border: "0",
@@ -567,7 +545,7 @@
               position: "fixed",
               top: "11%",
               right: "4%",
-              zIndex: 300
+              zIndex: "300"
             });
             $("#apply-btn").css({
               border: "0",
@@ -778,8 +756,8 @@
                   "slow"
                 );
                 $("#apply-btn").html("Apply Changes");
-                $("#speech-voices").remove();
-                $("#dialog-box").hide();
+                //$("#speech-voices").remove();
+                $("#dialog-box").remove();
                 $("#tool-option").show();
                 window.speechSynthesis.cancel();
                 text2Speech = "";
@@ -874,17 +852,16 @@
             }
           );
         };
-        
+
         //Open saved linksButton Function
-        var openLinks = function() {
+        var openLinks = function () {
           console.log("Setting mode is on");
           ga("send", "event", "Open Links", "Clicked", "Main Button", "");
 
-          chrome.runtime.sendMessage(
-            {
+          chrome.runtime.sendMessage({
               message: "open links page"
             },
-            function(response) {
+            function (response) {
               console.log(response.message);
             }
           );
@@ -920,7 +897,7 @@
             <h1>Help Doc</h1>\
             <ul>\
               <li><b>Edit Mode: </b><p>Under edit mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
-              <li><b>Clear Page: </b><p>Under edit mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
+              <li><b>read Page: </b><p>Under edit mode one can delete unnecesary web elements. Click on a element to select it. Click again to unselect it. Once all elements are selected, click on edit icon to delete the selected elements from the webpage.</p><br></li>\
               <li><b>Highlight Text:</b><p><br></p></li>\
               <li><b>Speak Mode:</b><p><br></p></li>\
               <li><b>Save for Later:</b><p><br></p></li>\
@@ -940,7 +917,7 @@
               width: "48%",
               right: "5.5%",
               overflow: auto,
-              zIndex: 300
+              zIndex: "300"
             });
             $("#help-triangle").css({
               position: "relative",
@@ -966,7 +943,7 @@
           } else {
             $("#help-mode").css({
               opacity: 1,
-              zIndex: 300
+              zIndex: "300"
             });
           }
 
@@ -978,7 +955,7 @@
                 "slow"
               );
               $("#help-mode").css({
-                zIndex: -20
+                zIndex: "-20"
               });
               helpMode = false;
             }
@@ -998,9 +975,81 @@
           );
         };
 
+        var removeExtensionElements = function() {
+          console.log("Remove all extension elements.");
+          //remove the tool options if available
+          if ($("#tool-option").length != 0) {
+            $("#tool-option").remove();
+          }
+
+          if ($("#edit-mode").length != 0) {
+            $("#edit-mode").remove();
+          }
+
+          if ($("#read-mode").length != 0) {
+            $("#read-mode").remove();
+          }
+
+          if ($("#highlight-mode").length != 0) {
+            $("#highlight-mode").remove();
+          }
+
+          if ($("#speak-mode").length != 0) {
+            $("#speak-mode").remove();
+          }
+
+          if ($("#dialog-box").length != 0) {
+            $("#dialog-box").remove();
+          }
+
+          if ($("#save-mode").length != 0) {
+            $("#save-mode").remove();
+          }
+
+          if ($("#help-mode").length != 0) {
+            $("#help-mode").remove();
+          }
+        };
+
         createToolOptions();
       } else {
         console.log(response.message);
+        var removeExtensionElements = function() {
+          console.log("Remove all extension elements.");
+          //remove the tool options if available
+          if ($("#tool-option").length != 0) {
+            $("#tool-option").remove();
+          }
+
+          if ($("#edit-mode").length != 0) {
+            $("#edit-mode").remove();
+          }
+
+          if ($("#read-mode").length != 0) {
+            $("#read-mode").remove();
+          }
+
+          if ($("#highlight-mode").length != 0) {
+            $("#highlight-mode").remove();
+          }
+
+          if ($("#speak-mode").length != 0) {
+            $("#speak-mode").remove();
+          }
+
+          if ($("#dialog-box").length != 0) {
+            $("#dialog-box").remove();
+          }
+
+          if ($("#save-mode").length != 0) {
+            $("#save-mode").remove();
+          }
+
+          if ($("#help-mode").length != 0) {
+            $("#help-mode").remove();
+          }
+        };
+        removeExtensionElements();
       }
     }
   );

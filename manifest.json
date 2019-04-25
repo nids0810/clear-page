@@ -19,7 +19,7 @@
   "content_scripts": [{
     "matches": ["*://*/*"],
     "exclude_globs": ["*://*facebook.com/*", "https://www.reddit.*/*", "https://twitter.*/*"],
-    "js": ["third-party/jquery.min.js", "third-party/ga.js", "js/content.js"]
+    "js": ["third-party/jquery.min.js", "third-party/ga.js", "third-party/readability.js", "js/content.js"]
   }],
   "background" : {
     "scripts": ["third-party/jquery.min.js", "third-party/ga.js", "js/background.js"],

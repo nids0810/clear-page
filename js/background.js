@@ -18,17 +18,19 @@ chrome.browserAction.onClicked.addListener(function (tab) {
     }, {
       file: "third-party/ga.js"
     }, {
+      file: "third-party/readability.js"
+    },{
       file: "js/content.js"
-    }]);
+    }]);    
     chrome.browserAction.setIcon({
       path: "icons/icon_on_16.png",
       tabId: tab.id
     });
-    chrome.browserAction.setBadgeText({
+    /* chrome.browserAction.setBadgeText({
       text: "on"
     }, function () {
       console.log("Badge On");
-    });
+    }); */
     _extensionActive = true;
   } else {
     //if (_activeTabs.indexOf(tab.title) >= 0) {_activeTabs = _activeTabs.filter(item => item !== tab.title);}
@@ -53,11 +55,11 @@ chrome.browserAction.onClicked.addListener(function (tab) {
         tabId: items.id
       });
     });
-    chrome.browserAction.setBadgeText({
+    /* chrome.browserAction.setBadgeText({
       text: ""
     }, function () {
       console.log("Badge Off");
-    });
+    }); */
     _extensionActive = false;
   }
 });
