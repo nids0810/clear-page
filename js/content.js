@@ -26,7 +26,6 @@
             zIndex: "300"
           });
 
-
           //Read Mode Button
           $("#tool-option").append(
             "<img id='read-btn' title='Read Mode' src='" +
@@ -588,7 +587,7 @@
           }
           return arr;
         }
-        
+
         //Edit Mode Button Function
         var editMode = function () {
           console.log("Edit mode is on");
@@ -673,7 +672,9 @@
 
           // transform all links as unclickable
           $("a").each(function () {
-            //$(this).preventDefault();
+            $(this).click(function (event) {
+              event.preventDefault();
+            });
             $(this).addClass("link-disabled");
           });
 
@@ -716,9 +717,6 @@
                   $(this)
                     .removeClass("web-edited")
                     .addClass("web-deleted");
-                });
-                $("a").each(function () {
-                  $(this).removeClass("link-disabled");
                 });
                 $("#edit-mode").text("Changes are applied!");
                 $("#edit-mode").animate({
