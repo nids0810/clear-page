@@ -13,7 +13,7 @@
 
 ## Edit Mode ##
 * ~~On select, text should not be small~~
-* All clickable elements should not be clickable
+* All clickable elements should not be clickable -- works only for a tag currently
 
 ## Read Mode ##
 * ~~! On click, the page should turn into readable mode~~
