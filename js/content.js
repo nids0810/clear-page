@@ -194,6 +194,11 @@
             // Remove everything.
             //document.body.outerHTML = "";
             document.body.innerHTML = "";
+            $("body").css({
+              background: '#e9e9e9',
+              color: '#333 !important',
+              paddingTop: '50px'
+            });
 
             if ($("#read-mode").length == 0) {
               //read-mode doesn't exist
@@ -232,12 +237,14 @@
             $("body").append("<div id='read-text'></div>");
             $("#read-text").css({
               background: "#fff",
-              color: "#000",
-              padding: "10px 60px 10px 10px",
-              width: "55%",
+              color: "#333",
+              padding: "70px",
+              width: "50%",
               margin: "0 auto",
-              fontFamily: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif',
-              lineHeight: "35px"
+              //fontFamily: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif',
+              lineHeight: "32px",
+              border: "1px solid #dbdbdb",
+              fontSize: "19px"
             });
 
             if (article === null) {
@@ -264,6 +271,14 @@
               $("#read-text-eta").text(
                 " Reading time: " + _articleETA + " mins"
               );
+              $("#read-text-title").css({
+                lineHeight: "45px"
+              });
+              $("#read-text-words, #read-text-eta").css({
+                color: "#666",
+                fontSize: "16px",
+                fontStyle: "oblique"
+              });
             }
             readingMode = false;
             createToolOptions();
