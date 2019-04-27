@@ -248,6 +248,13 @@ var webElement = function () {
   console.log(web);
 };
 //webElement();
+
+$("#tts-btn").hover(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/speak_grayed.png"));
+          }, function () {
+            $(this).attr('src', chrome.runtime.getURL("images/speak.png"));
+          });
+
  */
 
 
