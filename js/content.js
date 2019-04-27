@@ -982,50 +982,66 @@
             $("body").append("<div id='help-mode'></div>");
             var helpHtml =
               "<div id='cross-btn'>X</div>\
-              <h1>Help Doc</h1>\
-              <ul>\
-                <li><b>Read Mode: </b><p>Under Read mode, user can transform the website into a readable magzine page.</p><br></li>\
-                <li><b>Text to Speak Mode:</b><p>Under Text to Speech mode, user the transform the selected into speech and listen to the speech. Voice will be default based on user browser language. However, user can also choose different voices.</p><br></li>\
-                <li><b>Edit Mode: </b><p>Under Edit mode, user can delete any unnecesary web element from the view. Select the respective element by click and press apply button to delete the element. User can also deselect an existing selection by clicking again on the element. User can also press cancel to cancel the action.</p><br></li>\
-                <li><b>Highlight Mode:</b><p>Under Highlight mode, user can highlight any portion of the text on the webpage to distinguish it from rest of the text.<br></p></li>\
-                <li><b>Save Page for Later:</b><p>Under Save page for Later, user can save the current page in a reading queue. Already saved pages will through a duplication message on screen.<br></p></li>\
-                <li><b>Open Saved Links:</b><p>Under Open Saved Links, user can view the reading queue in a new tab. User can also sort the queue as well as delete any link which user has already completed reading.<br></p></li>\
-                <li><b>Save as PDF:</b><p>Under Save as PDF, user can save the current webpage along with all the changes in a PDF locally for future use.<br></p></li>\
-              </ul>\
-              <div id='help-triangle'></div>\
+              <div id='help-title'>Help Doc</div>\
+              <div id='help-content'>\
+                <div><span>Read Mode: </span><p>Under Read mode, user can transform the website into a readable magzine page.</p></div>\
+                <div><span>Text to Speak Mode:</span><p>Under Text to Speech mode, user the transform the selected into speech and listen to the speech. Voice will be default based on user browser language. However, user can also choose different voices.</p></div>\
+                <div><span>Edit Mode: </span><p>Under Edit mode, user can delete any unnecesary web element from the view. Select the respective element by click and press apply button to delete the element. User can also deselect an existing selection by clicking again on the element. User can also press cancel to cancel the action.</p></div>\
+                <div><span>Highlight Mode:</span><p>Under Highlight mode, user can highlight any portion of the text on the webpage to distinguish it from rest of the text.</p></div>\
+                <div><span>Save Page for Later:</span><p>Under Save page for Later, user can save the current page in a reading queue. Already saved pages will through a duplication message on screen.</p></div>\
+                <div><span>Open Saved Links:</span><p>Under Open Saved Links, user can view the reading queue in a new tab. User can also sort the queue as well as delete any link which user has already completed reading.</p></div>\
+                <div><span>Save as PDF:</span><p>Under Save as PDF, user can save the current webpage along with all the changes in a PDF locally for future use.</p></div>\
+              </div>\
               ";
             $("#help-mode").append($.parseHTML(helpHtml));
             $("#help-mode").css({
               position: "fixed",
               top: "30%",
-              backgroundColor: "#333",
-              color: "#fff",
-              padding: "10px",
+              backgroundColor: "#fff",
+              color: "#333",
+              padding: "15px",
               width: "48%",
               right: "5.5%",
               overflow: "auto",
-              zIndex: "300"
+              zIndex: "300",
+              borderRadius: "20px",
+              height: '355px',
+              boxShadow: '2px 2px 10px 0px #000'
             });
-            $("#help-triangle").css({
-              position: "relative",
-              bottom: "0px",
-              left: "34px",
-              float: "right",
-              borderColor: "transparent transparent transparent #333",
-              borderStyle: "solid",
-              borderWidth: "12px",
-              height: "0px",
-              width: "0px"
+            $('#help-title').css({
+              textAlign: 'center',
+              fontSize: '20px',
+              fontWeight: 'bold',
+              textTransform: 'uppercase'
+            });
+            $('#help-content div').css({
+              background: '#f1f1f1',
+              border: '1px solid# eee',
+              backgroundColor: '#f1f2f2',
+              padding: '10px',
+              borderRadius: '7px',
+              marginBottom: '15px',
+              marginBottom: '10px'
+            });
+            $('#help-content div span').css({
+              fontSize: '14px',
+              fontWeight: 'bolder'
+            });
+            $('#help-content div p').css({
+              fontSize: '13px'
             });
             $("#cross-btn").css({
-              background: "#fff",
-              fontSize: "20px",
-              color: "#000",
-              position: "relative",
-              float: "right",
-              borderRadius: "50%",
-              padding: "5px 10px",
-              cursor: "pointer"
+              background: '#333',
+              fontSize: '20px',
+              color: '#fff',
+              float: 'right',
+              borderRadius: '50%',
+              padding: '5px 12px',
+              cursor: 'pointer',
+              top: '-8px',
+              right: '-14px',
+              zIndex: '10',
+              position: 'sticky'
             });
           } else {
             $("#help-mode").show();
