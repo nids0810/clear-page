@@ -24,10 +24,10 @@
   "commands": {
       "_execute_browser_action": {
         "suggested_key": {
-          "windows": "Ctrl+Shift+H",
+          "windows": "Ctrl+Shift+L",
           "mac": "Command+Shift+L",
-          "chromeos": "Ctrl+Shift+C",
-          "linux": "Ctrl+Shift+C"
+          "chromeos": "Ctrl+Shift+L",
+          "linux": "Ctrl+Shift+L"
         }
       }
     }
