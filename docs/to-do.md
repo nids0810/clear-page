@@ -2,14 +2,14 @@
 
 ## Application Level ##
 * ! Remove all default elements, their styles & functionality
+* ! Remove all console logs
 * Add Application logo, name and text everywhere
 * ! Overall code review
-* ! Remove all console logs
 * ! Write extension descriptions, add screenshots
 
 ## Manifest ##
 * ! Extension Name
-* Keyboard shortcut for all platforms
+* ~~Keyboard shortcut for all platforms~~
 
 ## Browser Action ##
 * ~~! On browser icon click, it should be activated on the current page, icon should turn red~~
@@ -18,7 +18,7 @@
 * ~~! When deactive, it should get activated on any new page, icon should remain gray~~
 
 ## Tool Option ##
-* ! Add onhover & onclick images
+* ~~! Add onhover & onclick images~~
 
 ## Edit Mode ##
 * ~~On select, text should not be small~~
@@ -27,11 +27,11 @@
 ## Read Mode ##
 * ~~! On click, the page should turn into readable mode~~
 * ~~! On click again, the page should be relaod to normal state~~
-* ! style the read-text option
-* style the read-text content
+* ! style the read-text option box
+* ~~style the read-text content~~
 
 ## Highlight Mode ##
-* !Implement Highlight Text functionality
+* ~~!Implement Highlight Text functionality~~
 
 ## Speak Mode ##
 * ~~Remove Voices option from tab when canceled~~
@@ -40,7 +40,7 @@
 
 ## Save page for Later ##
 
-## Open Saved links ##
+## Open Reeading Queue ##
 * ! ~~Design Saved Links html Page~~
 
 ## Settings Page ## (not required anymore)
@@ -49,8 +49,8 @@
 
 ## Help Page ##
 * ~~Design Help Window~~
+* ~~! Change help page content~~
 * when help menu is active disable all other icons ?
-* ! Change help page content
 
 ## Welcome Page ##
 * Build Extension welcome page for new users
