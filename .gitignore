@@ -3,3 +3,4 @@ _config.yml
 .DS_Store
 *.log
 docs/*
+docs

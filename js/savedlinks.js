@@ -13,12 +13,12 @@
     message: "send links"
   }, function (response) {
     if (response.message === "links sent") {
-      console.log("links loaded in local" + JSON.stringify(response.data));
+      //console.log("links loaded in local" + JSON.stringify(response.data));
       savedLinksArray = response.data.sort(compareDate);
       loadSavedLinksObject(savedLinksArray);
       loadButtonFunctions();
     } else if (response.message === "links empty") {
-      console.log("links empty" + JSON.stringify(response.data));
+      //console.log("links empty" + JSON.stringify(response.data));
       savedLinksArray = response.data;
       loadSavedLinksObject(savedLinksArray);
       loadButtonFunctions();
@@ -124,7 +124,7 @@
       html += "<span class='heading'>Delete</span>";
       html += "</div>";
       for (var link of _linksArray) {
-        console.log(JSON.stringify(link));
+        //console.log(JSON.stringify(link));
         var date = new Date(link.dateSaved);
         //console.log(date.toString());
         html += "<div class='links'>";
@@ -153,7 +153,7 @@
     
     // add onclick function on delete text
     $(".delete").click(function (event) {
-      console.log($(event.target.parentElement).children("a").attr('href'));
+      //console.log($(event.target.parentElement).children("a").attr('href'));
       var _deleteUrl = $(event.target.parentElement).children("a").attr('href');
       _linksArray = _linksArray.filter(function(obj) {
         return obj.url !== _deleteUrl;

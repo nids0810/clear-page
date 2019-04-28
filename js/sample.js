@@ -218,36 +218,48 @@ function formatPage() {
 }
  */
 /* 
-var webElement = function () {
-  var web = {};
-  web.title =
-    $("title").text() ||
-    $("meta[name='title']").attr("content") ||
-    $("meta[property='og:title']").attr("content") ||
-    "";
-  web.author = $("meta[name='author']").attr("content") || "";
-  web.url = $("meta[property='og:url']").attr("content") || "";
-  web.sitename = $("meta[property='og:site_name']").attr("content") || "";
-  if (web.url !== "") {
-    web.domain = new URL(web.url).hostname;
-  }
-  web.content = "";
-  web.type = $("meta[property='og:type']").attr("content") || "";
-  web.description =
-    $('meta[name="description"]').attr("content") ||
-    $("meta[property='og:description']").attr("content") ||
-    "";
-  web.date_published = Date.parse($("meta[property='article:published_time']").attr("content")) ||
-    "";
-  web.lead_image_url = $("meta[property='og:image']").attr("content") ||
-    "";
-  web.next_page_url = null;
-  web.rendered_pages = 1;
-  web.total_pages = 1;
-  web.word_count = 465;
-  console.log(web);
-};
-//webElement();
+           var webDetails = function() {
+              var web = {};
+              web.title =
+                $("title").text() ||
+                $("meta[name='title']").attr("content") ||
+                $("meta[property='og:title']").attr("content") ||
+                "";
+              web.author =
+                $("meta[name='author']").attr("content") || "";
+              web.url =
+                $("meta[property='og:url']").attr("content") || "";
+              web.sitename =
+                $("meta[property='og:site_name']").attr(
+                  "content"
+                ) || "";
+              if (web.url !== "") {
+                web.domain = new URL(web.url).hostname;
+              }
+              web.type =
+                $("meta[property='og:type']").attr("content") || "";
+              web.description =
+                $('meta[name="description"]').attr("content") ||
+                $("meta[property='og:description']").attr(
+                  "content"
+                ) ||
+                "";
+              web.date_published =
+                Date.parse(
+                  $("meta[property='article:published_time']").attr(
+                    "content"
+                  )
+                ) || "";
+              web.lead_image_url =
+                $("meta[property='og:image']").attr("content") ||
+                "";
+              web.next_page_url = null;
+              web.rendered_pages = 1;
+              web.total_pages = 1;
+              return web;
+            };
+
+            //console.log(webDetails());
 
 $("#tts-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/speak_grayed.png"));
@@ -257,5 +269,98 @@ $("#tts-btn").hover(function () {
 
  */
 
+//"content_scripts": [{
+//"matches": ["*://*/*"],
+//"exclude_globs": ["*://*facebook.com/*", "https://www.reddit.*/*", "https://twitter.*/*"],
+//"js": ["third-party/jquery.min.js", "third-party/ga.js", "third-party/readability.js", "js/content.js"]
+//}],
+
+/*  //window.open(chrome.runtime.getURL("html/welcome.html"));
+  var _settings = JSON.parse(localStorage.getItem("clear-page-settings"));
+  if (_settings === null || _settings === {}) {
+    console.log("local settings not available. Importing from external source.");
+    $.getJSON(chrome.runtime.getURL("json/settings.json"), function (data) {
+      localStorage.setItem("clear-page-settings", JSON.stringify(data));
+    });
+  } else {
+    console.log("local settings available. Importing from local source.");
+  }
+ */
+
+/* 
+  $.each(voices, function() {
+    if (this.lang === language) {
+      selectedVoice = this;
+      $("#speech-voices").append(
+        $("<option>")
+          .attr({
+            dataLang: this.lang,
+            "data-name": this.name,
+            value: this.name
+          })
+          .text(this.name + "--DEFAULT")
+      );
+      $("#speech-voices").val(this.name);
+      console.log(
+        "Default voice: " +
+          this.name +
+          " , language: " +
+          this.lang
+      );
+    } else {
+      $("#speech-voices").append(
+        $("<option>")
+          .attr({
+            dataLang: this.lang,
+            "data-name": this.name,
+            value: this.name
+          })
+          .text(this.name)
+      );
+    }
+  });
+ */
 
 
+/* var sadHorn = this.createElement({
+        type: 'DIV',
+        id: 'readability-message',
+        innerHTML: `<div>Sorry but we couldn't parse this page :( - Rocket Readability</div>`
+      }); */
+
+/* $("#read-container").append(
+              "<div id='read-option'></div>"
+            );
+            $("#read-option").append(
+              "<img id='read-option-btn' title='option' src='" + chrome.runtime.getURL("images/option.png") + "'/>"
+            );
+            $("#read-option-btn").click(openOptionBox);
+            $("#read-option-btn").css({
+              width: "30px",
+              height: "30px",
+              display: "block",
+              cursor: "pointer",
+              marginBottom: "15px"
+            });
+
+            var openOptionBox = function () {
+              $("#read-option").append(
+                "<div id='read-option-box'></div>"
+              );
+              $("#read-option-box").append(
+                "<button id='toggle-theme' class='toggle-off'>Theme</button>"
+              );
+              $("toggle-theme").click(function () {
+                if($("toggle-theme").hasClass("toggle-off")) {
+                  $("toggle-theme").removeClass("toggle-off").addClass("toggle-on");
+                  $("#read-container").css({backgroundColor: "black"});
+                } else {
+                  $("toggle-theme")
+                    .removeClass("toggle-on")
+                    .addClass("toggle-off");
+                  $("#read-container").css({
+                    backgroundColor: "#333"
+                  });
+                }
+              });
+            }; */
