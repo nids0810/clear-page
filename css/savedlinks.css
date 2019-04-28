@@ -22,7 +22,7 @@ body {
     border: 0;
     border-radius: 2px;
     padding: 8px 20px;
-    background-color: #33b5e5;
+    background-color:#4A7C87;
     cursor: pointer;
     text-transform: uppercase;
     color: #fff;
@@ -30,7 +30,7 @@ body {
 }
 
 #sort-buttons button:hover {
-    background: #666;
+    background: #33b5e5;
 }
 
 #sort-buttons button:focus {

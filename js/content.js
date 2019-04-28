@@ -17,7 +17,7 @@
 
           $("body").append("<div id='tool-option'></div>");
           $("#tool-option").css({
-            backgroundColor: "#F9CA0C",
+            backgroundColor: "#78A4AF",
             position: "fixed",
             top: "30%",
             right: "6px",
@@ -29,7 +29,7 @@
           //Read Mode Button
           $("#tool-option").append(
             "<img id='read-btn' title='Read Mode' src='" +
-            chrome.runtime.getURL("images/book.png") +
+            chrome.runtime.getURL("images/book2.png") +
             "'/>"
           );
           $("#read-btn").click(readMode);
@@ -89,6 +89,12 @@
             "'/>"
           );
           $("#help-btn").click(openHelp);
+
+          $("#read-btn").hover(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/book1.png"));
+          }, function () {
+            $(this).attr('src', chrome.runtime.getURL("images/book2.png"));
+          });
 
           $(
             "#read-btn, #tts-btn, #edit-btn, #highlight-btn, #save-btn, #open-btn, #pdf-btn, #help-btn"
@@ -173,17 +179,17 @@
             // Remove everything.
             //document.body.outerHTML = "";
             document.body.innerHTML = "";
+            $("body").css({margin: "0"});
 
             if ($("#read-container").length == 0) {
               //read-container will replace body
               $("body").append("<div id='read-container'></div>");
               $("#read-container").css({
-                //position: "fixed",
-                //height: "100%",
                 width: "100%",
                 background: "#e9e9e9",
                 color: "#333 !important",
-                paddingTop: "50px"
+                padding: "50px 0",
+                fontFamily: "arial, sans-serif"
               });
             }
 
@@ -226,18 +232,20 @@
               "<div id='read-option'></div>"
             );
             $("#read-option").append(
-              "<img id='read-option-btn' title='option' src='" +
+              "<div id='read-option-btn'><img title='option' src='" +
               chrome.runtime.getURL("images/option.png") +
-              "'/>"
+              "'/></div>"
             );
             $("#read-option-btn").css({
-              width: "30px",
-              height: "30px",
-              display: "block",
+              textAlign: "right",
+              width: "60%",
+              margin: "0px auto",
               cursor: "pointer",
-              marginBottom: "15px",
-              position: "sticky",
-              left: "75%"
+              marginBottom: "5px",
+              boxSizing: "border-box"
+            });
+            $("#read-option-btn img").css({
+              width: "25px"
             });
 
             var _optionClicked = false;
@@ -250,11 +258,14 @@
                     "<div id='read-option-box'></div>"
                   );
                   $("#read-option-box").css({
-                    backgroundColor: "#333",
+                    backgroundColor: "#4A7C87",
                     color: 'white',
-                    padding: "34px",
-                    width: "54%",
-                    margin: "0 auto"
+                    padding: "20px",
+                    width: "60%",
+                    margin: "0 auto",
+                    fontFamily: "arial,sans-serif",
+                    fontSize: "13px",
+                    boxSizing: "border-box"
                   });
                 } else {
                   $("#read-option-box").show();
@@ -339,15 +350,25 @@
                 $("#read-color-theme :input").change(
                   function () {
                     if (this.value == "light") {
+                      $("#read-container").css({background: "#e9e9e9"});
                       $("#read-text").css({
-                        background: "#fff",
-                        color: "#333"
+                        backgroundColor: "#fff",
+                        color: "#333",
+                        border: "#dbdbdb"
                       });
+                      $("#read-text #read-text-content a").css({color:"#333"});
+                      $("#read-text-domain").css({color: "#104b4e"});
+                      $("#read-text-content").css({borderColor: "#eee"});
                     } else if (this.value == "dark") {
+                      $("#read-container").css({background: "#111"});
                       $("#read-text").css({
-                        backgroundColor: "#000000",
-                        color: "#fcfafa"
+                        backgroundColor: "#222",
+                        color: "#aaa",
+                        border: "#222"
                       });
+                      $("#read-text #read-text-content a").css({color:"#aaa"});
+                      $("#read-text-domain").css({color: "#11ABB0"});
+                      $("#read-text-content").css({borderColor: "#444"});
                     }
                     $("#read-color-theme")
                       .find(
@@ -370,13 +391,14 @@
             $("#read-text").css({
               background: "#fff",
               color: "#333",
-              padding: "70px",
-              width: "50%",
+              padding: "45px 70px",
+              width: "60%",
               margin: "0 auto",
               //fontFamily: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif',
-              lineHeight: "32px",
+              lineHeight: "28px",
               border: "1px solid #dbdbdb",
-              fontSize: "19px"
+              fontSize: "15px",
+              boxSizing: "border-box"
             });
 
             if (article === null) {
@@ -413,15 +435,27 @@
               $("#read-text-author").text(
                 "Author: " + article.byline
               );
-              $("#read-text-title").css({
-                lineHeight: "45px"
-              });
               $(
-                "#read-text-domain, #read-text-words, #read-text-eta, #read-text-author"
+                "#read-text-domain"
               ).css({
-                color: "#666",
-                fontSize: "16px",
+                color: "#104b4e",
+                fontSize: "13px",
                 fontStyle: "oblique"
+              });
+              $("#read-text-words, #read-text-eta, #read-text-author"
+              ).css({
+                color: "#777",
+                fontSize: "13px",
+                fontStyle: "oblique",
+                marginRight: "13px"
+              });
+              $("#read-text-content").css({
+                borderTop: "2px solid #eee"
+              });
+              $("#read-text #read-text-content a").css({
+                color: "#333",
+                textDecoration: "none",
+                cursor: "default"
               });
             }
             readingMode = false;
@@ -509,26 +543,26 @@
             });
             $("#speech-voices").css({
               border: "0",
-              background: "#0e8c41",
+              background: "#4A7C87",
               color: "#fff",
-              padding: "9px",
               cursor: "pointer",
               fontSize: "17px",
               borderRadius: "5px",
-              marginLeft: "10px"
+              marginLeft: "10px",
+              height: "38px"
             });
           } else {
             if ($("#speech-voices").length == 0) {
               $("#dialog-box").append("<select id='speech-voices'></select>");
               $("#speech-voices").css({
                 border: "0",
-                background: "#0e8c41",
+                background: "4A7C87",
                 color: "#fff",
-                padding: "9px",
                 cursor: "pointer",
                 fontSize: "17px",
                 borderRadius: "5px",
-                marginLeft: "10px"
+                marginLeft: "10px",
+                height: "38px"
               });
               $("#apply-btn").html("Speak");
             }
@@ -997,7 +1031,7 @@
             .prop("type", "text/css")
             .prop("id", "highlight-mode-css")
             .html(
-              ".manual-highlight {background-color: #00bbff; display: inline;}"
+              ".manual-highlight {background-color: #4a7c87; color: #fff; display: inline;}"
             )
             .appendTo("head");
 
@@ -1271,7 +1305,9 @@
             });
             $('#help-content div span').css({
               fontSize: '14px',
-              fontWeight: 'bolder'
+              fontWeight: 'bolder',
+              marginBottom: "11px",
+              display: "block"
             });
             $('#help-content div p').css({
               fontSize: '13px'
