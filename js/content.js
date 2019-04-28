@@ -29,7 +29,7 @@
           //Read Mode Button
           $("#tool-option").append(
             "<img id='read-btn' title='Read Mode' src='" +
-            chrome.runtime.getURL("images/book2.png") +
+            chrome.runtime.getURL("images/book-white.png") +
             "'/>"
           );
           $("#read-btn").click(readMode);
@@ -37,7 +37,7 @@
           //Text to Speak Mode Button
           $("#tool-option").append(
             "<img id='tts-btn' title='Text to Speech Mode' src='" +
-            chrome.runtime.getURL("images/speak.png") +
+            chrome.runtime.getURL("images/speak-white.png") +
             "'/>"
           );
           $("#tts-btn").click(ttsMode);
@@ -45,55 +45,97 @@
           //Edit Mode Button
           $("#tool-option").append(
             "<img id='edit-btn' title='Edit Mode' src='" +
-            chrome.runtime.getURL("images/edit.png") +
-            "'/>"
+              chrome.runtime.getURL("images/edit-white.png") +
+              "'/>"
           );
           $("#edit-btn").click(editMode);
 
           //Highlight Mode Button
           $("#tool-option").append(
             "<img id='highlight-btn' title='Highlight Mode' src='" +
-            chrome.runtime.getURL("images/highlight.png") +
-            "'/>"
+              chrome.runtime.getURL("images/highlight-white.png") +
+              "'/>"
           );
           $("#highlight-btn").click(highlightMode);
 
           //Save page for later Button
           $("#tool-option").append(
             "<img id='save-btn' title='Save page for Later' src='" +
-            chrome.runtime.getURL("images/save.png") +
+            chrome.runtime.getURL("images/save-white.png") +
             "'/>"
           );
           $("#save-btn").click(saveLinks);
 
           //Open saved links Button
           $("#tool-option").append(
-            "<img id='open-btn' title='Open Saved Links' src='" +
-            chrome.runtime.getURL("images/open.png") +
-            "'/>"
+            "<img id='open-btn' title='Open Reading Queue' src='" +
+              chrome.runtime.getURL("images/open-white.png") +
+              "'/>"
           );
           $("#open-btn").click(openLinks);
 
           //Save as PDF Button
           $("#tool-option").append(
             "<img id='pdf-btn' title='Save as PDF' src='" +
-            chrome.runtime.getURL("images/pdf.png") +
-            "'/>"
+              chrome.runtime.getURL("images/pdf-white.png") +
+              "'/>"
           );
           $("#pdf-btn").click(saveAsPDF);
 
           //Help Button
           $("#tool-option").append(
             "<img id='help-btn' title='Help Mode' src='" +
-            chrome.runtime.getURL("images/help.png") +
+            chrome.runtime.getURL("images/help-white.png") +
             "'/>"
           );
           $("#help-btn").click(openHelp);
 
           $("#read-btn").hover(function () {
-            $(this).attr('src', chrome.runtime.getURL("images/book1.png"));
+            $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
           }, function () {
-            $(this).attr('src', chrome.runtime.getURL("images/book2.png"));
+            $(this).attr('src', chrome.runtime.getURL("images/book-white.png"));
+          });
+
+          $("#tts-btn").hover(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/speak-green.png"));
+          }, function () {
+            $(this).attr('src', chrome.runtime.getURL("images/speak-white.png"));
+          });
+
+          $("#edit-btn").hover(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/edit-green.png"));
+          }, function () {
+            $(this).attr('src', chrome.runtime.getURL("images/edit-white.png"));
+          });
+
+          $("#highlight-btn").hover(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/highlight-green.png"));
+          }, function () {
+            $(this).attr('src', chrome.runtime.getURL("images/highlight-white.png"));
+          });
+
+          $("#save-btn").hover(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/save-green.png"));
+          }, function () {
+            $(this).attr('src', chrome.runtime.getURL("images/save-white.png"));
+          });
+
+          $("#open-btn").hover(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/open-green.png"));
+          }, function () {
+            $(this).attr('src', chrome.runtime.getURL("images/open-white.png"));
+          });
+
+          $("#pdf-btn").hover(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/pdf-green.png"));
+          }, function () {
+            $(this).attr('src', chrome.runtime.getURL("images/pdf-white.png"));
+          });
+
+          $("#help-btn").hover(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/help-green.png"));
+          }, function () {
+            $(this).attr('src', chrome.runtime.getURL("images/help-white.png"));
           });
 
           $(
@@ -233,7 +275,7 @@
             );
             $("#read-option").append(
               "<div id='read-option-btn'><img title='option' src='" +
-              chrome.runtime.getURL("images/option.png") +
+              chrome.runtime.getURL("images/option-green.png") +
               "'/></div>"
             );
             $("#read-option-btn").css({
@@ -287,8 +329,8 @@
                   $("#read-option-box").append(
                     "<div id='read-font-family'>\
                     <Label>Typography:</Label>\
-                    <input type='radio' id='font-sans-serif' name='sans-serif' value='sans-serif'> Sans-Serif\
-                    <input type='radio' id='font-verdana' name='verdana' value='verdana' checked> Verdana\
+                    <input type='radio' id='font-sans-serif' name='sans-serif' value='sans-serif' checked> Sans-Serif\
+                    <input type='radio' id='font-verdana' name='verdana' value='verdana'> Verdana\
                     <input type='radio' id='font-courier' name='courier' value='courier'> Courier\
                     </div>"
                   );
@@ -306,15 +348,33 @@
                 $("#read-font-size :input").change(function () {
                   if (this.value == "small") {
                     $("#read-text-content").css({
-                      fontSize: "17px"
+                      fontSize: "13px"
+                    });
+                    $("#read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
+                      fontSize: "12px"
+                    });
+                    $("#read-text-title").css({
+                      fontSize: "30px"
                     });
                   } else if (this.value == "medium") {
                     $("#read-text-content").css({
-                      fontSize: "19px"
+                      fontSize: "15px"
+                    });
+                    $("#read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
+                      fontSize: "13px"
+                    });
+                    $("#read-text-title").css({
+                      fontSize: "32px"
                     });
                   } else if (this.value == "large") {
                     $("#read-text-content").css({
-                      fontSize: "21px"
+                      fontSize: "17px"
+                    });
+                    $("#read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
+                      fontSize: "14px"
+                    });
+                    $("#read-text-title").css({
+                      fontSize: "34px"
                     });
                   }
                   $("#read-font-size")
@@ -327,15 +387,15 @@
                 });
                 $("#read-font-family :input").change(function () {
                   if (this.value == "sans-serif") {
-                    $("#read-text-content").css({
+                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
                       fontFamily: "sans-serif"
                     });
                   } else if (this.value == "verdana") {
-                    $("#read-text-content").css({
+                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
                       fontFamily: "Verdana"
                     });
                   } else if (this.value == "courier") {
-                    $("#read-text-content").css({
+                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
                       fontFamily: "Courier"
                     });
                   }
@@ -402,7 +462,7 @@
             });
 
             if (article === null) {
-              $("#read-text").text(
+              $("#read-text").html(
                 "<h1 id='read-text-error'>Sorry! Couldn't make this page readable</h1>"
               );
               console.warn("Article is not readable");
@@ -435,15 +495,15 @@
               $("#read-text-author").text(
                 "Author: " + article.byline
               );
-              $(
-                "#read-text-domain"
-              ).css({
+              $("#read-text-title").css({
+                //fontSize: "18px"
+              });
+              $("#read-text-domain").css({
                 color: "#104b4e",
                 fontSize: "13px",
                 fontStyle: "oblique"
               });
-              $("#read-text-words, #read-text-eta, #read-text-author"
-              ).css({
+              $("#read-text-words, #read-text-eta, #read-text-author").css({
                 color: "#777",
                 fontSize: "13px",
                 fontStyle: "oblique",
@@ -457,9 +517,13 @@
                 textDecoration: "none",
                 cursor: "default"
               });
+              $("#read-text-error").css({
+                color: "red"
+              });
             }
             readingMode = false;
             createToolOptions();
+            $("#read-btn").attr('src', chrome.runtime.getURL("images/book-green.png"));
           } else {
             $("#read-mode").text("Reading Mode Off");
             $("#read-mode").css({
@@ -1223,7 +1287,7 @@
 
         //Open saved links Button Function
         var openLinks = function () {
-          console.log("Open saved links page is on");
+          console.log("Open reading queue mode is on");
           //ga("send", "event", "Open Links", "Clicked", "Main Button", "");
 
           chrome.runtime.sendMessage({
@@ -1245,92 +1309,112 @@
             if (mql.matches) {
               console.log("Hide tool-option");
               $("#tool-option").hide();
+              $("#help-mode").hide();
+              $("#read-option").hide();
+              $("#read-text").css({
+                width: "100%"
+              });
             } else {
               console.log("Show tool-option");
               $("#tool-option").show();
+              $("#help-mode").show();
+              $("#read-option").show();
+              $("#read-text").css({
+                width: "60%"
+              });
             }
           });
           window.print();
         };
 
+        var helpMode = false;
         //Help Mode Button Function
         var openHelp = function () {
-          var helpMode = true;
           console.log("Help mode on");
           //ga("send", "event", "Help Mode", "Clicked", "Main Button", "");
-          if ($("#help-mode").length == 0) {
-            $("body").append("<div id='help-mode'></div>");
-            var helpHtml =
-              "<div id='cross-btn'>X</div>\
-              <div id='help-title'>Help Doc</div>\
-              <div id='help-content'>\
-                <div><span>Read Mode: </span><p>Under Read mode, user can transform the website into a readable magzine page.</p></div>\
-                <div><span>Text to Speak Mode:</span><p>Under Text to Speech mode, user the transform the selected into speech and listen to the speech. Voice will be default based on user browser language. However, user can also choose different voices.</p></div>\
-                <div><span>Edit Mode: </span><p>Under Edit mode, user can delete any unnecesary web element from the view. Select the respective element by click and press apply button to delete the element. User can also deselect an existing selection by clicking again on the element. User can also press cancel to cancel the action.</p></div>\
-                <div><span>Highlight Mode:</span><p>Under Highlight mode, user can highlight any portion of the text on the webpage to distinguish it from rest of the text.</p></div>\
-                <div><span>Save Page for Later:</span><p>Under Save page for Later, user can save the current page in a reading queue. Already saved pages will through a duplication message on screen.</p></div>\
-                <div><span>Open Saved Links:</span><p>Under Open Saved Links, user can view the reading queue in a new tab. User can also sort the queue as well as delete any link which user has already completed reading.</p></div>\
-                <div><span>Save as PDF:</span><p>Under Save as PDF, user can save the current webpage along with all the changes in a PDF locally for future use.</p></div>\
-              </div>\
-              ";
-            $("#help-mode").append($.parseHTML(helpHtml));
-            $("#help-mode").css({
-              position: "fixed",
-              top: "30%",
-              backgroundColor: "#fff",
-              color: "#333",
-              padding: "15px",
-              width: "48%",
-              right: "5.5%",
-              overflow: "auto",
-              zIndex: "300",
-              borderRadius: "20px",
-              height: '355px',
-              boxShadow: '2px 2px 10px 0px #000'
-            });
-            $('#help-title').css({
-              textAlign: 'center',
-              fontSize: '20px',
-              fontWeight: 'bold',
-              textTransform: 'uppercase'
-            });
-            $('#help-content div').css({
-              background: '#f1f1f1',
-              border: '1px solid# eee',
-              backgroundColor: '#f1f2f2',
-              padding: '10px',
-              borderRadius: '7px',
-              marginBottom: '15px',
-              marginBottom: '10px'
-            });
-            $('#help-content div span').css({
-              fontSize: '14px',
-              fontWeight: 'bolder',
-              marginBottom: "11px",
-              display: "block"
-            });
-            $('#help-content div p').css({
-              fontSize: '13px'
-            });
-            $("#cross-btn").css({
-              background: '#333',
-              fontSize: '20px',
-              color: '#fff',
-              float: 'right',
-              borderRadius: '50%',
-              padding: '5px 12px',
-              cursor: 'pointer',
-              top: '-8px',
-              right: '-14px',
-              zIndex: '10',
-              position: 'sticky'
-            });
+          if(!helpMode){
+            $("#help-btn").attr('src', chrome.runtime.getURL("images/help-green.png"));
+            helpMode = true;
+            if ($("#help-mode").length == 0) {
+              $("body").append("<div id='help-mode'></div>");
+              var helpHtml =
+                "<div id='cross-btn'>X</div>\
+                <div id='help-title'>Clear Page: Help Doc</div>\
+                <div id='help-content'>\
+                  <div><p>Use this powerful tool by either clicking the icon <img src='" + chrome.runtime.getURL("icons/icon_16.png") + "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p></div>\
+                  <div><span>Read Mode:</span><p>Transform the website into a clean readable page with various styling options.</p></div>\
+                  <div><span>Text to Speak Mode:</span><p>Read out loud any selected text from the web page. Choose voices from various voice options.</p></div>\
+                  <div><span>Edit Mode:</span><p>Hide any unnecessary element from the web page on a single click. Select the element and use Apply button to hide. Use Cancel button to Undo any changes.</p></div>\
+                  <div><span>Highlight Mode:</span><p>Use the inbuilt Highlighter to highlight any text on the web page. Remove all highlights using the cancel button.</p></div>\
+                  <div><span>Save Page for Later:</span><p>Save favorite web pages in a reading queue for a later read. Detect any previously saved pages.</p></div>\
+                  <div><span>Open Reading Queue:</span><p>View the Read for Later list. Sort the list using various options as well as delete the unwanted web page.</p></div>\
+                  <div><span>Save as PDF:</span><p>One click to save the web page into PDF file locally.</p></div>\
+                  <div><p>Want to learn more? Please check out the clear page extension <a href='https://nids0810.github.io/clear-page/' title='Clear Page' target='_blank'>website</a>.</p></div>\
+                </div>\
+                ";
+              $("#help-mode").append($.parseHTML(helpHtml));
+              $("#help-mode").css({
+                position: "fixed",
+                top: "30%",
+                backgroundColor: "#fff",
+                color: "#333",
+                padding: "15px",
+                width: "48%",
+                right: "5.5%",
+                overflow: "auto",
+                zIndex: "300",
+                borderRadius: "20px",
+                height: '355px',
+                boxShadow: '2px 2px 10px 0px #000'
+              });
+              $('#help-title').css({
+                textAlign: 'center',
+                fontSize: '20px',
+                fontWeight: 'bold',
+                textTransform: 'uppercase'
+              });
+              $('#help-content div').css({
+                background: '#f1f1f1',
+                border: '1px solid# eee',
+                backgroundColor: '#f1f2f2',
+                padding: '10px',
+                borderRadius: '7px',
+                marginBottom: '15px',
+                marginBottom: '10px'
+              });
+              $('#help-content div span').css({
+                fontSize: '14px',
+                fontWeight: 'bolder',
+                marginBottom: "11px",
+                display: "block"
+              });
+              $('#help-content div p').css({
+                fontSize: '13px'
+              });
+              $("#cross-btn").css({
+                background: '#333',
+                fontSize: '20px',
+                color: '#fff',
+                float: 'right',
+                borderRadius: '50%',
+                padding: '5px 12px',
+                cursor: 'pointer',
+                top: '-8px',
+                right: '-14px',
+                zIndex: '10',
+                position: 'sticky'
+              });
+            } else {
+              $("#help-mode").show();
+              $("#help-mode").css({
+                opacity: 1,
+                zIndex: "300"
+              });
+            }
           } else {
-            $("#help-mode").show();
-            $("#help-mode").css({
-              opacity: 1,
-              zIndex: "300"
-            });
+            console.log("Help mode off");
+            helpMode = false;
+            $("#help-mode").hide();
           }
 
           $("#cross-btn").click(function (event) {

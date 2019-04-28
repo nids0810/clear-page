@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Clear Page",
   "version": "2.1",
-  "web_accessible_resources": ["images/*.png", "html/*.html", "css/*.css", "json/*.json", "js/*.js"],
+  "web_accessible_resources": ["images/*.png", "icons/*.png", "html/*.html", "css/*.css", "json/*.json", "js/*.js"],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "description": "A powerful browser extension tool to improve web readability and provide an enjoyable web experience .",
   "icons": {
