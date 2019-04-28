@@ -6,22 +6,25 @@ var _extensionActive = false;
 var _exitURL = "https://nids0810.github.io/clear-page/exit.html";
 
 chrome.browserAction.onClicked.addListener(function (tab) {
-  if (!_extensionActive) {
+  if (!_extensionActive && _activeTabs.length === 0) {
     console.log(tab);
-    _activeTabs.push({
-      "tab": tab
-    });
+    _extensionActive = true;
+    _activeTabs.push(tab);
     ga("send", "event", "Icon", "Activated", "", "1");
     //chrome.tabs.executeScript(tab.id, {file:"js/content.js"});
-    executeScripts(null, [{
-      file: "third-party/jquery.min.js"
-    }, {
-      file: "third-party/ga.js"
-    }, {
-      file: "third-party/readability.js"
-    }, {
-      file: "js/content.js"
-    }]);
+    executeScripts(tab.id, [{
+        file: "third-party/jquery.min.js"
+      },
+      {
+        file: "third-party/ga.js"
+      },
+      {
+        file: "third-party/readability.js"
+      },
+      {
+        file: "js/content.js"
+      }
+    ]);
     chrome.browserAction.setIcon({
         path: "icons/icon_on_16.png",
         tabId: tab.id
@@ -33,14 +36,19 @@ chrome.browserAction.onClicked.addListener(function (tab) {
     }, function () {
       console.log("Badge On");
     }); */
-    _extensionActive = true;
   } else {
-    //if (_activeTabs.indexOf(tab.title) >= 0) {_activeTabs = _activeTabs.filter(item => item !== tab.title);}
-    ga("send", "event", "Icon", "Deactivated", "", "1");
-    _activeTabs.forEach(function (items) {
-      console.log(items.tab.title + " - off");
+    //var tabIndex = _activeTabs.title.indexOf(tab.title);
+    var _newTab = _activeTabs.find(o => o.id === tab.id);
+    if (!$.isEmptyObject(_newTab)) {
+      _activeTabs = _activeTabs.filter(
+        item => item.id !== tab.id
+      );
+      //if (_activeTabs.indexOf(tab.title) >= 0) {_activeTabs = _activeTabs.filter(item => item !== tab.title);}
+      _extensionActive = false;
+      ga("send", "event", "Icon", "Deactivated", "", "1");
       chrome.tabs.executeScript(
-        items.tab.id, {
+        tab.id,
+        {
           file: "js/no-action.js"
         },
         result => {
@@ -51,20 +59,41 @@ chrome.browserAction.onClicked.addListener(function (tab) {
             );
         }
       );
-      _activeTabs = [];
-      chrome.browserAction.setIcon({
+      chrome.browserAction.setIcon(
+        {
           path: "icons/icon_16.png",
-          tabId: items.id
+          tabId: tab.id
         },
         extensionCallback
       );
-    });
-    /* chrome.browserAction.setBadgeText({
-      text: ""
-    }, function () {
-      console.log("Badge Off");
-    }); */
-    _extensionActive = false;
+      /* chrome.browserAction.setBadgeText({
+        text: ""
+      }, function () {
+        console.log("Badge Off");
+      }); */
+    } else {
+      _activeTabs.push(tab);
+      ga("send", "event", "Icon", "Activated", "", "1");
+      _extensionActive = true;
+      executeScripts(tab.id, [
+        {
+          file: "third-party/jquery.min.js"
+        },
+        {
+          file: "third-party/ga.js"
+        },
+        {
+          file: "third-party/readability.js"
+        },
+        {
+          file: "js/content.js"
+        }
+      ]);
+      chrome.browserAction.setIcon({
+        path: "icons/icon_on_16.png",
+        tabId: tab.id
+      });
+    }
   }
 });
 
