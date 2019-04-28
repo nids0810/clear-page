@@ -227,8 +227,8 @@
             );
             $("#read-option").append(
               "<img id='read-option-btn' title='option' src='" +
-                chrome.runtime.getURL("images/option.png") +
-                "'/>"
+              chrome.runtime.getURL("images/option.png") +
+              "'/>"
             );
             $("#read-option-btn").css({
               width: "30px",
@@ -241,8 +241,8 @@
             });
 
             var _optionClicked = false;
-            $("#read-option-btn").click(function() {
-              if(!_optionClicked){
+            $("#read-option-btn").click(function () {
+              if (!_optionClicked) {
                 _optionClicked = true;
                 //Read Option Box
                 if ($("#read-option-box").length == 0) {
@@ -259,7 +259,7 @@
                 } else {
                   $("#read-option-box").show();
                 }
-                
+
                 //Font Size toggle button
                 if ($("#read-font-size").length == 0) {
                   $("#read-option-box").append(
@@ -292,7 +292,7 @@
                     </div>"
                   );
                 }
-                $("#read-font-size :input").change(function() {
+                $("#read-font-size :input").change(function () {
                   if (this.value == "small") {
                     $("#read-text-content").css({
                       fontSize: "17px"
@@ -309,36 +309,35 @@
                   $("#read-font-size")
                     .find(
                       'input[type="radio"]:not(#' +
-                        this.id +
-                        ")"
+                      this.id +
+                      ")"
                     )
                     .prop("checked", false);
                 });
-                $("#read-font-family :input").change(function() {
-                    if (this.value == "sans-serif") {
-                      $("#read-text-content").css({
-                        fontFamily: "sans-serif"
-                      });
-                    } else if (this.value == "verdana") {
-                      $("#read-text-content").css({
-                        fontFamily: "Verdana"
-                      });
-                    } else if (this.value == "courier") {
-                      $("#read-text-content").css({
-                        fontFamily: "Courier"
-                      });
-                    }
-                    $("#read-font-family")
-                      .find(
-                        'input[type="radio"]:not(#' +
-                          this.id +
-                          ")"
-                      )
-                      .prop("checked", false);
+                $("#read-font-family :input").change(function () {
+                  if (this.value == "sans-serif") {
+                    $("#read-text-content").css({
+                      fontFamily: "sans-serif"
+                    });
+                  } else if (this.value == "verdana") {
+                    $("#read-text-content").css({
+                      fontFamily: "Verdana"
+                    });
+                  } else if (this.value == "courier") {
+                    $("#read-text-content").css({
+                      fontFamily: "Courier"
+                    });
                   }
-                );
+                  $("#read-font-family")
+                    .find(
+                      'input[type="radio"]:not(#' +
+                      this.id +
+                      ")"
+                    )
+                    .prop("checked", false);
+                });
                 $("#read-color-theme :input").change(
-                  function() {
+                  function () {
                     if (this.value == "light") {
                       $("#read-text").css({
                         background: "#fff",
@@ -353,8 +352,8 @@
                     $("#read-color-theme")
                       .find(
                         'input[type="radio"]:not(#' +
-                          this.id +
-                          ")"
+                        this.id +
+                        ")"
                       )
                       .prop("checked", false);
                   });
@@ -816,6 +815,7 @@
           //Add new class "web-edited", "web-deleted", "link-disabled" and push in the css
           $("<style>")
             .prop("type", "text/css")
+            .prop("id", "edit-mode-css")
             .html(
               "\
               .web-edited {\
@@ -992,21 +992,91 @@
             $("#dialog-box").show();
           }
 
-          //Add style for highlight
-          /* $("<style>")
+          //Add new class "manual-highlight" and push in the css
+          $("<style>")
             .prop("type", "text/css")
+            .prop("id", "highlight-mode-css")
             .html(
-              "\
-              ::-moz-selection {\
-                  color: red;\
-                  background: yellow;\
-              }\
-              ::selection {\
-                  color: red;\
-                  background: yellow;\
-              }"
+              ".manual-highlight {background-color: #00bbff; display: inline;}"
             )
-            .appendTo("head"); */
+            .appendTo("head");
+
+          function highlightRange(range) {
+            if (range.toString() !== "" && range.toString().match(/\w+/g) !== null) {
+              var newNode = document.createElement("span");
+              newNode.setAttribute("class", "manual-highlight");
+              range.surroundContents(newNode);
+            }
+          }
+
+          function getSafeRanges(dangerous) {
+            var a = dangerous.commonAncestorContainer;
+            // Starts -- Work inward from the start, selecting the largest safe range
+            var s = new Array(0),
+              rs = new Array(0);
+            if (dangerous.startContainer != a)
+              for (
+                var i = dangerous.startContainer; i != a; i = i.parentNode
+              )
+                s.push(i);
+            if (0 < s.length)
+              for (var i = 0; i < s.length; i++) {
+                var xs = document.createRange();
+                if (i) {
+                  xs.setStartAfter(s[i - 1]);
+                  xs.setEndAfter(s[i].lastChild);
+                } else {
+                  xs.setStart(s[i], dangerous.startOffset);
+                  xs.setEndAfter(
+                    s[i].nodeType == Node.TEXT_NODE ?
+                    s[i] :
+                    s[i].lastChild
+                  );
+                }
+                rs.push(xs);
+              }
+
+            // Ends -- basically the same code reversed
+            var e = new Array(0),
+              re = new Array(0);
+            if (dangerous.endContainer != a)
+              for (
+                var i = dangerous.endContainer; i != a; i = i.parentNode
+              )
+                e.push(i);
+            if (0 < e.length)
+              for (var i = 0; i < e.length; i++) {
+                var xe = document.createRange();
+                if (i) {
+                  xe.setStartBefore(e[i].firstChild);
+                  xe.setEndBefore(e[i - 1]);
+                } else {
+                  xe.setStartBefore(
+                    e[i].nodeType == Node.TEXT_NODE ?
+                    e[i] :
+                    e[i].firstChild
+                  );
+                  xe.setEnd(e[i], dangerous.endOffset);
+                }
+                re.unshift(xe);
+              }
+
+            // Middle -- the uncaptured middle
+            if (0 < s.length && 0 < e.length) {
+              var xm = document.createRange();
+              xm.setStartAfter(s[s.length - 1]);
+              xm.setEndBefore(e[e.length - 1]);
+            } else {
+              return [dangerous];
+            }
+
+            // Concat
+            rs.push(xm);
+            response = rs.concat(re);
+
+            // Send to Console
+            return response;
+          };
 
           $(document).click(function (event) {
             if (highlightMode) {
@@ -1041,15 +1111,28 @@
                   "Cancel Changes",
                   ""
                 );
+                $(".manual-highlight").each(function () {
+                  $(this).removeClass("manual-highlight");
+                });
                 $("#highlight-mode").text("Changes are cancelled!");
                 $("#highlight-mode").animate({
                     opacity: "0.0"
                   },
                   "slow"
                 );
+                //$("#highlight-mode-css").remove(); //delete the highlight-mode-css from head
                 $("#dialog-box").remove();
                 $("#tool-option").show();
                 highlightMode = false;
+              } else {
+                var sel = window.getSelection && window.getSelection();
+                if (sel && sel.rangeCount > 0) {
+                  var userSelection = sel.getRangeAt(0);
+                  var safeRanges = getSafeRanges(userSelection);
+                  for (var i = 0; i < safeRanges.length; i++) {
+                    highlightRange(safeRanges[i]);
+                  }
+                }
               }
             }
           });
