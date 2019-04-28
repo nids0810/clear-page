@@ -101,12 +101,16 @@
           });
         };
 
+        var _oldHead, _oldBody;
         var readingMode = true;
         //Read Mode Button Function
         var readMode = function () {
           console.log("Reading Mode On");
 
           if (readingMode) {
+            _oldBody = document.body.innerHTML;
+            _oldHead = document.head.innerHTML;
+
             var loc = document.location;
             var uri = {
               spec: loc.href,
@@ -119,42 +123,17 @@
                 loc.pathname.substr(
                   0,
                   loc.pathname.lastIndexOf("/") + 1
-                )
+                ),
             };
 
             var wordCount = function (str) {
               var _commonWords = [
-                "a",
-                "the",
-                "an",
-                "am",
-                "is",
-                "are",
-                "and",
-                "or",
-                "of",
-                "by",
-                "for",
-                "in",
-                "on",
-                "as",
-                "to",
-                "at",
-                "with",
-                "i",
-                "my",
-                "me",
-                "you",
-                "we",
-                "he",
-                "she",
-                "it",
-                "her",
-                "his",
-                "has",
-                "have",
-                "had"
+                "a", "an", "the", "am", "is", "are", "was", "have", "has", "has", "did", "do", //verbs
+                "and", "or", "not", "no", //logical
+                "of", "by", "for", "in", "on", "as", "to", "at", "with", //prepositions
+                "i", "my", "me", "you", "we", "he", "she", "it", "her", "his" //pronouns
               ];
+
               str = str.replace(/[\W_]+/g, " ");
               _commonWords.forEach(function (word, index) {
                 str = str.replace(
@@ -188,21 +167,31 @@
             var article = new Readability(uri, document).parse();
 
             // Remove alll or most stylesheets.
-            //document.head.outerHTML = "";
+            //document.head.outerHTML = "";            
             document.head.innerHTML = "";
 
             // Remove everything.
             //document.body.outerHTML = "";
             document.body.innerHTML = "";
-            $("body").css({
-              background: '#e9e9e9',
-              color: '#333 !important',
-              paddingTop: '50px'
-            });
+
+            if ($("#read-container").length == 0) {
+              //read-container will replace body
+              $("body").append("<div id='read-container'></div>");
+              $("#read-container").css({
+                //position: "fixed",
+                //height: "100%",
+                width: "100%",
+                background: "#e9e9e9",
+                color: "#333 !important",
+                paddingTop: "50px"
+              });
+            }
 
             if ($("#read-mode").length == 0) {
               //read-mode doesn't exist
-              $("body").append("<div id='read-mode'></div>");
+              $("#read-container").append(
+                "<div id='read-mode'></div>"
+              );
               $("#read-mode").text("Reading Mode On");
               $("#read-mode").css({
                 position: "fixed",
@@ -233,8 +222,152 @@
               );
             }
 
+            $("#read-container").append(
+              "<div id='read-option'></div>"
+            );
+            $("#read-option").append(
+              "<img id='read-option-btn' title='option' src='" +
+                chrome.runtime.getURL("images/option.png") +
+                "'/>"
+            );
+            $("#read-option-btn").css({
+              width: "30px",
+              height: "30px",
+              display: "block",
+              cursor: "pointer",
+              marginBottom: "15px",
+              position: "sticky",
+              left: "75%"
+            });
+
+            var _optionClicked = false;
+            $("#read-option-btn").click(function() {
+              if(!_optionClicked){
+                _optionClicked = true;
+                //Read Option Box
+                if ($("#read-option-box").length == 0) {
+                  $("#read-option").append(
+                    "<div id='read-option-box'></div>"
+                  );
+                  $("#read-option-box").css({
+                    backgroundColor: "#333",
+                    color: 'white',
+                    padding: "34px",
+                    width: "54%",
+                    margin: "0 auto"
+                  });
+                } else {
+                  $("#read-option-box").show();
+                }
+                
+                //Font Size toggle button
+                if ($("#read-font-size").length == 0) {
+                  $("#read-option-box").append(
+                    "<div id='read-font-size'>\
+                    <Label>Text Size:</Label>\
+                    <input type='radio' id='font-small' name='small' value='small'> Small\
+                    <input type='radio' id='font-medium' name='medium' value='medium' checked> Medium\
+                    <input type='radio' id='font-large' name='large' value='large'> Large\
+                    </div>"
+                  );
+                }
+                //Font toggle button
+                if ($("#read-font-family").length == 0) {
+                  $("#read-option-box").append(
+                    "<div id='read-font-family'>\
+                    <Label>Typography:</Label>\
+                    <input type='radio' id='font-sans-serif' name='sans-serif' value='sans-serif'> Sans-Serif\
+                    <input type='radio' id='font-verdana' name='verdana' value='verdana' checked> Verdana\
+                    <input type='radio' id='font-courier' name='courier' value='courier'> Courier\
+                    </div>"
+                  );
+                }
+                //Color Theme toggle button
+                if ($("#read-color-theme").length == 0) {
+                  $("#read-option-box").append(
+                    "<div id='read-color-theme'>\
+                    <Label>Theme:</Label>\
+                    <input type='radio' id='theme-light' name='light' value='light' checked> Light\
+                    <input type='radio' id='theme-dark' name='dark' value='dark'> Dark\
+                    </div>"
+                  );
+                }
+                $("#read-font-size :input").change(function() {
+                  if (this.value == "small") {
+                    $("#read-text-content").css({
+                      fontSize: "17px"
+                    });
+                  } else if (this.value == "medium") {
+                    $("#read-text-content").css({
+                      fontSize: "19px"
+                    });
+                  } else if (this.value == "large") {
+                    $("#read-text-content").css({
+                      fontSize: "21px"
+                    });
+                  }
+                  $("#read-font-size")
+                    .find(
+                      'input[type="radio"]:not(#' +
+                        this.id +
+                        ")"
+                    )
+                    .prop("checked", false);
+                });
+                $("#read-font-family :input").change(function() {
+                    if (this.value == "sans-serif") {
+                      $("#read-text-content").css({
+                        fontFamily: "sans-serif"
+                      });
+                    } else if (this.value == "verdana") {
+                      $("#read-text-content").css({
+                        fontFamily: "Verdana"
+                      });
+                    } else if (this.value == "courier") {
+                      $("#read-text-content").css({
+                        fontFamily: "Courier"
+                      });
+                    }
+                    $("#read-font-family")
+                      .find(
+                        'input[type="radio"]:not(#' +
+                          this.id +
+                          ")"
+                      )
+                      .prop("checked", false);
+                  }
+                );
+                $("#read-color-theme :input").change(
+                  function() {
+                    if (this.value == "light") {
+                      $("#read-text").css({
+                        background: "#fff",
+                        color: "#333"
+                      });
+                    } else if (this.value == "dark") {
+                      $("#read-text").css({
+                        backgroundColor: "#000000",
+                        color: "#fcfafa"
+                      });
+                    }
+                    $("#read-color-theme")
+                      .find(
+                        'input[type="radio"]:not(#' +
+                          this.id +
+                          ")"
+                      )
+                      .prop("checked", false);
+                  });
+              } else {
+                _optionClicked = false;
+                $("#read-option-box").hide();
+              }
+            });
+
             //create a element to display article
-            $("body").append("<div id='read-text'></div>");
+            $("#read-container").append(
+              "<div id='read-text'></div>"
+            );
             $("#read-text").css({
               background: "#fff",
               color: "#333",
@@ -253,6 +386,9 @@
               );
               console.warn("Article is not readable");
             } else {
+              $("#read-text").append(
+                "<span id='read-text-domain'></span>"
+              );
               $("#read-text").append("<h1 id='read-text-title'></h1>");
               $("#read-text").append(
                 "<span id='read-text-words'></span>"
@@ -260,7 +396,11 @@
               $("#read-text").append(
                 "<span id='read-text-eta'></span>"
               );
+              $("#read-text").append(
+                "<span id='read-text-author'></span>"
+              );
               $("#read-text").append("<p id='read-text-content'></p>");
+              $("#read-text-domain").text(article.uri.host);
               $("#read-text-title").text(article.title);
               $("#read-text-content").html(article.content);
               var _articleWCount = wordCount(article.textContent);
@@ -271,10 +411,15 @@
               $("#read-text-eta").text(
                 " Reading time: " + _articleETA + " mins"
               );
+              $("#read-text-author").text(
+                "Author: " + article.byline
+              );
               $("#read-text-title").css({
                 lineHeight: "45px"
               });
-              $("#read-text-words, #read-text-eta").css({
+              $(
+                "#read-text-domain, #read-text-words, #read-text-eta, #read-text-author"
+              ).css({
                 color: "#666",
                 fontSize: "16px",
                 fontStyle: "oblique"
@@ -293,8 +438,11 @@
               },
               "slow"
             );
+            readingMode = true;
             removeExtensionElements();
-            window.location.reload();
+            //window.location.reload();
+            document.head.innerHTML = _oldHead;
+            document.body.innerHTML = _oldBody;
             createToolOptions();
           }
         };
@@ -302,7 +450,7 @@
         //Text to Speech Mode Button Function
         var ttsMode = function () {
           console.log("Text to Speech mode is on");
-          ga("send", "event", "Speak Mode", "Clicked", "Main Button", "");
+          //ga("send", "event", "Speak Mode", "Clicked", "Main Button", "");
 
           var ttsMode = true;
           var selectedVoice = {};
@@ -606,7 +754,7 @@
         //Edit Mode Button Function
         var editMode = function () {
           console.log("Edit mode is on");
-          ga("send", "event", "Edit Mode", "Clicked", "Main Button", "");
+          //ga("send", "event", "Edit Mode", "Clicked", "Main Button", "");
           var editMode = true;
           $("#tool-option").hide();
 
@@ -784,7 +932,7 @@
         //Highlight Button Function
         var highlightMode = function () {
           console.log("Highlight mode is on");
-          ga("send", "event", "Highlight Mode", "Clicked", "Main Button", "");
+          //ga("send", "event", "Highlight Mode", "Clicked", "Main Button", "");
           var highlightMode = true;
 
           $("#tool-option").hide();
@@ -909,7 +1057,7 @@
 
         var saveLinks = function () {
           console.log("Save link mode is on");
-          ga("send", "event", "Save Link", "Clicked", "Main Button", "");
+          //ga("send", "event", "Save Link", "Clicked", "Main Button", "");
 
           if ($("#save-mode").length == 0) {
             //save-mode doesn't exist
@@ -959,7 +1107,7 @@
         //Open saved links Button Function
         var openLinks = function () {
           console.log("Open saved links page is on");
-          ga("send", "event", "Open Links", "Clicked", "Main Button", "");
+          //ga("send", "event", "Open Links", "Clicked", "Main Button", "");
 
           chrome.runtime.sendMessage({
               message: "open links page"
@@ -973,7 +1121,7 @@
         //Save as PDF Button Function
         var saveAsPDF = function () {
           console.log("Save as PDF is on");
-          ga("send", "event", "Save as PDF", "Clicked", "Main Button", "");
+          //ga("send", "event", "Save as PDF", "Clicked", "Main Button", "");
 
           var mediaQueryList = window.matchMedia("print");
           mediaQueryList.addListener(function (mql) {
@@ -992,7 +1140,7 @@
         var openHelp = function () {
           var helpMode = true;
           console.log("Help mode on");
-          ga("send", "event", "Help Mode", "Clicked", "Main Button", "");
+          //ga("send", "event", "Help Mode", "Clicked", "Main Button", "");
           if ($("#help-mode").length == 0) {
             $("body").append("<div id='help-mode'></div>");
             var helpHtml =
