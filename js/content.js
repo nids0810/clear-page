@@ -17,7 +17,7 @@
 
           $("body").append("<div id='tool-option'></div>");
           $("#tool-option").css({
-            backgroundColor: "#78A4AF",
+            backgroundColor: "#0f999e",
             position: "fixed",
             top: "30%",
             right: "6px",
@@ -1095,7 +1095,8 @@
             .prop("type", "text/css")
             .prop("id", "highlight-mode-css")
             .html(
-              ".manual-highlight {background-color: #4a7c87; color: #fff; display: inline;}"
+              ".manual-highlight {background-color: yellow; color: #000; display: inline;"+
+              ".manual-highlight a, .manual-highlight span, .manual-highlight p {color: #000; text-decoration: none}"
             )
             .appendTo("head");
 
@@ -1341,7 +1342,7 @@
                 "<div id='cross-btn'>X</div>\
                 <div id='help-title'>Clear Page: Help Doc</div>\
                 <div id='help-content'>\
-                  <div><p>Use this powerful tool by either clicking the icon <img src='" + chrome.runtime.getURL("icons/icon_16.png") + "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p></div>\
+                  <div><p>Use this powerful tool by either clicking the icon <img style='position: relative; top: 5px' src='" + chrome.runtime.getURL("icons/icon_16.png") + "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p></div>\
                   <div><span>Read Mode:</span><p>Transform the website into a clean readable page with various styling options.</p></div>\
                   <div><span>Text to Speak Mode:</span><p>Read out loud any selected text from the web page. Choose voices from various voice options.</p></div>\
                   <div><span>Edit Mode:</span><p>Hide any unnecessary element from the web page on a single click. Select the element and use Apply button to hide. Use Cancel button to Undo any changes.</p></div>\
@@ -1371,7 +1372,8 @@
                 textAlign: 'center',
                 fontSize: '20px',
                 fontWeight: 'bold',
-                textTransform: 'uppercase'
+                textTransform: 'uppercase',
+                marginBottom: "15px"
               });
               $('#help-content div').css({
                 background: '#f1f1f1',
@@ -1390,6 +1392,11 @@
               });
               $('#help-content div p').css({
                 fontSize: '13px'
+              });
+              $('#help-content div p a').css({
+                color: "#000",
+                textDecoration: "none",
+                fontWeight: "bold"
               });
               $("#cross-btn").css({
                 background: '#333',
