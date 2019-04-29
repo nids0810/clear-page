@@ -268,6 +268,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   ga('send', 'event', 'Extension', 'Uninstalled', '', '');
 }); */
 
+
+chrome.tabs.onRemoved.addListener(function (tabid, removed) {
+  var _newTab = _activeTabs.find(o => o.id === tabid);
+  //Check if the removed tab had extension active
+  if (!$.isEmptyObject(_newTab)) {
+    _activeTabs = _activeTabs.filter(item => item.id !== tabid);
+    console.log("An extension active tab " + tabid +" was closed");
+  }
+});
+
 function pushUniqueLinks(newLink) {
   var _savedlinks = JSON.parse(localStorage.getItem("clear-page-saved-links"));
 
