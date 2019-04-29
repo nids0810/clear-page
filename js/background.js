@@ -26,7 +26,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
       }
     ]);
     chrome.browserAction.setIcon({
-        path: "icons/icon_on_16.png",
+        path: "icons/icon_on_161.png",
         tabId: tab.id
       },
       extensionCallback
@@ -47,8 +47,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
       _extensionActive = false;
       ga("send", "event", "Icon", "Deactivated", "", "1");
       chrome.tabs.executeScript(
-        tab.id,
-        {
+        tab.id, {
           file: "js/no-action.js"
         },
         result => {
@@ -59,8 +58,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
             );
         }
       );
-      chrome.browserAction.setIcon(
-        {
+      chrome.browserAction.setIcon({
           path: "icons/icon_16.png",
           tabId: tab.id
         },
@@ -75,8 +73,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
       _activeTabs.push(tab);
       ga("send", "event", "Icon", "Activated", "", "1");
       _extensionActive = true;
-      executeScripts(tab.id, [
-        {
+      executeScripts(tab.id, [{
           file: "third-party/jquery.min.js"
         },
         {
@@ -90,7 +87,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
         }
       ]);
       chrome.browserAction.setIcon({
-        path: "icons/icon_on_16.png",
+        path: "icons/icon_on_161.png",
         tabId: tab.id
       });
     }
@@ -151,7 +148,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     console.log("Extension Active? " + _extensionActive);
     if (_extensionActive) {
       chrome.browserAction.setIcon({
-        path: "icons/icon_on_16.png",
+        path: "icons/icon_on_161.png",
         tabId: sender.tab.id
       });
       _activeTabs.push({
@@ -192,7 +189,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       }
     } else {
       sendResponse({
-        message: "error"
+        message: "error: no url available"
       });
     }
   }
@@ -242,15 +239,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     var _savedlinks = JSON.parse(
       localStorage.getItem("clear-page-saved-links")
     );
-    if (_savedlinks.length !== 0) {
-      window.open(chrome.runtime.getURL("html/savedlinks.html"));
-      sendResponse({
-        message: "opened page"
-      });
+    if (_extensionActive) {
+      if (_savedlinks.length !== 0) {
+        window.open(chrome.runtime.getURL("html/savedlinks.html"));
+        sendResponse({
+          message: "success: page opened"
+        });
+      } else {
+        console.warn("No links available");
+        sendResponse({
+          message: "error: links empty"
+        });
+      }
     } else {
-      console.warn("No links available");
+      console.warn("extension inactive");
       sendResponse({
-        message: "error: links empty"
+        message: "error: extension inacive"
       });
     }
   }

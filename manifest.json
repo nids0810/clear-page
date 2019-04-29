@@ -4,14 +4,14 @@
   "version": "2.1",
   "web_accessible_resources": ["images/*.png", "icons/*.png", "html/*.html", "css/*.css", "json/*.json", "js/*.js"],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
-  "description": "A powerful browser extension tool to improve web readability and provide an enjoyable web experience .",
+  "description": "A powerful browser extension tool to improve web readability and provide multifaceted and enjoyable web experience.",
   "icons": {
     "16": "icons/icon_16.png",
     "32": "icons/icon_32.png",
     "48": "icons/icon_48.png",
     "128": "icons/icon_128.png"
   },
-  "background" : {
+  "background": {
     "scripts": ["third-party/jquery.min.js", "third-party/ga.js", "js/background.js"],
     "persistent": false
   },
@@ -22,13 +22,13 @@
   "homepage_url": "https://nids0810.github.io/clear-page/",
   "permissions": ["activeTab", "*://*/*"],
   "commands": {
-      "_execute_browser_action": {
-        "suggested_key": {
-          "windows": "Ctrl+Shift+L",
-          "mac": "Command+Shift+L",
-          "chromeos": "Ctrl+Shift+L",
-          "linux": "Ctrl+Shift+L"
-        }
+    "_execute_browser_action": {
+      "suggested_key": {
+        "windows": "Ctrl+Shift+L",
+        "mac": "Command+Shift+L",
+        "chromeos": "Ctrl+Shift+L",
+        "linux": "Ctrl+Shift+L"
       }
     }
+  }
 }

@@ -7,10 +7,10 @@
     },
     function (response) {
       if (response.message) {
-        console.log("Extension Active? " + response.message);
+        console.log("Extension Active: " + response.message);
         //Create Tool Option
         var createToolOptions = function () {
-          //tool options
+          //Tool options box
           if ($("#tool-option").length != 0) {
             $("#tool-option").remove();
           }
@@ -45,16 +45,16 @@
           //Edit Mode Button
           $("#tool-option").append(
             "<img id='edit-btn' title='Edit Mode' src='" +
-              chrome.runtime.getURL("images/edit-white.png") +
-              "'/>"
+            chrome.runtime.getURL("images/edit-white.png") +
+            "'/>"
           );
           $("#edit-btn").click(editMode);
 
           //Highlight Mode Button
           $("#tool-option").append(
             "<img id='highlight-btn' title='Highlight Mode' src='" +
-              chrome.runtime.getURL("images/highlight-white.png") +
-              "'/>"
+            chrome.runtime.getURL("images/highlight-white.png") +
+            "'/>"
           );
           $("#highlight-btn").click(highlightMode);
 
@@ -69,16 +69,16 @@
           //Open saved links Button
           $("#tool-option").append(
             "<img id='open-btn' title='Open Reading Queue' src='" +
-              chrome.runtime.getURL("images/open-white.png") +
-              "'/>"
+            chrome.runtime.getURL("images/open-white.png") +
+            "'/>"
           );
           $("#open-btn").click(openLinks);
 
           //Save as PDF Button
           $("#tool-option").append(
             "<img id='pdf-btn' title='Save as PDF' src='" +
-              chrome.runtime.getURL("images/pdf-white.png") +
-              "'/>"
+            chrome.runtime.getURL("images/pdf-white.png") +
+            "'/>"
           );
           $("#pdf-btn").click(saveAsPDF);
 
@@ -138,9 +138,7 @@
             $(this).attr('src', chrome.runtime.getURL("images/help-white.png"));
           });
 
-          $(
-            "#read-btn, #tts-btn, #edit-btn, #highlight-btn, #save-btn, #open-btn, #pdf-btn, #help-btn"
-          ).css({
+          $("#read-btn, #tts-btn, #edit-btn, #highlight-btn, #save-btn, #open-btn, #pdf-btn, #help-btn").css({
             width: "30px",
             height: "30px",
             display: "block",
@@ -150,12 +148,19 @@
         };
 
         var _oldHead, _oldBody;
-        var readingMode = true;
+        var readingMode = false;
         //Read Mode Button Function
         var readMode = function () {
           console.log("Reading Mode On");
 
-          if (readingMode) {
+          if (!readingMode) {
+
+            if ($("#help-mode").length != 0) {
+              helpMode = false;
+              $("#help-mode").remove();
+            }
+            removeExtensionElements();
+
             _oldBody = document.body.innerHTML;
             _oldHead = document.head.innerHTML;
 
@@ -195,7 +200,7 @@
             };
 
             var estimatedReadingTime = function (wordCount) {
-              var _wordsPerMinute = 250,
+              var _wordsPerMinute = 200, //Hard coded word per mintues
                 _wordsPerSecond,
                 _totalReadingTimeSeconds,
                 _readingTimeMinutes;
@@ -221,7 +226,16 @@
             // Remove everything.
             //document.body.outerHTML = "";
             document.body.innerHTML = "";
-            $("body").css({margin: "0"});
+            $("body").css({
+              margin: "0"
+            });
+
+            var s = document.createElement("script");
+            s.type = "text/javascript";
+            s.id = "prettify-script"
+            s.src = "https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true";
+            // Use any selector
+            $("head").append(s);
 
             if ($("#read-container").length == 0) {
               //read-container will replace body
@@ -274,8 +288,8 @@
               "<div id='read-option'></div>"
             );
             $("#read-option").append(
-              "<div id='read-option-btn'><img title='option' src='" +
-              chrome.runtime.getURL("images/option-green.png") +
+              "<div id='read-option-btn'><img id='read-option-btn-icon' title='option' src='" +
+              chrome.runtime.getURL("images/option-blue.png") +
               "'/></div>"
             );
             $("#read-option-btn").css({
@@ -410,25 +424,41 @@
                 $("#read-color-theme :input").change(
                   function () {
                     if (this.value == "light") {
-                      $("#read-container").css({background: "#e9e9e9"});
+                      $("#read-container").css({
+                        background: "#e9e9e9"
+                      });
                       $("#read-text").css({
                         backgroundColor: "#fff",
                         color: "#333",
                         border: "#dbdbdb"
                       });
-                      $("#read-text #read-text-content a").css({color:"#333"});
-                      $("#read-text-domain").css({color: "#104b4e"});
-                      $("#read-text-content").css({borderColor: "#eee"});
+                      $("#read-text #read-text-content a").css({
+                        color: "#333"
+                      });
+                      $("#read-text-domain").css({
+                        color: "#104b4e"
+                      });
+                      $("#read-text-content").css({
+                        borderColor: "#eee"
+                      });
                     } else if (this.value == "dark") {
-                      $("#read-container").css({background: "#111"});
+                      $("#read-container").css({
+                        background: "#111"
+                      });
                       $("#read-text").css({
                         backgroundColor: "#222",
                         color: "#aaa",
                         border: "#222"
                       });
-                      $("#read-text #read-text-content a").css({color:"#aaa"});
-                      $("#read-text-domain").css({color: "#11ABB0"});
-                      $("#read-text-content").css({borderColor: "#444"});
+                      $("#read-text #read-text-content a").css({
+                        color: "#aaa"
+                      });
+                      $("#read-text-domain").css({
+                        color: "#11ABB0"
+                      });
+                      $("#read-text-content").css({
+                        borderColor: "#444"
+                      });
                     }
                     $("#read-color-theme")
                       .find(
@@ -463,8 +493,13 @@
 
             if (article === null) {
               $("#read-text").html(
-                "<h1 id='read-text-error'>Sorry! Couldn't make this page readable</h1>"
+                "<img id='read-text-error-img' src='" + chrome.runtime.getURL("icons/icon_128.png") + "'/>" +
+                "<h1 id='read-text-error'>Sorry! This page is in a unreadable format.</h1>"
               );
+              $("#read-text-error").css({
+                color: "red"
+              });
+              $("#read-text-error-img").css({});
               console.warn("Article is not readable");
             } else {
               $("#read-text").append(
@@ -499,7 +534,7 @@
                 //fontSize: "18px"
               });
               $("#read-text-domain").css({
-                color: "#104b4e",
+                color: "#4A7C87",
                 fontSize: "13px",
                 fontStyle: "oblique"
               });
@@ -510,20 +545,42 @@
                 marginRight: "13px"
               });
               $("#read-text-content").css({
-                borderTop: "2px solid #eee"
+                borderTop: "2px solid #eee",
+                overflow: "auto"
               });
               $("#read-text #read-text-content a").css({
                 color: "#333",
                 textDecoration: "none",
                 cursor: "default"
               });
-              $("#read-text-error").css({
-                color: "red"
+              $("#read-text #read-text-content img").css({
+                //width: "90%"
+                height: "auto"
+              });
+              if (!$("#read-text #read-text-content pre").hasClass("prettyprint")) {
+                $("#read-text #read-text-content pre").addClass("prettyprint");
+              }
+              $("#read-text #read-text-content pre").css({
+                backgroundColor: "#EFF0F1",
+                border: "none",
+                overflow: "auto"
+              });
+
+
+            }
+            readingMode = true;
+            createToolOptions();
+            if ($('#read-btn').length !== 0) {
+              //console.log("Reading Icon changed");
+              $('#read-btn').attr('src', '').promise().done(function () {
+                $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
+                $("#read-btn").hover(function () {
+                  $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
+                }, function () {
+                  $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
+                });
               });
             }
-            readingMode = false;
-            createToolOptions();
-            $("#read-btn").attr('src', chrome.runtime.getURL("images/book-green.png"));
           } else {
             $("#read-mode").text("Reading Mode Off");
             $("#read-mode").css({
@@ -535,7 +592,8 @@
               },
               "slow"
             );
-            readingMode = true;
+            readingMode = false;
+            $("#read-container").remove();
             removeExtensionElements();
             //window.location.reload();
             document.head.innerHTML = _oldHead;
@@ -548,10 +606,14 @@
         var ttsMode = function () {
           console.log("Text to Speech mode is on");
           //ga("send", "event", "Speak Mode", "Clicked", "Main Button", "");
-
           var ttsMode = true;
           var selectedVoice = {};
           $("#tool-option").hide();
+
+          if ($("#help-mode").length != 0) {
+            helpMode = false;
+            $("#help-mode").remove();
+          }
 
           if ($("#tts-mode").length == 0) {
             //tts-mode doesn't exist
@@ -801,13 +863,13 @@
                   "slow"
                 );
                 $("#apply-btn").html("Apply Changes");
-                $("#dialog-box").remove();
-                $("#tool-option").show();
                 window.speechSynthesis.cancel();
                 text2Speech = "";
                 textArray = [];
                 selectedVoice = {};
                 ttsMode = false;
+                removeExtensionElements();
+                createToolOptions();
               } else {
                 text2Speech = window.getSelection().toString();
                 textArray = chuckText(text2Speech);
@@ -854,6 +916,11 @@
           //ga("send", "event", "Edit Mode", "Clicked", "Main Button", "");
           var editMode = true;
           $("#tool-option").hide();
+
+          if ($("#help-mode").length != 0) {
+            helpMode = false;
+            $("#help-mode").remove();
+          }
 
           if ($("#edit-mode").length == 0) {
             //edit-mode doesn't exist
@@ -944,19 +1011,35 @@
             if (editMode) {
               if (
                 event.target.id === "tool-option" ||
+                event.target.id === "read-btn" ||
+                event.target.id === "tts-btn" ||
                 event.target.id === "edit-btn" ||
                 event.target.id === "highlight-btn" ||
-                event.target.id === "tts-btn" ||
                 event.target.id === "save-btn" ||
                 event.target.id === "pdf-btn" ||
+                event.target.id === "open-btn" ||
+                event.target.id === "help-btn" ||
                 event.target.id === "dialog-box" ||
                 event.target.id === "speech-voices" ||
-                event.target.id === "edit-mode" ||
                 event.target.id === "read-mode" ||
-                event.target.id === "highlight-mode" ||
+                event.target.id === "read-container" || // All Read-mode IDs
+                event.target.id === "read-option" ||
+                event.target.id === "read-option-btn" ||
+                event.target.id === "read-option-box" ||
+                event.target.id === "read-option-btn-icon" ||
+                event.target.id === "read-font-family" ||
+                event.target.id === "read-color-theme" ||
+                event.target.id === "read-font-size" ||
+                event.target.id === "read-text" ||
+                event.target.id === "read-text-content" ||
                 event.target.id === "tts-mode" ||
+                event.target.id === "edit-mode" ||
+                event.target.id === "highlight-mode" ||
                 event.target.id === "save-mode" ||
-                event.target.id === "help-mode"
+                event.target.id === "help-mode" ||
+                event.target.id === "cross-btn" ||
+                event.target.id === "help-title" ||
+                event.target.id === "help-content"
               ) {
                 //Don't select hidden elements
               } else if (event.target.tagName === "BODY") {
@@ -1013,8 +1096,10 @@
                   },
                   "slow"
                 );
-                $("#dialog-box").remove();
-                $("#tool-option").show();
+                //$("#dialog-box").remove();
+                //$("#tool-option").show();
+                removeExtensionElements();
+                createToolOptions();
                 editMode = false;
               } else if ($(event.target).hasClass("web-edited")) {
                 //Unselect already selected elements
@@ -1027,13 +1112,18 @@
           });
         };
 
+        var lightMode = false;
         //Highlight Button Function
         var highlightMode = function () {
           console.log("Highlight mode is on");
           //ga("send", "event", "Highlight Mode", "Clicked", "Main Button", "");
-          var highlightMode = true;
+          lightMode = true;
 
           $("#tool-option").hide();
+          if ($("#help-mode").length != 0) {
+            helpMode = false;
+            $("#help-mode").remove();
+          }
 
           if ($("#highlight-mode").length == 0) {
             //highlight-mode doesn't exist
@@ -1095,7 +1185,7 @@
             .prop("type", "text/css")
             .prop("id", "highlight-mode-css")
             .html(
-              ".manual-highlight {background-color: yellow; color: #000; display: inline;"+
+              ".manual-highlight {background-color: yellow; color: #000; display: inline;" +
               ".manual-highlight a, .manual-highlight span, .manual-highlight p {color: #000; text-decoration: none}"
             )
             .appendTo("head");
@@ -1178,7 +1268,7 @@
           };
 
           $(document).click(function (event) {
-            if (highlightMode) {
+            if (lightMode) {
               if (event.target.id === "apply-btn") {
                 //apply button clicked
                 console.log("Apply highlights on all selected elements");
@@ -1196,9 +1286,11 @@
                   },
                   "slow"
                 );
-                $("#dialog-box").hide();
-                $("#tool-option").show();
-                highlightMode = false;
+                //$("#dialog-box").hide();
+                //$("#tool-option").show();
+                lightMode = false;
+                removeExtensionElements();
+                createToolOptions();
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
                 console.log("Cancel highlight from all selected elements");
@@ -1220,9 +1312,11 @@
                   "slow"
                 );
                 //$("#highlight-mode-css").remove(); //delete the highlight-mode-css from head
-                $("#dialog-box").remove();
-                $("#tool-option").show();
-                highlightMode = false;
+                //$("#dialog-box").remove();
+                //$("#tool-option").show();
+                lightMode = false;
+                removeExtensionElements();
+                createToolOptions();
               } else {
                 var sel = window.getSelection && window.getSelection();
                 if (sel && sel.rangeCount > 0) {
@@ -1237,9 +1331,11 @@
           });
         };
 
+        var saveLinkMode = false;
         var saveLinks = function () {
           console.log("Save link mode is on");
           //ga("send", "event", "Save Link", "Clicked", "Main Button", "");
+          saveLinkMode = true;
 
           if ($("#save-mode").length == 0) {
             //save-mode doesn't exist
@@ -1260,72 +1356,89 @@
             });
           }
 
-          chrome.runtime.sendMessage({
-              message: "save link"
-            },
-            function (response) {
-              console.log(response.message);
-              if (response.message === "link saved") {
-                $("#save-mode").text("Link saved.");
-              } else if (response.message === "link duplicate") {
-                $("#save-mode").text("Duplicate link aren't Saved.");
-              } else {
-                $("#save-mode").text("Error: Try again.");
+          if (saveLinkMode) {
+            chrome.runtime.sendMessage({
+                message: "save link"
+              },
+              function (response) {
+                console.log(response.message);
+                if (response.message === "link saved") {
+                  $("#save-mode").text("Link saved.");
+                } else if (response.message === "link duplicate") {
+                  $("#save-mode").text(
+                    "Duplicate link."
+                  );
+                } else {
+                  $("#save-mode").text("Error: Try again.");
+                }
+                $("#save-mode").animate({
+                    opacity: "1.0"
+                  },
+                  "slow"
+                );
+                $("#save-mode").animate({
+                    opacity: "0.0"
+                  },
+                  "slow"
+                );
               }
-              $("#save-mode").animate({
-                  opacity: "1.0"
-                },
-                "slow"
-              );
-              $("#save-mode").animate({
-                  opacity: "0.0"
-                },
-                "slow"
-              );
-            }
-          );
+            );
+          } else {
+            console.warn("Save link mode is off");
+          }
         };
 
+        var openLinksMode = false;
         //Open saved links Button Function
         var openLinks = function () {
           console.log("Open reading queue mode is on");
+          openLinksMode = true;
           //ga("send", "event", "Open Links", "Clicked", "Main Button", "");
-
-          chrome.runtime.sendMessage({
-              message: "open links page"
-            },
-            function (response) {
-              console.log(response.message);
-            }
-          );
+          if (openLinksMode) {
+            chrome.runtime.sendMessage({
+                message: "open links page"
+              },
+              function (response) {
+                console.log(response.message);
+              }
+            );
+          } else {
+            console.warn("Open reading queue mode is off");
+          }
         };
 
+        var saveAsPDFMode = false;
         //Save as PDF Button Function
         var saveAsPDF = function () {
-          console.log("Save as PDF is on");
+          console.log("Save as PDF mode is on");
+          saveAsPDFMode = true;
           //ga("send", "event", "Save as PDF", "Clicked", "Main Button", "");
 
-          var mediaQueryList = window.matchMedia("print");
-          mediaQueryList.addListener(function (mql) {
-            if (mql.matches) {
-              console.log("Hide tool-option");
-              $("#tool-option").hide();
-              $("#help-mode").hide();
-              $("#read-option").hide();
-              $("#read-text").css({
-                width: "100%"
-              });
-            } else {
-              console.log("Show tool-option");
-              $("#tool-option").show();
-              $("#help-mode").show();
-              $("#read-option").show();
-              $("#read-text").css({
-                width: "60%"
-              });
-            }
-          });
-          window.print();
+          if (saveAsPDFMode) {
+            var mediaQueryList = window.matchMedia("print");
+            mediaQueryList.addListener(function (mql) {
+              if (mql.matches) {
+                console.log("Hide tool-option");
+                $("#tool-option").hide();
+                $("#help-mode").hide();
+                $("#read-option").hide();
+                $("#read-text").css({
+                  width: "100%"
+                });
+              } else {
+                console.log("Show tool-option");
+                $("#tool-option").show();
+                $("#help-mode").show();
+                $("#read-option").show();
+                $("#read-text").css({
+                  width: "60%"
+                });
+              }
+            });
+            window.print();
+          } else {
+            console.warn("Save as PDF mode is off");
+          }
         };
 
         var helpMode = false;
@@ -1333,16 +1446,16 @@
         var openHelp = function () {
           console.log("Help mode on");
           //ga("send", "event", "Help Mode", "Clicked", "Main Button", "");
-          if(!helpMode){
-            $("#help-btn").attr('src', chrome.runtime.getURL("images/help-green.png"));
+          if (!helpMode) {
             helpMode = true;
+            $("#help-btn").attr('src', chrome.runtime.getURL("images/help-green.png"));
             if ($("#help-mode").length == 0) {
               $("body").append("<div id='help-mode'></div>");
               var helpHtml =
                 "<div id='cross-btn'>X</div>\
                 <div id='help-title'>Clear Page: Help Doc</div>\
                 <div id='help-content'>\
-                  <div><p>Use this powerful tool by either clicking the icon <img style='position: relative; top: 5px' src='" + chrome.runtime.getURL("icons/icon_16.png") + "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p></div>\
+                  <div><p>Use this powerful tool by either clicking the icon <img src='" + chrome.runtime.getURL("icons/icon_16.png") + "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p></div>\
                   <div><span>Read Mode:</span><p>Transform the website into a clean readable page with various styling options.</p></div>\
                   <div><span>Text to Speak Mode:</span><p>Read out loud any selected text from the web page. Choose voices from various voice options.</p></div>\
                   <div><span>Edit Mode:</span><p>Hide any unnecessary element from the web page on a single click. Select the element and use Apply button to hide. Use Cancel button to Undo any changes.</p></div>\
@@ -1398,6 +1511,10 @@
                 textDecoration: "none",
                 fontWeight: "bold"
               });
+              $("#help-content div p img").css({
+                position: "relative",
+                top: "5px"
+              });
               $("#cross-btn").css({
                 background: '#333',
                 fontSize: '20px',
@@ -1421,7 +1538,7 @@
           } else {
             console.log("Help mode off");
             helpMode = false;
-            $("#help-mode").hide();
+            $("#help-mode").remove();
           }
 
           $("#cross-btn").click(function (event) {
@@ -1431,16 +1548,19 @@
                 },
                 "slow"
               );
-              $("#help-mode").hide();
+              $("#help-mode").remove();
               $("#help-mode").css({
                 zIndex: "-20"
               });
               helpMode = false;
               console.log("Help mode off");
+            } else {
+              console.warn("Help mode off");
             }
           });
         };
 
+        removeExtensionElements();
         createToolOptions();
       } else {
         console.log("Extension Active? " + response.message);
