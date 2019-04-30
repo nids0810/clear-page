@@ -20,7 +20,7 @@
             backgroundColor: "#0f999e",
             position: "fixed",
             top: "30%",
-            right: "6px",
+            right: "14px",
             padding: "15px 15px 0 15px",
             borderRadius: "5px 0px 0px 5px",
             zIndex: "300"
@@ -28,10 +28,9 @@
 
           //Read Mode Button
           $("#tool-option").append(
-            "<img id='read-btn' title='Read Mode' src='" +
-            chrome.runtime.getURL("images/book-white.png") +
-            "'/>"
-          );
+            "<img id='read-btn' title='Read Mode' src='" + 
+            chrome.runtime.getURL("images/book-white.png") + 
+            "'/>");
           $("#read-btn").click(readMode);
 
           //Text to Speak Mode Button
@@ -160,6 +159,7 @@
               $("#help-mode").remove();
             }
             removeExtensionElements();
+            $("#read-text-domain, #read-text-words, #read-text-eta, #read-text-author").text("");
 
             _oldBody = document.body.innerHTML;
             _oldHead = document.head.innerHTML;
@@ -265,33 +265,26 @@
                 opacity: "1.0",
                 zIndex: "20"
               });
-              $("#read-mode").animate({
-                  opacity: "0.0"
-                },
-                "slow"
-              );
+              $("#read-mode").animate({ opacity: "0.0" }, 1200);
             } else {
               //read-mode exist
               $("#read-mode").text("Reading Mode On");
-              $("#read-mode").css({
-                opacity: 1,
-                zIndex: "20"
-              });
-              $("#read-mode").animate({
-                  opacity: "0.0"
-                },
-                "slow"
-              );
+              $("#read-mode").css({ opacity: 1, zIndex: "20" });
+              $("#read-mode").animate({ opacity: "0.0" }, 1200);
             }
 
-            $("#read-container").append(
-              "<div id='read-option'></div>"
-            );
-            $("#read-option").append(
-              "<div id='read-option-btn'><img id='read-option-btn-icon' title='option' src='" +
-              chrome.runtime.getURL("images/option-blue.png") +
-              "'/></div>"
-            );
+            if ($("#read-option").length == 0) {
+              $("#read-container").append(
+                "<div id='read-option'></div>"
+              );
+            }
+            if ($("#read-option-btn").length == 0) {
+              $("#read-option").append(
+                "<div id='read-option-btn'><img id='read-option-btn-icon' title='option' src='" +
+                chrome.runtime.getURL("images/option-blue.png") +
+                "'/></div>"
+              );
+            }
             $("#read-option-btn").css({
               textAlign: "right",
               width: "60%",
@@ -435,6 +428,9 @@
                       $("#read-text #read-text-content a").css({
                         color: "#333"
                       });
+                      $("#read-text #read-text-content pre").css({
+                        backgroundColor: "#EFF0F1"
+                      });
                       $("#read-text-domain").css({
                         color: "#104b4e"
                       });
@@ -452,6 +448,9 @@
                       });
                       $("#read-text #read-text-content a").css({
                         color: "#aaa"
+                      });
+                      $("#read-text #read-text-content pre").css({
+                        backgroundColor: "#ccc",
                       });
                       $("#read-text-domain").css({
                         color: "#11ABB0"
@@ -475,9 +474,11 @@
             });
 
             //create a element to display article
-            $("#read-container").append(
-              "<div id='read-text'></div>"
-            );
+            if ($("#read-text").length == 0) {
+              $("#read-container").append(
+                "<div id='read-text'></div>"
+              );
+            }
             $("#read-text").css({
               background: "#fff",
               color: "#333",
@@ -492,44 +493,49 @@
             });
 
             if (article === null) {
-              $("#read-text").html(
-                "<img id='read-text-error-img' src='" + chrome.runtime.getURL("icons/icon_128.png") + "'/>" +
-                "<h1 id='read-text-error'>Sorry! This page is in a unreadable format.</h1>"
-              );
+              if ($("#read-text-error").length == 0) {
+                $("#read-text").append(
+                  "<div id='read-text-error'><img src='" +
+                    chrome.runtime.getURL("icons/icon_128.png") +
+                    "'/>" + "<h1>Sorry! this page is unreadable.</h1></div>"
+                );
+              }
               $("#read-text-error").css({
-                color: "red"
+                color: "red",
+                textAlign: "center"
               });
-              $("#read-text-error-img").css({});
+              $("#read-option").hide();
               console.warn("Article is not readable");
             } else {
-              $("#read-text").append(
-                "<span id='read-text-domain'></span>"
-              );
-              $("#read-text").append("<h1 id='read-text-title'></h1>");
-              $("#read-text").append(
-                "<span id='read-text-words'></span>"
-              );
-              $("#read-text").append(
-                "<span id='read-text-eta'></span>"
-              );
-              $("#read-text").append(
-                "<span id='read-text-author'></span>"
-              );
-              $("#read-text").append("<p id='read-text-content'></p>");
+              if ($("#read-text-domain").length == 0) {
+                $("#read-text").append("<span id='read-text-domain'></span>");
+              }
+              if ($("#read-text-title").length == 0) {
+                $("#read-text").append("<h1 id='read-text-title'></h1>");
+              }
+              if ($("#read-text-words").length == 0) {
+                $("#read-text").append("<span id='read-text-words'></span>");
+              }
+              if ($("#read-text-eta").length == 0) {
+                $("#read-text").append("<span id='read-text-eta'></span>");
+              }
+              if ($("#read-text-author").length == 0) {
+                $("#read-text").append("<span id='read-text-author'></span>");
+              }
+              if ($("#read-text-content").length == 0) {
+                $("#read-text").append("<p id='read-text-content'></p>");
+              }
+
               $("#read-text-domain").text(article.uri.host);
               $("#read-text-title").text(article.title);
               $("#read-text-content").html(article.content);
               var _articleWCount = wordCount(article.textContent);
               var _articleETA = estimatedReadingTime(_articleWCount);
-              $("#read-text-words").text(
-                "Total words: " + _articleWCount
-              );
-              $("#read-text-eta").text(
-                " Reading time: " + _articleETA + " mins"
-              );
-              $("#read-text-author").text(
-                "Author: " + article.byline
-              );
+              $("#read-text-words").text("Total words: " + _articleWCount);
+              $("#read-text-eta").text("Reading time: " + _articleETA + " mins");
+              if(article.byline !== null) {
+                $("#read-text-author").text("Author: " + article.byline);
+              }
               $("#read-text-title").css({
                 //fontSize: "18px"
               });
@@ -554,7 +560,6 @@
                 cursor: "default"
               });
               $("#read-text #read-text-content img").css({
-                //width: "90%"
                 height: "auto"
               });
               if (!$("#read-text #read-text-content pre").hasClass("prettyprint")) {
@@ -565,8 +570,6 @@
                 border: "none",
                 overflow: "auto"
               });
-
-
             }
             readingMode = true;
             createToolOptions();
@@ -583,15 +586,8 @@
             }
           } else {
             $("#read-mode").text("Reading Mode Off");
-            $("#read-mode").css({
-              opacity: 1,
-              zIndex: "20"
-            });
-            $("#read-mode").animate({
-                opacity: "0.0"
-              },
-              "slow"
-            );
+            $("#read-mode").css({ opacity: 1, zIndex: "20" });
+            $("#read-mode").animate({ opacity: "0.0" }, 1200);
             readingMode = false;
             $("#read-container").remove();
             removeExtensionElements();
@@ -605,7 +601,6 @@
         //Text to Speech Mode Button Function
         var ttsMode = function () {
           console.log("Text to Speech mode is on");
-          //ga("send", "event", "Speak Mode", "Clicked", "Main Button", "");
           var ttsMode = true;
           var selectedVoice = {};
           $("#tool-option").hide();
@@ -618,7 +613,7 @@
           if ($("#tts-mode").length == 0) {
             //tts-mode doesn't exist
             $("body").append("<div id='tts-mode'></div>");
-            $("#tts-mode").text("Select text to speech.");
+            $("#tts-mode").text("Speech to Text Mode");
             $("#tts-mode").css({
               position: "fixed",
               top: "11%",
@@ -628,12 +623,12 @@
               padding: "10px",
               opacity: "1.0"
             });
+            $("#tts-mode").animate({ opacity: "0.0" }, 1200);
           } else {
             //tts-mode exist
-            $("#tts-mode").text("Select text to speech.");
-            $("#tts-mode").css({
-              opacity: "1.0"
-            });
+            $("#tts-mode").text("Speech to Text Mode");
+            $("#tts-mode").css({ opacity: "1.0" });
+            $("#tts-mode").animate({ opacity: "0.0" }, 1200);
           }
 
           if ($("#dialog-box").length == 0) {
@@ -641,7 +636,6 @@
             $("body").append(
               "<div id='dialog-box'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button><select id='speech-voices'></select></div>"
             );
-
             $("#dialog-box").css({
               position: "fixed",
               top: "11%",
@@ -699,6 +693,8 @@
           if (!("speechSynthesis" in window)) {
             console.warn("browser don't support.");
             $("#tts-mode").text("browser don't support Text to Speech");
+            $("#tts-mode").css({ opacity: "1.0" });
+            $("#tts-mode").animate({ opacity: "0.0" }, 1200);
           } else {
             loadVoiceList();
             if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -709,8 +705,7 @@
           function loadVoiceList() {
             var voices = speechSynthesis.getVoices();
             if ($("#speech-voices option").length == 0) {
-              var language =
-                window.navigator.userLanguage || window.navigator.language; //en-US
+              var language = window.navigator.userLanguage || window.navigator.language; //en-US
               voices.forEach(function (voice, index) {
                 if (voice.lang === language) {
                   selectedVoice = voice;
@@ -737,19 +732,11 @@
                 var voiceIndex = this.value;
                 if (voices.length !== 0) {
                   selectedVoice = voices[voiceIndex];
-                  console.log(
-                    "New voice: " +
-                    selectedVoice.name +
-                    " , language: " +
-                    selectedVoice.lang
-                  );
+                  console.log("New voice: " + selectedVoice.name + " , language: " + selectedVoice.lang);
                 }
               });
 
-              if (
-                voices.length > 0 &&
-                speechSynthesis.onvoiceschanged !== undefined
-              ) {
+              if (voices.length > 0 && speechSynthesis.onvoiceschanged !== undefined) {
                 // unregister event listener (it is fired multiple times)
                 speechSynthesis.onvoiceschanged = null;
               }
@@ -764,10 +751,7 @@
 
           $(document).click(function (event) {
             if (ttsMode) {
-              if (
-                event.target.id === "apply-btn" &&
-                event.target.innerText === "Speak"
-              ) {
+              if (event.target.id === "apply-btn" && event.target.innerText === "Speak") {
                 //apply button clicked
                 console.log("Speaks all selected text");
                 if (window.speechSynthesis.speaking) {
@@ -781,87 +765,64 @@
                     speaker = new SpeechSynthesisUtterance(this.trim());
                     if (!$.isEmptyObject(selectedVoice)) {
                       speaker.voice = selectedVoice;
-                      console.log(
-                        "Current voice: " +
-                        selectedVoice.name
-                      );
+                      console.log("Current voice: " + selectedVoice.name);
                     }
                     window.speechSynthesis.speak(speaker);
 
                     speaker.onstart = function () {
-                      $("#tts-mode").text(
-                        "Speaking in " +
-                        speaker.voice.name +
-                        " ..."
-                      );
+                      $("#tts-mode").text("Speaking in " + speaker.voice.name + " ...");
+                      $("#tts-mode").css({ opacity: "1.0" });
                       $("#apply-btn").html("Pause");
                       console.log("Speech started.");
                     };
 
                     speaker.onerror = function (event) {
                       $("#tts-mode").text("Error! Try again");
+                      $("#tts-mode").css({ opacity: "1.0" });
                       $("#apply-btn").html("Speak");
                       console.log("Error occured " + event.message);
                     };
 
                     speaker.onend = function (event) {
                       $("#tts-mode").text("Select Text to Speech.");
+                      $("#tts-mode").css({ opacity: "1.0" });
+                      //$("#tts-mode").animate({ opacity: "0.0" }, 1200);
                       $("#apply-btn").html("Speak");
-                      console.log(
-                        "Speach finished in " +
-                        event.elapsedTime +
-                        " seconds."
-                      );
-                      console.log("Speach finished.");
+                      console.log("Speach finished in " + event.elapsedTime + " seconds.");
                     };
 
                     speaker.onpause = function (event) {
-                      console.log(
-                        "Speech paused after " +
-                        event.elapsedTime +
-                        " milliseconds."
-                      );
+                      console.log("Speech paused after " + event.elapsedTime + " milliseconds.");
                     };
 
                     speaker.onresume = function (event) {
-                      console.log(
-                        "Speech resumed after " +
-                        event.elapsedTime +
-                        " milliseconds."
-                      );
+                      console.log("Speech resumed after " + event.elapsedTime + " milliseconds.");
                     };
                   });
                 } else {
                   $("#tts-mode").text("No text available. Select Text.");
+                  $("#tts-mode").css({ opacity: "1.0" });
+                  $("#tts-mode").animate({ opacity: "0.0" }, 1200);
                   console.log("No text available");
                 }
-              } else if (
-                event.target.id === "apply-btn" &&
-                event.target.innerText === "Pause"
-              ) {
+              } else if (event.target.id === "apply-btn" && event.target.innerText === "Pause") {
                 console.log("Speech paused");
                 window.speechSynthesis.pause();
                 $("#tts-mode").text("Speech Paused");
+                $("#tts-mode").css({ opacity: "1.0" });
                 $("#apply-btn").html("Resume");
-              } else if (
-                event.target.id === "apply-btn" &&
-                event.target.innerText === "Resume"
-              ) {
+              } else if (event.target.id === "apply-btn" && event.target.innerText === "Resume") {
                 console.log("Speech resumed");
                 window.speechSynthesis.resume();
-                $("#tts-mode").text(
-                  "Speaking in " + speaker.voice.name + " ..."
-                );
+                $("#tts-mode").text("Speaking in " + speaker.voice.name + " ...");
+                $("#tts-mode").css({ opacity: "1.0" });
                 $("#apply-btn").html("Pause");
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
                 console.log("Cancel Text to Speech mode");
                 $("#tts-mode").text("Text to Speech mode off!");
-                $("#tts-mode").animate({
-                    opacity: "0.0"
-                  },
-                  "slow"
-                );
+                $("#tts-mode").css({ opacity: "1.0" });
+                $("#tts-mode").animate({ opacity: "0.0" }, 1200);
                 $("#apply-btn").html("Apply Changes");
                 window.speechSynthesis.cancel();
                 text2Speech = "";
@@ -895,10 +856,7 @@
           );
 
           text = text
-            .replace(
-              /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi,
-              "url"
-            ) //http and other inks
+            .replace(/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi, "url") //http and other inks
             .replace(/(\/).+/g, "") //folder structure
             .replace(/(\r\n|\n|\r)/g, " ")
             .replace(/\s\s+/g, " ") //multiple spaces
@@ -913,7 +871,6 @@
         //Edit Mode Button Function
         var editMode = function () {
           console.log("Edit mode is on");
-          //ga("send", "event", "Edit Mode", "Clicked", "Main Button", "");
           var editMode = true;
           $("#tool-option").hide();
 
@@ -935,19 +892,17 @@
               padding: "10px",
               opacity: "1.0"
             });
+            $("#edit-mode").animate({opacity: "0.0"}, 1200);
           } else {
             //edit-mode exist
             $("#edit-mode").text("Edit Mode On!");
-            $("#edit-mode").css({
-              opacity: "1.0"
-            });
+            $("#edit-mode").css({opacity: "1.0"});
+            $("#edit-mode").animate({ opacity: "0.0" }, 1200);
           }
 
           if ($("#dialog-box").length == 0) {
             //dialog-box doesn't exist
-            $("body").append(
-              "<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>"
-            );
+            $("body").append("<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>");
             $("#dialog-box").css({
               position: "fixed",
               top: "11%",
@@ -1046,43 +1001,30 @@
                 //Can't delete body
               } else if (event.target.id === "apply-btn") {
                 //apply button clicked
-                console.log(
-                  "Apply edits on all selected elements"
-                );
-                ga(
-                  "send",
-                  "event",
-                  "Edit Mode",
-                  "Clicked",
-                  "Apply Changes",
-                  ""
-                );
+                console.log("Apply edits on all selected elements");
                 $(".web-edited").each(function () {
                   $(this)
                     .removeClass("web-edited")
                     .addClass("web-deleted");
                 });
                 $("#edit-mode").text("Changes are applied!");
+                $("#edit-mode").css({
+                  opacity: "1.0"
+                });
                 $("#edit-mode").animate({
                     opacity: "0.0"
                   },
                   "slow"
                 );
-                $("#dialog-box").hide();
-                $("#tool-option").show();
+                //$("#dialog-box").hide();
+                //$("#tool-option").show();
+                removeExtensionElements();
+                createToolOptions();
                 editMode = false;
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
                 console.log(
                   "Cancel edits from all selected elements"
-                );
-                ga(
-                  "send",
-                  "event",
-                  "Edit Mode",
-                  "Clicked",
-                  "Cancel Changes",
-                  ""
                 );
                 $(".web-edited").each(function () {
                   $(this).removeClass("web-edited");
@@ -1091,11 +1033,8 @@
                   $(this).removeClass("link-disabled");
                 });
                 $("#edit-mode").text("Changes are cancelled!");
-                $("#edit-mode").animate({
-                    opacity: "0.0"
-                  },
-                  "slow"
-                );
+                $("#edit-mode").css({ opacity: "1.0" });
+                $("#edit-mode").animate({ opacity: "0.0" }, 1200);
                 //$("#dialog-box").remove();
                 //$("#tool-option").show();
                 removeExtensionElements();
@@ -1116,7 +1055,6 @@
         //Highlight Button Function
         var highlightMode = function () {
           console.log("Highlight mode is on");
-          //ga("send", "event", "Highlight Mode", "Clicked", "Main Button", "");
           lightMode = true;
 
           $("#tool-option").hide();
@@ -1138,12 +1076,12 @@
               padding: "10px",
               opacity: "1.0"
             });
+            $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
           } else {
             //edit-mode exist
             $("#highlight-mode").text("Highlight Mode On!");
-            $("#highlight-mode").css({
-              opacity: "1.0"
-            });
+            $("#highlight-mode").css({ opacity: "1.0" });
+            $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
           }
 
           if ($("#dialog-box").length == 0) {
@@ -1272,20 +1210,9 @@
               if (event.target.id === "apply-btn") {
                 //apply button clicked
                 console.log("Apply highlights on all selected elements");
-                ga(
-                  "send",
-                  "event",
-                  "Highlight Text",
-                  "Clicked",
-                  "Apply Changes",
-                  ""
-                );
                 $("#highlight-mode").text("Changes are applied!");
-                $("#highlight-mode").animate({
-                    opacity: "0.0"
-                  },
-                  "slow"
-                );
+                $("#highlight-mode").css({ opacity: "1.0" });
+                $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
                 //$("#dialog-box").hide();
                 //$("#tool-option").show();
                 lightMode = false;
@@ -1294,23 +1221,12 @@
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
                 console.log("Cancel highlight from all selected elements");
-                ga(
-                  "send",
-                  "event",
-                  "Highlight Text",
-                  "Clicked",
-                  "Cancel Changes",
-                  ""
-                );
                 $(".manual-highlight").each(function () {
                   $(this).removeClass("manual-highlight");
                 });
                 $("#highlight-mode").text("Changes are cancelled!");
-                $("#highlight-mode").animate({
-                    opacity: "0.0"
-                  },
-                  "slow"
-                );
+                $("#highlight-mode").css({ opacity: "1.0" });
+                $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
                 //$("#highlight-mode-css").remove(); //delete the highlight-mode-css from head
                 //$("#dialog-box").remove();
                 //$("#tool-option").show();
@@ -1334,7 +1250,6 @@
         var saveLinkMode = false;
         var saveLinks = function () {
           console.log("Save link mode is on");
-          //ga("send", "event", "Save Link", "Clicked", "Main Button", "");
           saveLinkMode = true;
 
           if ($("#save-mode").length == 0) {
@@ -1351,9 +1266,7 @@
             });
           } else {
             //save-mode exist
-            $("#save-mode").css({
-              opacity: "0.0"
-            });
+            $("#save-mode").css({ opacity: "0.0"});
           }
 
           if (saveLinkMode) {
@@ -1371,16 +1284,8 @@
                 } else {
                   $("#save-mode").text("Error: Try again.");
                 }
-                $("#save-mode").animate({
-                    opacity: "1.0"
-                  },
-                  "slow"
-                );
-                $("#save-mode").animate({
-                    opacity: "0.0"
-                  },
-                  "slow"
-                );
+                $("#save-mode").animate({ opacity: "1.0" }, 'fast');
+                $("#save-mode").animate({ opacity: "0.0" }, 1200);
               }
             );
           } else {
@@ -1393,10 +1298,9 @@
         var openLinks = function () {
           console.log("Open reading queue mode is on");
           openLinksMode = true;
-          //ga("send", "event", "Open Links", "Clicked", "Main Button", "");
           if (openLinksMode) {
-            chrome.runtime.sendMessage({
-                message: "open links page"
+            chrome.runtime.sendMessage({ 
+                message: "open links page" 
               },
               function (response) {
                 console.log(response.message);
@@ -1412,7 +1316,6 @@
         var saveAsPDF = function () {
           console.log("Save as PDF mode is on");
           saveAsPDFMode = true;
-          //ga("send", "event", "Save as PDF", "Clicked", "Main Button", "");
 
           if (saveAsPDFMode) {
             var mediaQueryList = window.matchMedia("print");
@@ -1445,7 +1348,6 @@
         //Help Mode Button Function
         var openHelp = function () {
           console.log("Help mode on");
-          //ga("send", "event", "Help Mode", "Clicked", "Main Button", "");
           if (!helpMode) {
             helpMode = true;
             $("#help-btn").attr('src', chrome.runtime.getURL("images/help-green.png"));
@@ -1530,10 +1432,7 @@
               });
             } else {
               $("#help-mode").show();
-              $("#help-mode").css({
-                opacity: 1,
-                zIndex: "300"
-              });
+              $("#help-mode").css({ opacity: 1, zIndex: "300" });
             }
           } else {
             console.log("Help mode off");
@@ -1543,19 +1442,13 @@
 
           $("#cross-btn").click(function (event) {
             if (helpMode) {
-              $("#help-mode").animate({
-                  opacity: "0.0"
-                },
-                "slow"
-              );
-              $("#help-mode").remove();
-              $("#help-mode").css({
-                zIndex: "-20"
-              });
               helpMode = false;
+              $("#help-mode").animate({ opacity: "0.0" }, 1200 );
+              $("#help-mode").remove();
+              $("#help-mode").css({ zIndex: "-20" });
               console.log("Help mode off");
             } else {
-              console.warn("Help mode off");
+              console.warn("Help mode is already off");
             }
           });
         };
