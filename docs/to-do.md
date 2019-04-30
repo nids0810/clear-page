@@ -50,7 +50,7 @@
 ## Help Page ##
 * ~~Design Help Window~~
 * ~~! Change help page content~~
-* when help menu is active disable all other icons ?
+* ~~when help menu is active disable all other icons ?~~
 
 ## Welcome Page ##
 * Build Extension welcome page for new users
