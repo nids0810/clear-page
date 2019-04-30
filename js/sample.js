@@ -1,4 +1,6 @@
-alert('This is sample.js')
+alert('This is sample.js');
+
+//"content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
 
 //function for Save as PDF
 /* 
