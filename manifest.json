@@ -3,7 +3,6 @@
   "name": "Clear Page",
   "version": "2.1",
   "web_accessible_resources": ["images/*.png", "icons/*.png", "html/*.html", "css/*.css", "json/*.json", "js/*.js"],
-  "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "description": "A powerful browser extension tool to improve web readability and provide multifaceted and enjoyable web experience.",
   "icons": {
     "16": "icons/icon_16.png",
@@ -12,7 +11,7 @@
     "128": "icons/icon_128.png"
   },
   "background": {
-    "scripts": ["third-party/jquery.min.js", "third-party/ga.js", "js/background.js"],
+    "scripts": ["third-party/jquery.min.js", "js/background.js"],
     "persistent": false
   },
   "browser_action": {
