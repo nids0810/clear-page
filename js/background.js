@@ -6,38 +6,44 @@ var _exitURL = "https://nids0810.github.io/clear-page/exit.html";
 
 chrome.browserAction.onClicked.addListener(function (tab) {
   // Browser icon clicked first in browser
-  if (_activeTabs.length === 0) {
-    console.log(tab);
-    _activeTabs.push(tab);
-    executeScripts(tab.id, [
-      { file: "third-party/jquery.min.js" },
-      { file: "third-party/readability.js" },
-      { file: "js/content.js" }
-    ]);
-    chrome.browserAction.setIcon({ path: "icons/icon_on_161.png", tabId: tab.id });
-    chrome.browserAction.setBadgeText({ text: "on", tabId: tab.id }, function() { console.log("Badge On"); });
-  } else {
-    // Browser icon is clicked again in the same tab
-    if (isTabActive(tab)) {
-      //Delete tab from the _activeTabs list
-      _activeTabs = _activeTabs.filter(item => item.id !== tab.id);
-      chrome.tabs.executeScript( tab.id, { file: "js/no-action.js" }, result => {
-        const lastErr = chrome.runtime.lastError;
-        if (lastErr) console.log( "tab: " + tab.id + " lastError: " + JSON.stringify(lastErr));
-      });
-      chrome.browserAction.setIcon({ path: "icons/icon_16.png", tabId: tab.id});
-      chrome.browserAction.setBadgeText({ text: "" , tabId: tab.id}, function() { console.log("Badge Off"); });
+  var _tabURL = new URL(tab.url);
+    if (_tabURL.protocol === "http:" || _tabURL.protocol === "https:") {
+      if(!checkBlockedSites(_tabURL.host)) {
+        if (_activeTabs.length === 0) {
+          console.log(tab);
+          _activeTabs.push(tab);
+          executeScripts(tab.id, [
+            { file: "third-party/jquery.min.js" },
+            { file: "third-party/readability.js" },
+            { file: "js/content.js" }
+          ]);
+          chrome.browserAction.setIcon({ path: "icons/icon_on_161.png", tabId: tab.id}, extensionCallback(tab.id));
+          chrome.browserAction.setBadgeText({ text: "on", tabId: tab.id }, extensionCallback(tab.id));
+        } else {
+          // Browser icon is clicked again in the same tab
+          if (isTabActive(tab)) {
+            //Delete tab from the _activeTabs list
+            _activeTabs = _activeTabs.filter(item => item.id !== tab.id);
+            chrome.tabs.executeScript( tab.id, { file: "js/no-action.js" }, extensionCallback(tab.id));
+            chrome.browserAction.setIcon({ path: "icons/icon_16.png", tabId: tab.id}, extensionCallback(tab.id));
+            chrome.browserAction.setBadgeText({ text: "", tabId: tab.id }, extensionCallback(tab.id));
+          } else {
+            _activeTabs.push(tab);
+            executeScripts(tab.id, [
+              { file: "third-party/jquery.min.js" },
+              { file: "third-party/readability.js" },
+              { file: "js/content.js" }
+            ]);
+            chrome.browserAction.setIcon({ path: "icons/icon_on_161.png", tabId: tab.id}, extensionCallback(tab.id));
+            chrome.browserAction.setBadgeText({ text: "on", tabId: tab.id}, extensionCallback(tab.id));
+          }
+        }
+      } else {
+        console.log("This extension currently blocked on site: " + _tabURL.host);
+      }
     } else {
-      _activeTabs.push(tab);
-      executeScripts(tab.id, [
-        { file: "third-party/jquery.min.js" },
-        { file: "third-party/readability.js" },
-        { file: "js/content.js" }
-      ]);
-      chrome.browserAction.setIcon({ path: "icons/icon_on_161.png", tabId: tab.id });
-      chrome.browserAction.setBadgeText({ text: "on" , tabId: tab.id}, function() { console.log("Badge On"); });
+      console.log("This extension can't run on non http(s) pages");
     }
-  }
 });
 
 // fucntion to execute multiple files in a row
@@ -47,6 +53,16 @@ function executeScripts(tabId, injectDetailsArray) {
       chrome.tabs.executeScript(tabId, injectDetails, innerCallback);
     };
   }
+
+/*   function createCallback(tabId, injectDetails, innerCallback) {
+    return function() {
+      try {
+        chrome.tabs.executeScript(tabId, injectDetails, innerCallback);
+      } catch (error) {
+        extensionCallback(error, tabId);
+      }
+    };
+  } */
 
   var callback = null;
 
@@ -144,8 +160,8 @@ chrome.tabs.onUpdated.addListener(function(tabid, changeInfo, tab) {
     if(tab.url === _newTab.url) {
       if (!changeInfo.hasOwnProperty("title")){
         _activeTabs = _activeTabs.filter(item => item.id !== tabid);
-        chrome.browserAction.setIcon({ path: "icons/icon_16.png", tabId: tab.id});
-        chrome.browserAction.setBadgeText({ text: "" , tabId: tab.id}, function() { console.log("Badge Off"); });
+        chrome.browserAction.setIcon({ path: "icons/icon_16.png", tabId: tab.id}, extensionCallback(tab.id));
+        chrome.browserAction.setBadgeText({ text: "" , tabId: tab.id}, extensionCallback(tab.id));
         console.log("An extension active tab " + tabid + " was reloaded");
       }      
     }
@@ -197,13 +213,11 @@ function pushUniqueLinks(newLink) {
   }
 }
 
-function extensionCallback() {
-  if (chrome.runtime.lastError) {
-    console.log(chrome.runtime.lastError.message);
-  } else {
-    // Tab exists
-  }
-}
+function extensionCallback(tabid) {
+  const lastErr = chrome.runtime.lastError;
+  if (lastErr)
+    console.log("tab: " + tabid + " lastError: " + JSON.stringify(lastErr));
+};
 
 var isTabActive = function(tab) {
   var _newTab = _activeTabs.find(o => o.id === tab.id);
@@ -230,4 +244,31 @@ var getTabActive = function(tabid) {
   } else {
     return null;
   }
+};
+
+var _blockedSites = [
+  "www.facebook.com",
+  "www.youtube.com",
+  "www.instagram.com",
+  "qzone.qq.com",
+  "www.weibo.com",
+  "twitter.com",
+  "www.reddit.com",
+  "www.pinterest.com",
+  "ask.fm",
+  //"plus.google.com",
+  "www.tumblr.com",
+  "www.flickr.com",
+  "www.linkedin.com",
+  "vk.com",
+  "ok.ru"
+];
+
+var checkBlockedSites = function(url) {
+  var _index = _blockedSites.indexOf(url);
+   if(_index < 0){
+     return false;
+   } else {
+     return true;
+   }
 };
