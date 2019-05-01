@@ -29,6 +29,12 @@
 * ~~! On click again, the page should be relaod to normal state~~
 * ! style the read-text option box
 * ~~style the read-text content~~
+* eta should be ceiling
+* display none all div after tool-option
+* make dark theme default
+* change title line height when size changes
+* Add new fonts
+* make a link onhover green?
 
 ## Highlight Mode ##
 * ~~!Implement Highlight Text functionality~~
@@ -50,7 +56,7 @@
 ## Help Page ##
 * ~~Design Help Window~~
 * ~~! Change help page content~~
-* when help menu is active disable all other icons ?
+* ~~when help menu is active disable all other icons ?~~
 
 ## Welcome Page ##
 * Build Extension welcome page for new users
