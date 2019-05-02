@@ -237,7 +237,16 @@
             s.src = "https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true";
             // Use any selector
             $("head").append(s);
-
+            
+            $("<style>")
+            .prop("type", "text/css")
+            .prop("id", "font-style")
+            .html(
+              "@font-face {" +
+                "font-family: 'OpenDyslexic-Regular';" +
+                "src: url('" + chrome.runtime.getURL('fonts/OpenDyslexic-Regular.otf') + "');}"
+            ).appendTo("head");
+            
             if ($("#read-container").length == 0) {
               //read-container will replace body
               $("body").append("<div id='read-container'></div>");
@@ -341,6 +350,7 @@
                     <input type='radio' id='font-verdana' name='verdana' value='Verdana'> Verdana\
                     <input type='radio' id='font-georgia' name='georgia' value='Georgia'> Georgia\
                     <input type='radio' id='font-lucida-sans' name='lucida-sans' value='Lucida Sans'> Lucida Sans\
+                    <input type='radio' id='font-open-dyslexic' name='open-dyslexic' value='OpenDyslexic-Regular'> Open Dyslexic\
                     </div>"
                   );
                 }
@@ -591,9 +601,13 @@
                 $("#read-text-footer").css({
                   textAlign: "center",
                   color: "#aaa",
-                  //padding: "45px 70px",
                   lineHeight: "35px",
                   margin: "10px auto"
+                });
+                $("#read-text-footer img").css({
+                  position: "relative",
+                  top: "15px",
+                  left: "10px"
                 });
               }
             }
