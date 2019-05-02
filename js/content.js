@@ -151,6 +151,7 @@
         //Read Mode Button Function
         var readMode = function () {
           console.log("Reading Mode On");
+          chrome.runtime.sendMessage({ message: "open read mode" });
 
           if (!readingMode) {
 
@@ -601,6 +602,7 @@
         //Text to Speech Mode Button Function
         var ttsMode = function () {
           console.log("Text to Speech mode is on");
+          chrome.runtime.sendMessage({ message: "open speak mode" });
           var ttsMode = true;
           var selectedVoice = {};
           $("#tool-option").hide();
@@ -871,6 +873,7 @@
         //Edit Mode Button Function
         var editMode = function () {
           console.log("Edit mode is on");
+          chrome.runtime.sendMessage({ message: "open edit mode" });
           var editMode = true;
           $("#tool-option").hide();
 
@@ -1055,6 +1058,7 @@
         //Highlight Button Function
         var highlightMode = function () {
           console.log("Highlight mode is on");
+          chrome.runtime.sendMessage({ message: "open highlight mode" });
           lightMode = true;
 
           $("#tool-option").hide();
@@ -1315,6 +1319,7 @@
         //Save as PDF Button Function
         var saveAsPDF = function () {
           console.log("Save as PDF mode is on");
+          chrome.runtime.sendMessage({ message: "open print mode" });
           saveAsPDFMode = true;
 
           if (saveAsPDFMode) {
@@ -1348,6 +1353,7 @@
         //Help Mode Button Function
         var openHelp = function () {
           console.log("Help mode on");
+          chrome.runtime.sendMessage({ message: "open help mode" });
           if (!helpMode) {
             helpMode = true;
             $("#help-btn").attr('src', chrome.runtime.getURL("images/help-green.png"));
