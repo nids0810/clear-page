@@ -208,7 +208,7 @@
               if (wordCount > 0) {
                 _wordsPerSecond = _wordsPerMinute / 60;
                 _totalReadingTimeSeconds = wordCount / _wordsPerSecond;
-                _readingTimeMinutes = Math.floor(
+                _readingTimeMinutes = Math.ceil(
                   _totalReadingTimeSeconds / 60
                 );
                 return _readingTimeMinutes;
@@ -243,7 +243,7 @@
               $("body").append("<div id='read-container'></div>");
               $("#read-container").css({
                 width: "100%",
-                background: "#e9e9e9",
+                background: "#111",
                 color: "#333 !important",
                 padding: "50px 0",
                 fontFamily: "arial, sans-serif"
@@ -339,7 +339,10 @@
                     <Label>Typography:</Label>\
                     <input type='radio' id='font-sans-serif' name='sans-serif' value='sans-serif' checked> Sans-Serif\
                     <input type='radio' id='font-verdana' name='verdana' value='verdana'> Verdana\
-                    <input type='radio' id='font-courier' name='courier' value='courier'> Courier\
+                    <input type='radio' id='font-georgia' name='georgia' value='georgia'> Georgia\
+                    <input type='radio' id='font-lucida-sans' name='lucida-sans' value='lucida-sans'> Lucida Sans\
+                    <input type='radio' id='font-palatino' name='palatino' value='palatino'> Palatino\
+                    <input type='radio' id='font-bookman' name='bookman' value='bookman'> Bookman\
                     </div>"
                   );
                 }
@@ -348,8 +351,8 @@
                   $("#read-option-box").append(
                     "<div id='read-color-theme'>\
                     <Label>Theme:</Label>\
-                    <input type='radio' id='theme-light' name='light' value='light' checked> Light\
-                    <input type='radio' id='theme-dark' name='dark' value='dark'> Dark\
+                    <input type='radio' id='theme-light' name='light' value='light'> Light\
+                    <input type='radio' id='theme-dark' name='dark' value='dark' checked> Dark\
                     </div>"
                   );
                 }
@@ -362,7 +365,8 @@
                       fontSize: "12px"
                     });
                     $("#read-text-title").css({
-                      fontSize: "30px"
+                      fontSize: "30px",
+                      lineHeight: "35px"
                     });
                   } else if (this.value == "medium") {
                     $("#read-text-content").css({
@@ -372,7 +376,8 @@
                       fontSize: "13px"
                     });
                     $("#read-text-title").css({
-                      fontSize: "32px"
+                      fontSize: "32px",
+                      lineHeight: "35px"
                     });
                   } else if (this.value == "large") {
                     $("#read-text-content").css({
@@ -382,7 +387,8 @@
                       fontSize: "14px"
                     });
                     $("#read-text-title").css({
-                      fontSize: "34px"
+                      fontSize: "34px",
+                      lineHeight: "43px"
                     });
                   }
                   $("#read-font-size")
@@ -402,9 +408,21 @@
                     $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
                       fontFamily: "Verdana"
                     });
-                  } else if (this.value == "courier") {
+                  } else if (this.value == "georgia") {
                     $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
-                      fontFamily: "Courier"
+                      fontFamily: "Georgia"
+                    });
+                  } else if (this.value == "lucida-sans") {
+                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
+                      fontFamily: "Lucida Sans"
+                    });
+                  } else if (this.value == "palatino") {
+                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
+                      fontFamily: "Palatino"
+                    });
+                  } else if (this.value == "bookman") {
+                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
+                      fontFamily: "Bookman"
                     });
                   }
                   $("#read-font-family")
@@ -481,14 +499,14 @@
               );
             }
             $("#read-text").css({
-              background: "#fff",
-              color: "#333",
+              background: "#222",
+              color: "#aaa",
               padding: "45px 70px",
               width: "60%",
               margin: "0 auto",
               //fontFamily: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif',
               lineHeight: "28px",
-              border: "1px solid #dbdbdb",
+              border: "1px solid #222",
               fontSize: "15px",
               boxSizing: "border-box"
             });
@@ -538,10 +556,10 @@
                 $("#read-text-author").text("Author: " + article.byline);
               }
               $("#read-text-title").css({
-                //fontSize: "18px"
+                lineHeight: "35px"
               });
               $("#read-text-domain").css({
-                color: "#4A7C87",
+                color: "#11ABB0",
                 fontSize: "13px",
                 fontStyle: "oblique"
               });
@@ -552,13 +570,18 @@
                 marginRight: "13px"
               });
               $("#read-text-content").css({
-                borderTop: "2px solid #eee",
+                borderTop: "2px solid #444",
                 overflow: "auto"
               });
               $("#read-text #read-text-content a").css({
-                color: "#333",
+                color: "#aaa",
                 textDecoration: "none",
                 cursor: "default"
+              });
+              $("#read-text #read-text-content a").each(function () {
+                $(this).click(function (event) {
+                  event.preventDefault();
+                });
               });
               $("#read-text #read-text-content img").css({
                 height: "auto"
@@ -567,7 +590,7 @@
                 $("#read-text #read-text-content pre").addClass("prettyprint");
               }
               $("#read-text #read-text-content pre").css({
-                backgroundColor: "#EFF0F1",
+                backgroundColor: "#ccc",
                 border: "none",
                 overflow: "auto"
               });
@@ -1127,8 +1150,8 @@
             .prop("type", "text/css")
             .prop("id", "highlight-mode-css")
             .html(
-              ".manual-highlight {background-color: yellow; color: #000; display: inline;" +
-              ".manual-highlight a, .manual-highlight span, .manual-highlight p {color: #000; text-decoration: none}"
+              ".manual-highlight {background-color: yellow; color: #000 !important; display: inline;" +
+              ".manual-highlight a, .manual-highlight span, .manual-highlight p {color: #000 !important; text-decoration: none}"
             )
             .appendTo("head");
 
