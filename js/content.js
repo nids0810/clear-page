@@ -338,11 +338,9 @@
                     "<div id='read-font-family'>\
                     <Label>Typography:</Label>\
                     <input type='radio' id='font-sans-serif' name='sans-serif' value='sans-serif' checked> Sans-Serif\
-                    <input type='radio' id='font-verdana' name='verdana' value='verdana'> Verdana\
-                    <input type='radio' id='font-georgia' name='georgia' value='georgia'> Georgia\
-                    <input type='radio' id='font-lucida-sans' name='lucida-sans' value='lucida-sans'> Lucida Sans\
-                    <input type='radio' id='font-palatino' name='palatino' value='palatino'> Palatino\
-                    <input type='radio' id='font-bookman' name='bookman' value='bookman'> Bookman\
+                    <input type='radio' id='font-verdana' name='verdana' value='Verdana'> Verdana\
+                    <input type='radio' id='font-georgia' name='georgia' value='Georgia'> Georgia\
+                    <input type='radio' id='font-lucida-sans' name='lucida-sans' value='Lucida Sans'> Lucida Sans\
                     </div>"
                   );
                 }
@@ -392,46 +390,17 @@
                     });
                   }
                   $("#read-font-size")
-                    .find(
-                      'input[type="radio"]:not(#' +
-                      this.id +
-                      ")"
-                    )
+                    .find('input[type="radio"]:not(#' + this.id + ")")
                     .prop("checked", false);
                 });
                 $("#read-font-family :input").change(function () {
-                  if (this.value == "sans-serif") {
-                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
-                      fontFamily: "sans-serif"
-                    });
-                  } else if (this.value == "verdana") {
-                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
-                      fontFamily: "Verdana"
-                    });
-                  } else if (this.value == "georgia") {
-                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
-                      fontFamily: "Georgia"
-                    });
-                  } else if (this.value == "lucida-sans") {
-                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
-                      fontFamily: "Lucida Sans"
-                    });
-                  } else if (this.value == "palatino") {
-                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
-                      fontFamily: "Palatino"
-                    });
-                  } else if (this.value == "bookman") {
-                    $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
-                      fontFamily: "Bookman"
-                    });
-                  }
+                  console.log("New font: " + this.value);
+                  $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
+                    fontFamily: this.value
+                  });
                   $("#read-font-family")
-                    .find(
-                      'input[type="radio"]:not(#' +
-                      this.id +
-                      ")"
-                    )
-                    .prop("checked", false);
+                  .find('input[type="radio"]:not(#' + this.id + ")")
+                  .prop("checked", false);
                 });
                 $("#read-color-theme :input").change(
                   function () {
@@ -479,11 +448,7 @@
                       });
                     }
                     $("#read-color-theme")
-                      .find(
-                        'input[type="radio"]:not(#' +
-                        this.id +
-                        ")"
-                      )
+                      .find('input[type="radio"]:not(#' + this.id + ")")
                       .prop("checked", false);
                   });
               } else {
@@ -583,9 +548,28 @@
                   event.preventDefault();
                 });
               });
-              $("#read-text #read-text-content img").css({
-                height: "auto"
+              $("#read-text #read-text-content img").each(function () {
+                var _boxDim = $("#read-text-content").width();
+                var _maxDim = Math.max(this.width, this.height);
+                //var ratio;
+                if (_maxDim > _boxDim) {
+                  //ratio = parseFloat(_maxDim/_boxDim);
+                  //this.width = parseInt(this.width/ratio);
+                  $(this).width("90%");
+                  $(this).css({
+                    height: "auto",
+                    display: "block"
+                  });
+                } else {
+                  $(this).css({
+                    height: "auto",
+                    display: "block"
+                  });
+                }
               });
+              /* $("#read-text #read-text-content img").css({
+                height: "auto"
+              }); */
               if (!$("#read-text #read-text-content pre").hasClass("prettyprint")) {
                 $("#read-text #read-text-content pre").addClass("prettyprint");
               }
@@ -594,9 +578,29 @@
                 border: "none",
                 overflow: "auto"
               });
+              $("#read-text #read-text-content video").css({
+                display: "none",
+              });
+              if ($("#read-text-footer").length == 0) {
+                $("#read-container").append($.parseHTML(
+                  "<div id='read-text-footer'>" +
+                  "<span>This page is powered by <b>Read Pro</b></span>" + 
+                  "<img src='" + chrome.runtime.getURL("icons/icon_48.png") + "'/>"  + 
+                  "</div>"
+                ));
+                $("#read-text-footer").css({
+                  textAlign: "center",
+                  color: "#aaa",
+                  //padding: "45px 70px",
+                  lineHeight: "35px",
+                  margin: "10px auto"
+                });
+              }
             }
+
             readingMode = true;
             createToolOptions();
+            $("tool-option").nextAll("div, iframe").css({display: "none"});
             if ($('#read-btn').length !== 0) {
               //console.log("Reading Icon changed");
               $('#read-btn').attr('src', '').promise().done(function () {
