@@ -404,7 +404,7 @@
                     .prop("checked", false);
                 });
                 $("#read-font-family :input").change(function () {
-                  console.log("New font: " + this.value);
+                  //console.log("New font: " + this.value);
                   $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
                     fontFamily: this.value
                   });
@@ -775,7 +775,7 @@
                 var voiceIndex = this.value;
                 if (voices.length !== 0) {
                   selectedVoice = voices[voiceIndex];
-                  console.log("New voice: " + selectedVoice.name + " , language: " + selectedVoice.lang);
+                  //console.log("New voice: " + selectedVoice.name + " , language: " + selectedVoice.lang);
                 }
               });
 
@@ -808,7 +808,7 @@
                     speaker = new SpeechSynthesisUtterance(this.trim());
                     if (!$.isEmptyObject(selectedVoice)) {
                       speaker.voice = selectedVoice;
-                      console.log("Current voice: " + selectedVoice.name);
+                      //console.log("Current voice: " + selectedVoice.name);
                     }
                     window.speechSynthesis.speak(speaker);
 
@@ -831,15 +831,15 @@
                       $("#tts-mode").css({ opacity: "1.0" });
                       //$("#tts-mode").animate({ opacity: "0.0" }, 1200);
                       $("#apply-btn").html("Speak");
-                      console.log("Speach finished in " + event.elapsedTime + " seconds.");
+                      //console.log("Speach finished in " + event.elapsedTime + " seconds.");
                     };
 
                     speaker.onpause = function (event) {
-                      console.log("Speech paused after " + event.elapsedTime + " milliseconds.");
+                      //console.log("Speech paused after " + event.elapsedTime + " milliseconds.");
                     };
 
                     speaker.onresume = function (event) {
-                      console.log("Speech resumed after " + event.elapsedTime + " milliseconds.");
+                      //console.log("Speech resumed after " + event.elapsedTime + " milliseconds.");
                     };
                   });
                 } else {
@@ -1067,9 +1067,7 @@
                 editMode = false;
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
-                console.log(
-                  "Cancel edits from all selected elements"
-                );
+                console.log("Cancel edits from all selected elements");
                 $(".web-edited").each(function () {
                   $(this).removeClass("web-edited");
                 });
@@ -1319,7 +1317,7 @@
                 message: "save link"
               },
               function (response) {
-                console.log(response.message);
+                //console.log(response.message);
                 if (response.message === "link saved") {
                   $("#save-mode").text("Link saved.");
                 } else if (response.message === "link duplicate") {
@@ -1503,7 +1501,7 @@
         removeExtensionElements();
         createToolOptions();
       } else {
-        console.log("Extension Active? " + response.message);
+        console.log("Extension Active: " + response.message);
         removeExtensionElements();
       }
     });

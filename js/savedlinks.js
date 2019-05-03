@@ -111,7 +111,7 @@
 
   var loadSavedLinksObject = function (_linksArray) {
     console.log('Loading saved links');
-    console.log(_linksArray);
+    //console.log(_linksArray);
     var html = '';
     $("#saved-links-list").empty();
     if (_linksArray.length !== 0) {

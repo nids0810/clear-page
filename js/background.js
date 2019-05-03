@@ -3,7 +3,7 @@
 ga("send", "pageview", { 'page': '/read-pro', 'title': 'Read Pro'});
 
 var _activeTabs = [];
-var _exitURL = "https://nids0810.github.io/clear-page/exit.html";
+//var _exitURL = "https://nids0810.github.io/clear-page/exit.html";
 
 chrome.browserAction.onClicked.addListener(function (tab) {
   // Browser icon clicked first in browser
@@ -113,7 +113,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       _savedLink.url = sender.tab.url;
       _savedLink.favIconUrl = sender.tab.favIconUrl;
       _savedLink.dateSaved = Date.now();
-      console.log("Saved Link: " + JSON.stringify(_savedLink));
+      //console.log("Saved Link: " + JSON.stringify(_savedLink));
       if (pushUniqueLinks(_savedLink)) {
         console.log("Link saved");
         sendResponse({ message: "link saved" });
@@ -128,7 +128,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     _savedlinks = request.data;
     if (Array.isArray(_savedlinks)) {
       ga("send", "event", "Delete Link", "Clicked", "");
-      console.log("List updated." + JSON.stringify(_savedlinks));
+      //console.log("List updated." + JSON.stringify(_savedlinks));
       localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
       sendResponse({ message: "Success" });
     } else {
@@ -169,11 +169,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 //function when chrome is uninstalled
-chrome.runtime.setUninstallURL(_exitURL, function () {
+/* chrome.runtime.setUninstallURL(_exitURL, function () {
   console.log("extention uninstalled.");
   ga("send", "event", "Extension", "Uninstalled", "");
   localStorage.removeItem("clear-page-saved-links");
-});
+}); */
 
 chrome.tabs.onUpdated.addListener(function(tabid, changeInfo, tab) {
   //If chrome extension was reloaded
@@ -211,12 +211,12 @@ function pushUniqueLinks(newLink) {
   if (_savedlinks === null || _savedlinks === "") {
     _savedlinks = [];
     _savedlinks.push(newLink);
-    console.log("List updated. " + JSON.stringify(_savedlinks));
+    //console.log("List updated. " + JSON.stringify(_savedlinks));
     localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
     return true;
   } else if (_savedlinks === []) {
     _savedlinks.push(newLink);
-    console.log("List updated. " + JSON.stringify(_savedlinks));
+    //console.log("List updated. " + JSON.stringify(_savedlinks));
     localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
     return true;
   } else if (Array.isArray(_savedlinks)) {
@@ -226,7 +226,7 @@ function pushUniqueLinks(newLink) {
       }
     }
     _savedlinks.push(newLink);
-    console.log("List updated. " + JSON.stringify(_savedlinks));
+    //console.log("List updated. " + JSON.stringify(_savedlinks));
     localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
     return true;
   } else {
