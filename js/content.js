@@ -307,6 +307,14 @@
               width: "25px"
             });
 
+            var dayOrNight;
+            var curHours = new Date().getHours();
+            if (curHours > 7 && curHours < 18){
+              dayOrNight = "day";
+            } else {
+              dayOrNight = "night";
+            }
+
             var _optionClicked = false;
             $("#read-option-btn").click(function () {
               if (!_optionClicked) {
@@ -356,13 +364,23 @@
                 }
                 //Color Theme toggle button
                 if ($("#read-color-theme").length == 0) {
-                  $("#read-option-box").append(
-                    "<div id='read-color-theme'>\
-                    <Label>Theme:</Label>\
-                    <input type='radio' id='theme-light' name='light' value='light'> Light\
-                    <input type='radio' id='theme-dark' name='dark' value='dark' checked> Dark\
+                  if(dayOrNight === "day") {
+                    $("#read-option-box").append(
+                      "<div id='read-color-theme'>\
+                      <Label>Theme:</Label>\
+                      <input type='radio' id='theme-light' name='light' value='light' checked> Light\
+                      <input type='radio' id='theme-dark' name='dark' value='dark'> Dark\
                     </div>"
                   );
+                  } else if (dayOrNight === "night") {
+                    $("#read-option-box").append(
+                      "<div id='read-color-theme'>\
+                      <Label>Theme:</Label>\
+                      <input type='radio' id='theme-light' name='light' value='light'> Light\
+                      <input type='radio' id='theme-dark' name='dark' value='dark' checked> Dark\
+                    </div>"
+                    );
+                  }
                 }
                 $("#read-font-size :input").change(function () {
                   if (this.value == "small") {
@@ -404,7 +422,6 @@
                     .prop("checked", false);
                 });
                 $("#read-font-family :input").change(function () {
-                  //console.log("New font: " + this.value);
                   $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
                     fontFamily: this.value
                   });
@@ -608,6 +625,49 @@
                   position: "relative",
                   top: "15px",
                   left: "10px"
+                });
+              }
+              if (dayOrNight == "day") {
+                $("#read-container").css({
+                  background: "#e9e9e9"
+                });
+                $("#read-text").css({
+                  backgroundColor: "#fff",
+                  color: "#333",
+                  border: "#dbdbdb"
+                });
+                $("#read-text #read-text-content a").css({
+                  color: "#333"
+                });
+                $("#read-text #read-text-content pre").css({
+                  backgroundColor: "#EFF0F1"
+                });
+                $("#read-text-domain").css({
+                  color: "#104b4e"
+                });
+                $("#read-text-content").css({
+                  borderColor: "#eee"
+                });
+              } else if (dayOrNight == "night") {
+                $("#read-container").css({
+                  background: "#111"
+                });
+                $("#read-text").css({
+                  backgroundColor: "#222",
+                  color: "#aaa",
+                  border: "#222"
+                });
+                $("#read-text #read-text-content a").css({
+                  color: "#aaa"
+                });
+                $("#read-text #read-text-content pre").css({
+                  backgroundColor: "#ccc"
+                });
+                $("#read-text-domain").css({
+                  color: "#11ABB0"
+                });
+                $("#read-text-content").css({
+                  borderColor: "#444"
                 });
               }
             }
