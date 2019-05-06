@@ -15,16 +15,14 @@
             $("#tool-option").remove();
           }
 
+          // Add content.css file
+          if ($("#content-css").length === 0) {
+            $("head").append('<link rel="stylesheet" href="' +
+            chrome.runtime.getURL("css/content.css") +
+            '" type="text/css" id="content-css"/>');
+          }
+
           $("body").append("<div id='tool-option'></div>");
-          $("#tool-option").css({
-            backgroundColor: "#0f999e",
-            position: "fixed",
-            top: "30%",
-            right: "14px",
-            padding: "15px 15px 0 15px",
-            borderRadius: "5px 0px 0px 5px",
-            zIndex: "300"
-          });
 
           //Read Mode Button
           $("#tool-option").append(
@@ -136,14 +134,7 @@
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/help-white.png"));
           });
-
-          $("#read-btn, #tts-btn, #edit-btn, #highlight-btn, #save-btn, #open-btn, #pdf-btn, #help-btn").css({
-            width: "30px",
-            height: "30px",
-            display: "block",
-            cursor: "pointer",
-            marginBottom: "15px"
-          });
+          
         };
 
         var _oldHead, _oldBody;
@@ -250,13 +241,6 @@
             if ($("#read-container").length == 0) {
               //read-container will replace body
               $("body").append("<div id='read-container'></div>");
-              $("#read-container").css({
-                width: "100%",
-                background: "#111",
-                color: "#333 !important",
-                padding: "50px 0",
-                fontFamily: "arial, sans-serif"
-              });
             }
 
             if ($("#read-mode").length == 0) {
@@ -265,16 +249,6 @@
                 "<div id='read-mode'></div>"
               );
               $("#read-mode").text("Reading Mode On");
-              $("#read-mode").css({
-                position: "fixed",
-                top: "6%",
-                left: "44.5%",
-                backgroundColor: "#333",
-                color: "#fff",
-                padding: "10px",
-                opacity: "1.0",
-                zIndex: "20"
-              });
               $("#read-mode").animate({ opacity: "0.0" }, 1200);
             } else {
               //read-mode exist
@@ -295,17 +269,6 @@
                 "'/></div>"
               );
             }
-            $("#read-option-btn").css({
-              textAlign: "right",
-              width: "60%",
-              margin: "0px auto",
-              cursor: "pointer",
-              marginBottom: "5px",
-              boxSizing: "border-box"
-            });
-            $("#read-option-btn img").css({
-              width: "25px"
-            });
 
             var dayOrNight;
             var curHours = new Date().getHours();
@@ -324,16 +287,6 @@
                   $("#read-option").append(
                     "<div id='read-option-box'></div>"
                   );
-                  $("#read-option-box").css({
-                    backgroundColor: "#4A7C87",
-                    color: 'white',
-                    padding: "20px",
-                    width: "60%",
-                    margin: "0 auto",
-                    fontFamily: "arial,sans-serif",
-                    fontSize: "13px",
-                    boxSizing: "border-box"
-                  });
                 } else {
                   $("#read-option-box").show();
                 }
@@ -490,18 +443,6 @@
                 "<div id='read-text'></div>"
               );
             }
-            $("#read-text").css({
-              background: "#222",
-              color: "#aaa",
-              padding: "45px 70px",
-              width: "60%",
-              margin: "0 auto",
-              //fontFamily: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif',
-              lineHeight: "28px",
-              border: "1px solid #222",
-              fontSize: "15px",
-              boxSizing: "border-box"
-            });
 
             if (article === null) {
               if ($("#read-text-error").length == 0) {
@@ -511,10 +452,6 @@
                     "'/>" + "<h1>Sorry! this page is unreadable.</h1></div>"
                 );
               }
-              $("#read-text-error").css({
-                color: "red",
-                textAlign: "center"
-              });
               $("#read-option").hide();
               console.warn("Article is not readable");
             } else {
@@ -547,29 +484,6 @@
               if(article.byline !== null) {
                 $("#read-text-author").text("Author: " + article.byline);
               }
-              $("#read-text-title").css({
-                lineHeight: "35px"
-              });
-              $("#read-text-domain").css({
-                color: "#11ABB0",
-                fontSize: "13px",
-                fontStyle: "oblique"
-              });
-              $("#read-text-words, #read-text-eta, #read-text-author").css({
-                color: "#777",
-                fontSize: "13px",
-                fontStyle: "oblique",
-                marginRight: "13px"
-              });
-              $("#read-text-content").css({
-                borderTop: "2px solid #444",
-                overflow: "auto"
-              });
-              $("#read-text #read-text-content a").css({
-                color: "#aaa",
-                textDecoration: "none",
-                cursor: "default"
-              });
               $("#read-text #read-text-content a").each(function () {
                 $(this).click(function (event) {
                   event.preventDefault();
@@ -594,20 +508,9 @@
                   });
                 }
               });
-              /* $("#read-text #read-text-content img").css({
-                height: "auto"
-              }); */
               if (!$("#read-text #read-text-content pre").hasClass("prettyprint")) {
                 $("#read-text #read-text-content pre").addClass("prettyprint");
               }
-              $("#read-text #read-text-content pre").css({
-                backgroundColor: "#ccc",
-                border: "none",
-                overflow: "auto"
-              });
-              $("#read-text #read-text-content video").css({
-                display: "none",
-              });
               if ($("#read-text-footer").length == 0) {
                 $("#read-container").append($.parseHTML(
                   "<div id='read-text-footer'>" +
@@ -615,17 +518,6 @@
                   "<img src='" + chrome.runtime.getURL("icons/icon_48.png") + "'/>"  + 
                   "</div>"
                 ));
-                $("#read-text-footer").css({
-                  textAlign: "center",
-                  color: "#aaa",
-                  lineHeight: "35px",
-                  margin: "10px auto"
-                });
-                $("#read-text-footer img").css({
-                  position: "relative",
-                  top: "15px",
-                  left: "10px"
-                });
               }
               if (dayOrNight == "day") {
                 $("#read-container").css({
@@ -717,15 +609,6 @@
             //tts-mode doesn't exist
             $("body").append("<div id='tts-mode'></div>");
             $("#tts-mode").text("Speech to Text Mode");
-            $("#tts-mode").css({
-              position: "fixed",
-              top: "11%",
-              left: "44.5%",
-              backgroundColor: "#333",
-              color: "#fff",
-              padding: "10px",
-              opacity: "1.0"
-            });
             $("#tts-mode").animate({ opacity: "0.0" }, 1200);
           } else {
             //tts-mode exist
@@ -739,54 +622,9 @@
             $("body").append(
               "<div id='dialog-box'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button><select id='speech-voices'></select></div>"
             );
-            $("#dialog-box").css({
-              position: "fixed",
-              top: "11%",
-              right: "4%",
-              zIndex: "300"
-            });
-            $("#apply-btn").css({
-              border: "0",
-              background: "#4CA1B6",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px"
-            });
-            $("#cancel-btn").css({
-              border: "0",
-              background: "#CE5061",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px",
-              marginLeft: "10px"
-            });
-            $("#speech-voices").css({
-              border: "0",
-              background: "#4A7C87",
-              color: "#fff",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px",
-              marginLeft: "10px",
-              height: "38px"
-            });
           } else {
             if ($("#speech-voices").length == 0) {
               $("#dialog-box").append("<select id='speech-voices'></select>");
-              $("#speech-voices").css({
-                border: "0",
-                background: "4A7C87",
-                color: "#fff",
-                cursor: "pointer",
-                fontSize: "17px",
-                borderRadius: "5px",
-                marginLeft: "10px",
-                height: "38px"
-              });
               $("#apply-btn").html("Speak");
             }
             $("#dialog-box").show();
@@ -858,7 +696,7 @@
                 //apply button clicked
                 console.log("Speaks all selected text");
                 if (window.speechSynthesis.speaking) {
-                  console.error("speechSynthesis.speaking");
+                  console.log("speechSynthesis.speaking");
                   //return;
                   window.speechSynthesis.cancel();
                 }
@@ -889,18 +727,12 @@
                     speaker.onend = function (event) {
                       $("#tts-mode").text("Select Text to Speech.");
                       $("#tts-mode").css({ opacity: "1.0" });
-                      //$("#tts-mode").animate({ opacity: "0.0" }, 1200);
                       $("#apply-btn").html("Speak");
-                      //console.log("Speach finished in " + event.elapsedTime + " seconds.");
                     };
 
-                    speaker.onpause = function (event) {
-                      //console.log("Speech paused after " + event.elapsedTime + " milliseconds.");
-                    };
+                    speaker.onpause = function (event) { };
+                    speaker.onresume = function (event) { };
 
-                    speaker.onresume = function (event) {
-                      //console.log("Speech resumed after " + event.elapsedTime + " milliseconds.");
-                    };
                   });
                 } else {
                   $("#tts-mode").text("No text available. Select Text.");
@@ -987,15 +819,6 @@
             //edit-mode doesn't exist
             $("body").append("<div id='edit-mode'></div>");
             $("#edit-mode").text("Edit Mode On!");
-            $("#edit-mode").css({
-              position: "fixed",
-              top: "11%",
-              left: "44.5%",
-              backgroundColor: "#333",
-              color: "#fff",
-              padding: "10px",
-              opacity: "1.0"
-            });
             $("#edit-mode").animate({opacity: "0.0"}, 1200);
           } else {
             //edit-mode exist
@@ -1007,55 +830,9 @@
           if ($("#dialog-box").length == 0) {
             //dialog-box doesn't exist
             $("body").append("<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>");
-            $("#dialog-box").css({
-              position: "fixed",
-              top: "11%",
-              right: "4%",
-              zIndex: "300"
-            });
-            $("#apply-btn").css({
-              border: "0",
-              background: "#4CA1B6",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px"
-            });
-            $("#cancel-btn").css({
-              border: "0",
-              background: "#CE5061",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px",
-              marginLeft: "10px"
-            });
           } else {
             $("#dialog-box").show();
           }
-
-          //Add new class "web-edited", "web-deleted", "link-disabled" and push in the css
-          $("<style>")
-            .prop("type", "text/css")
-            .prop("id", "edit-mode-css")
-            .html(
-              "\
-              .web-edited {\
-                  opacity: 0.4;\
-                  filter: alpha(opacity=50);\
-              }\
-              .web-deleted {\
-                  opacity: 0.0;\
-                  filter: alpha(opacity=0);\
-              }\
-              .link-disabled {\
-                  pointer-events: none;\
-                  cursor: default;\
-              }"
-            )
-            .appendTo("head");
 
           // transform all links as unclickable
           $("a").each(function () {
@@ -1120,8 +897,6 @@
                   },
                   "slow"
                 );
-                //$("#dialog-box").hide();
-                //$("#tool-option").show();
                 removeExtensionElements();
                 createToolOptions();
                 editMode = false;
@@ -1137,8 +912,6 @@
                 $("#edit-mode").text("Changes are cancelled!");
                 $("#edit-mode").css({ opacity: "1.0" });
                 $("#edit-mode").animate({ opacity: "0.0" }, 1200);
-                //$("#dialog-box").remove();
-                //$("#tool-option").show();
                 removeExtensionElements();
                 createToolOptions();
                 editMode = false;
@@ -1161,6 +934,7 @@
           lightMode = true;
 
           $("#tool-option").hide();
+
           if ($("#help-mode").length != 0) {
             helpMode = false;
             $("#help-mode").remove();
@@ -1170,15 +944,6 @@
             //highlight-mode doesn't exist
             $("body").append("<div id='highlight-mode'></div>");
             $("#highlight-mode").text("Highlight Mode On!");
-            $("#highlight-mode").css({
-              position: "fixed",
-              top: "11%",
-              left: "44.5%",
-              backgroundColor: "#333",
-              color: "#fff",
-              padding: "10px",
-              opacity: "1.0"
-            });
             $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
           } else {
             //edit-mode exist
@@ -1192,44 +957,9 @@
             $("body").append(
               "<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>"
             );
-            $("#dialog-box").css({
-              position: "fixed",
-              top: "11%",
-              right: "4%",
-              zIndex: "300"
-            });
-            $("#apply-btn").css({
-              border: "0",
-              background: "#4CA1B6",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px"
-            });
-            $("#cancel-btn").css({
-              border: "0",
-              background: "#CE5061",
-              color: "#fff",
-              padding: "9px",
-              cursor: "pointer",
-              fontSize: "17px",
-              borderRadius: "5px",
-              marginLeft: "10px"
-            });
           } else {
             $("#dialog-box").show();
           }
-
-          //Add new class "manual-highlight" and push in the css
-          $("<style>")
-            .prop("type", "text/css")
-            .prop("id", "highlight-mode-css")
-            .html(
-              ".manual-highlight {background-color: yellow; color: #000 !important; display: inline;" +
-              ".manual-highlight a, .manual-highlight span, .manual-highlight p {color: #000 !important; text-decoration: none}"
-            )
-            .appendTo("head");
 
           function highlightRange(range) {
             if (range.toString() !== "" && range.toString().match(/\w+/g) !== null) {
@@ -1316,8 +1046,6 @@
                 $("#highlight-mode").text("Changes are applied!");
                 $("#highlight-mode").css({ opacity: "1.0" });
                 $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
-                //$("#dialog-box").hide();
-                //$("#tool-option").show();
                 lightMode = false;
                 removeExtensionElements();
                 createToolOptions();
@@ -1330,9 +1058,6 @@
                 $("#highlight-mode").text("Changes are cancelled!");
                 $("#highlight-mode").css({ opacity: "1.0" });
                 $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
-                //$("#highlight-mode-css").remove(); //delete the highlight-mode-css from head
-                //$("#dialog-box").remove();
-                //$("#tool-option").show();
                 lightMode = false;
                 removeExtensionElements();
                 createToolOptions();
@@ -1358,15 +1083,6 @@
           if ($("#save-mode").length == 0) {
             //save-mode doesn't exist
             $("body").append("<div id='save-mode'></div>");
-            $("#save-mode").css({
-              position: "fixed",
-              top: "11%",
-              left: "44.5%",
-              backgroundColor: "#333",
-              color: "#fff",
-              padding: "10px",
-              opacity: "0.0"
-            });
           } else {
             //save-mode exist
             $("#save-mode").css({ opacity: "0.0"});
@@ -1470,71 +1186,10 @@
                   <div><span>Save Page for Later:</span><p>Save favorite web pages in a reading queue for a later read. Detect any previously saved pages.</p></div>\
                   <div><span>Open Reading Queue:</span><p>View the Read for Later list. Sort the list using various options as well as delete the unwanted web page.</p></div>\
                   <div><span>Save as PDF:</span><p>One click to save the web page into PDF file locally.</p></div>\
-                  <div><p>Want to learn more? Please check out the clear page extension <a href='https://nids0810.github.io/clear-page/' title='Clear Page' target='_blank'>website</a>.</p></div>\
+                  <div><p>Want to learn more? Please check out the clear page extension <a href='https://sites.google.com/view/readpro/home' title='Clear Page' target='_blank'>website</a>.</p></div>\
                 </div>\
                 ";
               $("#help-mode").append($.parseHTML(helpHtml));
-              $("#help-mode").css({
-                position: "fixed",
-                top: "30%",
-                backgroundColor: "#fff",
-                color: "#333",
-                padding: "15px",
-                width: "48%",
-                right: "5.5%",
-                overflow: "auto",
-                zIndex: "300",
-                borderRadius: "20px",
-                height: '355px',
-                boxShadow: '2px 2px 10px 0px #000'
-              });
-              $('#help-title').css({
-                textAlign: 'center',
-                fontSize: '20px',
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                marginBottom: "15px"
-              });
-              $('#help-content div').css({
-                background: '#f1f1f1',
-                border: '1px solid# eee',
-                backgroundColor: '#f1f2f2',
-                padding: '10px',
-                borderRadius: '7px',
-                marginBottom: '15px',
-                marginBottom: '10px'
-              });
-              $('#help-content div span').css({
-                fontSize: '14px',
-                fontWeight: 'bolder',
-                marginBottom: "11px",
-                display: "block"
-              });
-              $('#help-content div p').css({
-                fontSize: '13px'
-              });
-              $('#help-content div p a').css({
-                color: "#000",
-                textDecoration: "none",
-                fontWeight: "bold"
-              });
-              $("#help-content div p img").css({
-                position: "relative",
-                top: "5px"
-              });
-              $("#cross-btn").css({
-                background: '#333',
-                fontSize: '20px',
-                color: '#fff',
-                float: 'right',
-                borderRadius: '50%',
-                padding: '5px 12px',
-                cursor: 'pointer',
-                top: '-8px',
-                right: '-14px',
-                zIndex: '10',
-                position: 'sticky'
-              });
             } else {
               $("#help-mode").show();
               $("#help-mode").css({ opacity: 1, zIndex: "300" });
