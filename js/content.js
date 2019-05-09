@@ -490,12 +490,18 @@
                 });
               });
               $("#read-text #read-text-content img").each(function () {
-                var _boxDim = $("#read-text-content").width();
+                if($(this).attr("typeof") === "foaf:Image"){
+                  $(this).css({display: "none"});
+                }
+                if(this.width <= 100 && this.height <= 100) {
+                  $(this).css({ display: "none" });
+                }
+                /* var _boxDim = $("#read-text-content").width();
                 var _maxDim = Math.max(this.width, this.height);
-                //var ratio;
+                var ratio;
                 if (_maxDim > _boxDim) {
-                  //ratio = parseFloat(_maxDim/_boxDim);
-                  //this.width = parseInt(this.width/ratio);
+                  ratio = parseFloat(_maxDim/_boxDim);
+                  this.width = parseInt(this.width/ratio);
                   $(this).width("90%");
                   $(this).css({
                     height: "auto",
@@ -506,7 +512,12 @@
                     height: "auto",
                     display: "block"
                   });
-                }
+                }  */
+              });
+              $("li").parents("ul").css({
+                listStyleType: "none",
+                overflow: "hidden",
+                display: "block"
               });
               if (!$("#read-text #read-text-content pre").hasClass("prettyprint")) {
                 $("#read-text #read-text-content pre").addClass("prettyprint");

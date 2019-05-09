@@ -144,7 +144,49 @@
     overflow: auto;
 }
 
-#read-text #read-text-content video{
+#read-text #read-text-content img {
+    max-width: 100%;
+    height: auto;
+    width: auto\9; /* ie8 */
+}
+
+#read-text #read-text-content svg {
+    display: none;
+}
+
+#read-text #read-text-content figure {
+    /* display: none; */
+}
+
+#read-text #read-text-content video {
+    display: none;
+}
+
+#read-text #read-text-content blockquote {
+    background-color: #eee;
+}
+
+#read-text #read-text-content ul {
+    list-style-type: none;
+    overflow: hidden;
+    display: block;
+}
+
+#read-text #read-text-content ol {
+    list-style-type: none;
+    overflow: hidden;
+    display: block;
+}
+
+#read-text #read-text-content li {
+    float: left;
+}
+
+#read-text #read-text-content aside {
+    display: none;
+}
+
+#read-text #read-text-content progress {
     display: none;
 }
 
