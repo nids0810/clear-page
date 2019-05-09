@@ -19,7 +19,7 @@
     "default_icon": "icons/icon_48.png"
   },
   "author": "ReadPro Developers",
-  "homepage_url": "https://nids0810.github.io/clear-page/",
+  "homepage_url": "https://sites.google.com/view/readpro/home",
   "permissions": ["activeTab", "*://*/*"],
   "commands": {
     "_execute_browser_action": {
