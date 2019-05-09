@@ -42,6 +42,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
           }
         }
       } else {
+        alert("This extension currently blocked on site: " + _tabURL.host);
         console.log("This extension currently blocked on site: " + _tabURL.host);
       }
     } else {
