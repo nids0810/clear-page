@@ -22,6 +22,8 @@
             '" type="text/css" id="content-css"/>');
           }
 
+          $("head").append('<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" />');
+
           $("body").append("<div id='tool-option'></div>");
 
           //Read Mode Button
@@ -1107,6 +1109,12 @@
                 //console.log(response.message);
                 if (response.message === "link saved") {
                   $("#save-mode").text("Link saved.");
+                  swal({
+                    title: "Read Pro",
+                    text: "The link is saved!",
+                    icon: "success",
+                    button: "Yess!"
+                  });
                 } else if (response.message === "link duplicate") {
                   $("#save-mode").text(
                     "Duplicate link."

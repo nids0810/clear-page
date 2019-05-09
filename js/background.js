@@ -16,6 +16,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
           executeScripts(tab.id, [
             { file: "third-party/jquery-3.4.1.min.js" },
             { file: "third-party/readability.js" },
+            { file: "third-party/sweetalert.min.js" },
             { file: "js/content.js" }
           ]);
           chrome.browserAction.setIcon({ path: "icons/icon_on_16.png", tabId: tab.id}, extensionCallback(tab.id));
@@ -42,7 +43,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
           }
         }
       } else {
-        alert("This extension currently blocked on site: " + _tabURL.host);
+        alert("This extension currently blocked on site: \n" + _tabURL.host);
         console.log("This extension currently blocked on site: " + _tabURL.host);
       }
     } else {
