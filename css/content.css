@@ -9,7 +9,7 @@
     z-index: 9999 !important;
 }
 
-#read-btn, #tts-btn, #edit-btn, #highlight-btn, #save-btn, #open-btn, #pdf-btn, #help-btn {
+#read-btn, #tts-btn, #erase-btn, #highlight-btn, #save-btn, #open-btn, #pdf-btn, #help-btn {
     width: 30px;
     height: 30px;
     display: block;
@@ -19,7 +19,7 @@
 
 #read-mode,
 #tts-mode,
-#edit-mode,
+#erase-mode,
 #highlight-mode,
 #save-mode {
     position: fixed;
@@ -215,7 +215,7 @@
     height: 38px;
 }
 
-/* Edit Mode */
+/* Erase Mode */
 .web-edited {
     opacity: 0.4;
     filter: alpha(opacity=50);
@@ -311,4 +311,11 @@
     right: -14px;
     z-index: 10;
     position: sticky;
+}
+
+/* Animation class */
+#tool-option img.animated {
+    animation-duration: 200ms;
+    /* animation-delay: 2s; */
+    /* animation-iteration-count: infinite; */
 }

@@ -22,7 +22,18 @@
             '" type="text/css" id="content-css"/>');
           }
 
-          $("head").append('<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" />');
+          // Add sweet-alert-js file
+          //$("head").append('<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" />');
+          if ($("#sweet-alert-js").length === 0) {
+            $("head").append('<script src = "' + chrome.runtime.getURL("third-party/sweetalert.min.js") + '" id="sweet-alert-js" />');
+          }
+
+          // Add animate.css file
+          if ($("#animate-css").length === 0) {
+            $("head").append('<link rel="stylesheet" href="' + 
+            chrome.runtime.getURL("css/animate.min.css") + 
+            '" type="text/css" id="animate-css"/>');
+          }
 
           $("body").append("<div id='tool-option'></div>");
 
@@ -31,7 +42,7 @@
             "<img id='read-btn' title='Read Mode' src='" + 
             chrome.runtime.getURL("images/book-white.png") + 
             "'/>");
-          $("#read-btn").click(readMode);
+          $("#read-btn").click(readModeFunction);
 
           //Text to Speak Mode Button
           $("#tool-option").append(
@@ -39,15 +50,15 @@
             chrome.runtime.getURL("images/speak-white.png") +
             "'/>"
           );
-          $("#tts-btn").click(ttsMode);
+          $("#tts-btn").click(ttsModeFunction);
 
-          //Edit Mode Button
+          //Erase Mode Button
           $("#tool-option").append(
-            "<img id='edit-btn' title='Edit Mode' src='" +
-            chrome.runtime.getURL("images/edit-white.png") +
+            "<img id='erase-btn' title='Erase Mode' src='" +
+            chrome.runtime.getURL("images/erase-white.png") +
             "'/>"
           );
-          $("#edit-btn").click(editMode);
+          $("#erase-btn").click(eraseModeFunction);
 
           //Highlight Mode Button
           $("#tool-option").append(
@@ -55,7 +66,7 @@
             chrome.runtime.getURL("images/highlight-white.png") +
             "'/>"
           );
-          $("#highlight-btn").click(highlightMode);
+          $("#highlight-btn").click(highlightModeFunction);
 
           //Save page for later Button
           $("#tool-option").append(
@@ -63,7 +74,7 @@
             chrome.runtime.getURL("images/save-white.png") +
             "'/>"
           );
-          $("#save-btn").click(saveLinks);
+          $("#save-btn").click(saveLinksFunction);
 
           //Open saved links Button
           $("#tool-option").append(
@@ -71,7 +82,7 @@
             chrome.runtime.getURL("images/open-white.png") +
             "'/>"
           );
-          $("#open-btn").click(openLinks);
+          $("#open-btn").click(openLinksFunction);
 
           //Save as PDF Button
           $("#tool-option").append(
@@ -87,66 +98,82 @@
             chrome.runtime.getURL("images/help-white.png") +
             "'/>"
           );
-          $("#help-btn").click(openHelp);
+          $("#help-btn").click(helpModeFunction);
 
           $("#read-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
+            $(this).addClass("animated bounce");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/book-white.png"));
+            $(this).removeClass("animated bounce");
           });
 
           $("#tts-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/speak-green.png"));
+            $(this).addClass("animated flash");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/speak-white.png"));
+            $(this).removeClass("animated flash");
           });
 
-          $("#edit-btn").hover(function () {
-            $(this).attr('src', chrome.runtime.getURL("images/edit-green.png"));
+          $("#erase-btn").hover(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/erase-green.png"));
+            $(this).addClass("animated wobble");
           }, function () {
-            $(this).attr('src', chrome.runtime.getURL("images/edit-white.png"));
+            $(this).attr('src', chrome.runtime.getURL("images/erase-white.png"));
+            $(this).removeClass("animated wobble");
           });
 
           $("#highlight-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/highlight-green.png"));
+            $(this).addClass("animated rubberBand");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/highlight-white.png"));
+            $(this).removeClass("animated rubberBand");
           });
 
           $("#save-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/save-green.png"));
+            $(this).addClass("animated shake");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/save-white.png"));
+            $(this).removeClass("animated shake");
           });
 
           $("#open-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/open-green.png"));
+            $(this).addClass("animated headShake");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/open-white.png"));
+            $(this).removeClass("animated headShake");
           });
 
           $("#pdf-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/pdf-green.png"));
+            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/pdf-white.png"));
+            $(this).removeClass("animated swing");
           });
 
           $("#help-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/help-green.png"));
+            $(this).addClass("animated tada");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/help-white.png"));
+            $(this).removeClass("animated tada");
           });
           
         };
 
         var _oldHead, _oldBody;
-        var readingMode = false;
+        var readMode = false;
         //Read Mode Button Function
-        var readMode = function () {
+        var readModeFunction = function () {
           console.log("Reading Mode On");
           chrome.runtime.sendMessage({ message: "open read mode" });
 
-          if (!readingMode) {
+          if (!readMode) {
 
             if ($("#help-mode").length != 0) {
               helpMode = false;
@@ -454,6 +481,7 @@
                     "'/>" + "<h1>Sorry! this page is unreadable.</h1></div>"
                 );
               }
+              $("#read-text-error img").addClass("animated hinge delay-2s");
               $("#read-option").hide();
               console.warn("Article is not readable");
             } else {
@@ -577,7 +605,7 @@
               }
             }
 
-            readingMode = true;
+            readMode = true;
             createToolOptions();
             $("tool-option").nextAll("div, iframe").css({display: "none"});
             if ($('#read-btn').length !== 0) {
@@ -595,7 +623,7 @@
             $("#read-mode").text("Reading Mode Off");
             $("#read-mode").css({ opacity: 1, zIndex: "20" });
             $("#read-mode").animate({ opacity: "0.0" }, 1200);
-            readingMode = false;
+            readMode = false;
             $("#read-container").remove();
             removeExtensionElements();
             //window.location.reload();
@@ -606,7 +634,7 @@
         };
 
         //Text to Speech Mode Button Function
-        var ttsMode = function () {
+        var ttsModeFunction = function () {
           console.log("Text to Speech mode is on");
           chrome.runtime.sendMessage({ message: "open speak mode" });
           var ttsMode = true;
@@ -816,11 +844,11 @@
           return arr;
         }
 
-        //Edit Mode Button Function
-        var editMode = function () {
-          console.log("Edit mode is on");
-          chrome.runtime.sendMessage({ message: "open edit mode" });
-          var editMode = true;
+        //Erase Mode Button Function
+        var eraseModeFunction = function () {
+          console.log("Erase mode is on");
+          chrome.runtime.sendMessage({ message: "open erase mode" });
+          var eraseMode = true;
           $("#tool-option").hide();
 
           if ($("#help-mode").length != 0) {
@@ -828,16 +856,16 @@
             $("#help-mode").remove();
           }
 
-          if ($("#edit-mode").length == 0) {
-            //edit-mode doesn't exist
-            $("body").append("<div id='edit-mode'></div>");
-            $("#edit-mode").text("Edit Mode On!");
-            $("#edit-mode").animate({opacity: "0.0"}, 1200);
+          if ($("#erase-mode").length == 0) {
+            //erase-mode doesn't exist
+            $("body").append("<div id='erase-mode'></div>");
+            $("#erase-mode").text("Erase Mode On!");
+            $("#erase-mode").animate({opacity: "0.0"}, 1200);
           } else {
-            //edit-mode exist
-            $("#edit-mode").text("Edit Mode On!");
-            $("#edit-mode").css({opacity: "1.0"});
-            $("#edit-mode").animate({ opacity: "0.0" }, 1200);
+            //erase-mode exist
+            $("#erase-mode").text("Erase Mode On!");
+            $("#erase-mode").css({opacity: "1.0"});
+            $("#erase-mode").animate({ opacity: "0.0" }, 1200);
           }
 
           if ($("#dialog-box").length == 0) {
@@ -855,14 +883,14 @@
             $(this).addClass("link-disabled");
           });
 
-          // Click an element in edit mode
+          // Click an element in erase mode
           $(document).click(function (event) {
-            if (editMode) {
+            if (eraseMode) {
               if (
                 event.target.id === "tool-option" ||
                 event.target.id === "read-btn" ||
                 event.target.id === "tts-btn" ||
-                event.target.id === "edit-btn" ||
+                event.target.id === "erase-btn" ||
                 event.target.id === "highlight-btn" ||
                 event.target.id === "save-btn" ||
                 event.target.id === "pdf-btn" ||
@@ -882,7 +910,7 @@
                 event.target.id === "read-text" ||
                 event.target.id === "read-text-content" ||
                 event.target.id === "tts-mode" ||
-                event.target.id === "edit-mode" ||
+                event.target.id === "erase-mode" ||
                 event.target.id === "highlight-mode" ||
                 event.target.id === "save-mode" ||
                 event.target.id === "help-mode" ||
@@ -895,39 +923,38 @@
                 //Can't delete body
               } else if (event.target.id === "apply-btn") {
                 //apply button clicked
-                console.log("Apply edits on all selected elements");
+                console.log("Erases all selected elements");
                 $(".web-edited").each(function () {
-                  $(this)
-                    .removeClass("web-edited")
-                    .addClass("web-deleted");
+                  $(this).removeClass("web-edited");
+                  $(this).addClass("web-deleted");
                 });
-                $("#edit-mode").text("Changes are applied!");
-                $("#edit-mode").css({
+                $("#erase-mode").text("Changes are applied!");
+                $("#erase-mode").css({
                   opacity: "1.0"
                 });
-                $("#edit-mode").animate({
+                $("#erase-mode").animate({
                     opacity: "0.0"
                   },
                   "slow"
                 );
                 removeExtensionElements();
                 createToolOptions();
-                editMode = false;
+                eraseMode = false;
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
-                console.log("Cancel edits from all selected elements");
+                console.log("Canceled all erased elements");
                 $(".web-edited").each(function () {
                   $(this).removeClass("web-edited");
                 });
                 $("a").each(function () {
                   $(this).removeClass("link-disabled");
                 });
-                $("#edit-mode").text("Changes are cancelled!");
-                $("#edit-mode").css({ opacity: "1.0" });
-                $("#edit-mode").animate({ opacity: "0.0" }, 1200);
+                $("#erase-mode").text("Changes are cancelled!");
+                $("#erase-mode").css({ opacity: "1.0" });
+                $("#erase-mode").animate({ opacity: "0.0" }, 1200);
                 removeExtensionElements();
                 createToolOptions();
-                editMode = false;
+                eraseMode = false;
               } else if ($(event.target).hasClass("web-edited")) {
                 //Unselect already selected elements
                 $(event.target).removeClass("web-edited");
@@ -941,7 +968,7 @@
 
         var lightMode = false;
         //Highlight Button Function
-        var highlightMode = function () {
+        var highlightModeFunction = function () {
           console.log("Highlight mode is on");
           chrome.runtime.sendMessage({ message: "open highlight mode" });
           lightMode = true;
@@ -959,7 +986,7 @@
             $("#highlight-mode").text("Highlight Mode On!");
             $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
           } else {
-            //edit-mode exist
+            //highligh-mode exist
             $("#highlight-mode").text("Highlight Mode On!");
             $("#highlight-mode").css({ opacity: "1.0" });
             $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
@@ -1089,7 +1116,7 @@
         };
 
         var saveLinkMode = false;
-        var saveLinks = function () {
+        var saveLinksFunction = function () {
           console.log("Save link mode is on");
           saveLinkMode = true;
 
@@ -1111,9 +1138,9 @@
                   $("#save-mode").text("Link saved.");
                   swal({
                     title: "Read Pro",
-                    text: "The link is saved!",
+                    text: response.data.title + " link is saved!",
                     icon: "success",
-                    button: "Yess!"
+                    button: "Kewl"
                   });
                 } else if (response.message === "link duplicate") {
                   $("#save-mode").text(
@@ -1133,7 +1160,7 @@
 
         var openLinksMode = false;
         //Open saved links Button Function
-        var openLinks = function () {
+        var openLinksFunction = function () {
           console.log("Open reading queue mode is on");
           openLinksMode = true;
           if (openLinksMode) {
@@ -1185,7 +1212,7 @@
 
         var helpMode = false;
         //Help Mode Button Function
-        var openHelp = function () {
+        var helpModeFunction = function () {
           console.log("Help mode on");
           chrome.runtime.sendMessage({ message: "open help mode" });
           if (!helpMode) {
@@ -1200,7 +1227,7 @@
                   <div><p>Use this powerful tool by either clicking the icon <img src='" + chrome.runtime.getURL("icons/icon_16.png") + "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p></div>\
                   <div><span>Read Mode:</span><p>Transform the website into a clean readable page with various styling options.</p></div>\
                   <div><span>Text to Speak Mode:</span><p>Read out loud any selected text from the web page. Choose voices from various voice options.</p></div>\
-                  <div><span>Edit Mode:</span><p>Hide any unnecessary element from the web page on a single click. Select the element and use Apply button to hide. Use Cancel button to Undo any changes.</p></div>\
+                  <div><span>Erase Mode:</span><p>Erases any unnecessary element from the web page on a single click. Select the element and use Apply button to erase. Use Cancel button to Undo any changes.</p></div>\
                   <div><span>Highlight Mode:</span><p>Use the inbuilt Highlighter to highlight any text on the web page. Remove all highlights using the cancel button.</p></div>\
                   <div><span>Save Page for Later:</span><p>Save favorite web pages in a reading queue for a later read. Detect any previously saved pages.</p></div>\
                   <div><span>Open Reading Queue:</span><p>View the Read for Later list. Sort the list using various options as well as delete the unwanted web page.</p></div>\
@@ -1259,8 +1286,8 @@
       $("#tts-mode").remove();
     }
 
-    if ($("#edit-mode").length != 0) {
-      $("#edit-mode").remove();
+    if ($("#erase-mode").length != 0) {
+      $("#erase-mode").remove();
     }
 
     if ($("#highlight-mode").length != 0) {

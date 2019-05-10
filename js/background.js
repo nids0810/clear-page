@@ -118,7 +118,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       //console.log("Saved Link: " + JSON.stringify(_savedLink));
       if (pushUniqueLinks(_savedLink)) {
         console.log("Link saved");
-        sendResponse({ message: "link saved" });
+        sendResponse({ message: "link saved", data: _savedLink });
       } else {
         console.log("Link duplicate");
         sendResponse({ message: "link duplicate" });
@@ -159,8 +159,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     ga("send", "event", "Read Mode", "Activated", "");
   } else if(request.message == "open speak mode") {
     ga("send", "event", "Speak Mode", "Activated", "");
-  } else if(request.message == "open edit mode") {
-    ga("send", "event", "Edit Mode", "Activated", "");
+  } else if(request.message == "open erase mode") {
+    ga("send", "event", "Erase Mode", "Activated", "");
   } else if(request.message == "open highlight mode") {
     ga("send", "event", "Highlight Mode", "Activated", "");
   } else if(request.message == "open print mode") {
