@@ -63,11 +63,161 @@
 /* read mode elements */
 #read-container {
     width: 100%;
-    background: #111;
-    color: #333 !important;
     padding: 50px 0;
     font-family: arial, sans-serif;
 }
+
+/* Day Theme */
+#read-container.day {
+    background: #e9e9e9;
+    color: #333;
+}
+
+#read-text.day {
+    background: #fff;
+    color: #333;
+    border: #dbdbdb;
+}
+
+#read-text.day #read-text-error {
+    color: red;
+}
+
+#read-text.day #read-text-domain {
+    color: #104b4e;
+}
+
+#read-text.day #read-text-words,
+#read-text.day #read-text-eta,
+#read-text.day #read-text-author {
+    color: #777;
+}
+
+#read-text.day #read-text-content {
+    border-color: #eee;
+}
+
+#read-text.day #read-text-content a {
+    color: #333;
+}
+
+#read-text.day #read-text-content pre {
+    background-color: #EFF0F1;
+}
+
+#read-text.day #read-text-content blockquote {
+    background-color: #EFF0F1;
+}
+
+/* Night Theme */
+#read-container.night {
+    background: #111;
+    color: #333;
+}
+
+#read-text.night {
+    background: #222;
+    color: #aaa;
+    border: #222;
+}
+
+#read-text.night #read-text-error {
+    color: red;
+}
+
+#read-text.night #read-text-domain {
+     color: #11ABB0;
+}
+
+#read-text.night #read-text-words,
+#read-text.night #read-text-eta,
+#read-text.night #read-text-author {
+    color: #777;
+}
+
+#read-text.night #read-text-content {
+    border-color: #444;
+}
+
+#read-text.night #read-text-content a {
+    color: #aaa;
+}
+
+#read-text.night #read-text-content pre {
+    background-color: #ccc;
+}
+
+#read-text.night #read-text-content blockquote {
+    background-color: #ccc;
+}
+
+/* Small Font Themes */
+#read-text.small {
+    font-size: 15px;
+    line-height: 28px;
+}
+
+#read-text.small #read-text-title {
+    font-size: 30px;
+    line-height: 35px;
+}
+
+#read-text.small #read-text-words, 
+#read-text.small #read-text-eta,
+#read-text.small #read-text-author, 
+#read-text.small #read-text-domain {
+    font-size: 12px;
+}
+
+#read-text.small #read-text-content {
+    font-size: 13px;
+}
+
+
+/* Medium Font Themes */
+#read-text.medium {
+    font-size: 15px;
+    line-height: 28px;
+}
+
+#read-text.medium #read-text-title {
+    font-size: 30px;
+    line-height: 35px;
+}
+
+#read-text.medium #read-text-words,
+#read-text.medium #read-text-eta,
+#read-text.medium #read-text-author,
+#read-text.medium #read-text-domain {
+    font-size: 12px;
+}
+
+#read-text.medium #read-text-content {
+    font-size: 13px;
+}
+
+/* Large Font Themes */
+#read-text.large {
+    font-size: 15px;
+    line-height: 28px;
+}
+
+#read-text.large #read-text-title {
+    font-size: 30px;
+    line-height: 35px;
+}
+
+#read-text.large #read-text-words,
+#read-text.large #read-text-eta,
+#read-text.large #read-text-author,
+#read-text.large #read-text-domain {
+    font-size: 12px;
+}
+
+#read-text.large #read-text-content {
+    font-size: 13px;
+}
+
 
 #read-option-btn {
     text-align: right;
@@ -93,53 +243,41 @@
 }
 
 #read-text {
-    background: #222;
-    color: #aaa;
+    box-sizing: border-box;
+    border: 1px solid;
+    margin: 0 auto;
     padding: 45px 70px;
     width: 60%;
-    margin: 0 auto;
     /* font-family: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif'; */
-    line-height: 28px;
-    border: 1px solid #222;
-    font-size: 15px;
-    box-sizing: border-box;
 }
 
 #read-text-error{
-    color: red;
     text-align: center;
 }
 
 #read-text-title {
-    line-height: 35px;
 }
 
 #read-text-domain {
-    color: #11ABB0;
-    font-size: 13px;
     font-style: oblique;
 }
 
 #read-text-words, #read-text-eta, #read-text-author {
-    color: #777;
-    font-size: 13px;
     font-style: oblique;
     margin-right: 13px;
 }
 
 #read-text-content{
-    border-top: 2px solid #444;
+    border-top: 2px solid;
     overflow: auto;
 }
 
 #read-text #read-text-content a {
-    color: #aaa;
     text-decoration: none;
     cursor: default;
 }
 
 #read-text #read-text-content pre {
-    background-color: #ccc;
     border: none;
     overflow: auto;
 }
@@ -163,7 +301,7 @@
 }
 
 #read-text #read-text-content blockquote {
-    background-color: #eee;
+    /* background-color: #eee; */
 }
 
 #read-text #read-text-content ul {

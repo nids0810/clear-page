@@ -102,23 +102,23 @@
 
           $("#read-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
-            $(this).addClass("animated bounce");
+            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/book-white.png"));
-            $(this).removeClass("animated bounce");
+            $(this).removeClass("animated swing");
           });
 
           $("#tts-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/speak-green.png"));
-            $(this).addClass("animated flash");
+            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/speak-white.png"));
-            $(this).removeClass("animated flash");
+            $(this).removeClass("animated swing");
           });
 
           $("#erase-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/erase-green.png"));
-            $(this).addClass("animated wobble");
+            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/erase-white.png"));
             $(this).removeClass("animated wobble");
@@ -126,26 +126,26 @@
 
           $("#highlight-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/highlight-green.png"));
-            $(this).addClass("animated rubberBand");
+            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/highlight-white.png"));
-            $(this).removeClass("animated rubberBand");
+            $(this).removeClass("animated swing");
           });
 
           $("#save-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/save-green.png"));
-            $(this).addClass("animated shake");
+            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/save-white.png"));
-            $(this).removeClass("animated shake");
+            $(this).removeClass("animated swing");
           });
 
           $("#open-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/open-green.png"));
-            $(this).addClass("animated headShake");
+            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/open-white.png"));
-            $(this).removeClass("animated headShake");
+            $(this).removeClass("animated swing");
           });
 
           $("#pdf-btn").hover(function () {
@@ -158,10 +158,10 @@
 
           $("#help-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/help-green.png"));
-            $(this).addClass("animated tada");
+            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/help-white.png"));
-            $(this).removeClass("animated tada");
+            $(this).removeClass("animated swing");
           });
           
         };
@@ -180,7 +180,8 @@
               $("#help-mode").remove();
             }
             removeExtensionElements();
-            $("#read-text-domain, #read-text-words, #read-text-eta, #read-text-author").text("");
+            //$("#read-text-domain, #read-text-words, #read-text-eta, #read-text-author").text("");
+            $("#read-text-domain, #read-text-words, #read-text-eta, #read-text-author").remove();
 
             _oldBody = document.body.innerHTML;
             _oldHead = document.head.innerHTML;
@@ -350,61 +351,34 @@
                     $("#read-option-box").append(
                       "<div id='read-color-theme'>\
                       <Label>Theme:</Label>\
-                      <input type='radio' id='theme-light' name='light' value='light' checked> Light\
-                      <input type='radio' id='theme-dark' name='dark' value='dark'> Dark\
+                      <input type='radio' id='theme-day' name='day' value='day' checked> Day\
+                      <input type='radio' id='theme-night' name='night' value='night'> Night\
                     </div>"
                   );
                   } else if (dayOrNight === "night") {
                     $("#read-option-box").append(
                       "<div id='read-color-theme'>\
                       <Label>Theme:</Label>\
-                      <input type='radio' id='theme-light' name='light' value='light'> Light\
-                      <input type='radio' id='theme-dark' name='dark' value='dark' checked> Dark\
+                      <input type='radio' id='theme-day' name='day' value='day'> Day\
+                      <input type='radio' id='theme-night' name='night' value='night' checked> Night\
                     </div>"
                     );
                   }
                 }
                 $("#read-font-size :input").change(function () {
                   if (this.value == "small") {
-                    $("#read-text-content").css({
-                      fontSize: "13px"
-                    });
-                    $("#read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
-                      fontSize: "12px"
-                    });
-                    $("#read-text-title").css({
-                      fontSize: "30px",
-                      lineHeight: "35px"
-                    });
+                    $("#read-text").removeClass('small').removeClass('medium').removeClass('large').addClass('small');
                   } else if (this.value == "medium") {
-                    $("#read-text-content").css({
-                      fontSize: "15px"
-                    });
-                    $("#read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
-                      fontSize: "13px"
-                    });
-                    $("#read-text-title").css({
-                      fontSize: "32px",
-                      lineHeight: "35px"
-                    });
+                    $("#read-text").removeClass('small').removeClass('medium').removeClass('large').addClass('medium');
                   } else if (this.value == "large") {
-                    $("#read-text-content").css({
-                      fontSize: "17px"
-                    });
-                    $("#read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
-                      fontSize: "14px"
-                    });
-                    $("#read-text-title").css({
-                      fontSize: "34px",
-                      lineHeight: "43px"
-                    });
+                    $("#read-text").removeClass('small').removeClass('medium').removeClass('large').addClass('large');
                   }
                   $("#read-font-size")
                     .find('input[type="radio"]:not(#' + this.id + ")")
                     .prop("checked", false);
                 });
                 $("#read-font-family :input").change(function () {
-                  $("#read-text-content, #read-text-words, #read-text-eta, #read-text-author, #read-text-domain").css({
+                  $("#read-text-words, #read-text-eta, #read-text-author, #read-text-domain, #read-text-content").css({
                     fontFamily: this.value
                   });
                   $("#read-font-family")
@@ -413,49 +387,14 @@
                 });
                 $("#read-color-theme :input").change(
                   function () {
-                    if (this.value == "light") {
-                      $("#read-container").css({
-                        background: "#e9e9e9"
-                      });
-                      $("#read-text").css({
-                        backgroundColor: "#fff",
-                        color: "#333",
-                        border: "#dbdbdb"
-                      });
-                      $("#read-text #read-text-content a").css({
-                        color: "#333"
-                      });
-                      $("#read-text #read-text-content pre").css({
-                        backgroundColor: "#EFF0F1"
-                      });
-                      $("#read-text-domain").css({
-                        color: "#104b4e"
-                      });
-                      $("#read-text-content").css({
-                        borderColor: "#eee"
-                      });
-                    } else if (this.value == "dark") {
-                      $("#read-container").css({
-                        background: "#111"
-                      });
-                      $("#read-text").css({
-                        backgroundColor: "#222",
-                        color: "#aaa",
-                        border: "#222"
-                      });
-                      $("#read-text #read-text-content a").css({
-                        color: "#aaa"
-                      });
-                      $("#read-text #read-text-content pre").css({
-                        backgroundColor: "#ccc",
-                      });
-                      $("#read-text-domain").css({
-                        color: "#11ABB0"
-                      });
-                      $("#read-text-content").css({
-                        borderColor: "#444"
-                      });
+                    if (this.value == "day") {
+                      $("#read-container").removeClass("night").addClass("day");
+                      $("#read-text").removeClass("night").addClass("day");
+                    } else if (this.value == "night") {
+                      $("#read-container").removeClass("day").addClass("night");
+                      $("#read-text").removeClass("day").addClass("night");                    
                     }
+
                     $("#read-color-theme")
                       .find('input[type="radio"]:not(#' + this.id + ")")
                       .prop("checked", false);
@@ -471,6 +410,16 @@
               $("#read-container").append(
                 "<div id='read-text'></div>"
               );
+            }
+
+            if (dayOrNight === "day") {
+              $("#read-container").removeClass("night").removeClass("day").addClass("day");
+              $("#read-text").removeClass("night").removeClass("day").addClass("day");
+              $("#read-text").removeClass('small').removeClass('medium').removeClass('large').addClass('medium');
+            } else if (dayOrNight === "night") {
+              $("#read-container").removeClass("day").removeClass("night").addClass("night");
+              $("#read-text").removeClass("day").removeClass("night").addClass("night");
+              $("#read-text").removeClass('small').removeClass('medium').removeClass('large').addClass('medium');
             }
 
             if (article === null) {
@@ -514,11 +463,14 @@
               if(article.byline !== null) {
                 $("#read-text-author").text("Author: " + article.byline);
               }
+              // Add prevent default to all click event
               $("#read-text #read-text-content a").each(function () {
                 $(this).click(function (event) {
                   event.preventDefault();
                 });
               });
+
+              // Add prevent default to all click event
               $("#read-text #read-text-content img").each(function () {
                 if($(this).attr("typeof") === "foaf:Image"){
                   $(this).css({display: "none"});
@@ -559,49 +511,6 @@
                   "<img src='" + chrome.runtime.getURL("icons/icon_48.png") + "'/>"  + 
                   "</div>"
                 ));
-              }
-              if (dayOrNight == "day") {
-                $("#read-container").css({
-                  background: "#e9e9e9"
-                });
-                $("#read-text").css({
-                  backgroundColor: "#fff",
-                  color: "#333",
-                  border: "#dbdbdb"
-                });
-                $("#read-text #read-text-content a").css({
-                  color: "#333"
-                });
-                $("#read-text #read-text-content pre").css({
-                  backgroundColor: "#EFF0F1"
-                });
-                $("#read-text-domain").css({
-                  color: "#104b4e"
-                });
-                $("#read-text-content").css({
-                  borderColor: "#eee"
-                });
-              } else if (dayOrNight == "night") {
-                $("#read-container").css({
-                  background: "#111"
-                });
-                $("#read-text").css({
-                  backgroundColor: "#222",
-                  color: "#aaa",
-                  border: "#222"
-                });
-                $("#read-text #read-text-content a").css({
-                  color: "#aaa"
-                });
-                $("#read-text #read-text-content pre").css({
-                  backgroundColor: "#ccc"
-                });
-                $("#read-text-domain").css({
-                  color: "#11ABB0"
-                });
-                $("#read-text-content").css({
-                  borderColor: "#444"
-                });
               }
             }
 
