@@ -498,13 +498,11 @@
                   //this.width = parseInt(this.width/ratio);
                   $(this).width("90%");
                   $(this).css({
-                    height: "auto",
-                    display: "block"
+                    height: "auto"
                   });
                 } else {
                   $(this).css({
-                    height: "auto",
-                    display: "block"
+                    height: "auto"
                   });
                 }
               });

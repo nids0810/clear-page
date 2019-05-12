@@ -144,6 +144,10 @@
     overflow: auto;
 }
 
+#read-text #read-text-content img {
+    display: block;
+}
+
 #read-text #read-text-content video{
     display: none;
 }
