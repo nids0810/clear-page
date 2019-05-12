@@ -485,10 +485,10 @@
               var _articleETA = estimatedReadingTime(_articleWCount);
               $("#read-text-words").text("Total words: " + _articleWCount);
               $("#read-text-eta").text("Reading time: " + _articleETA + " mins");
-              if(article.byline !== null || article.byline !== "") {
+              if(article.byline !== null && article.byline !== "") {
                 $("#read-text-author").text("Author: " + article.byline);
               }
-              if(articleInfo.date_published !== null || articleInfo.date_published !== "") {
+              if(articleInfo.date_published !== null && articleInfo.date_published !== "") {
                 $("#read-text-published").text("Published: " + new Date(articleInfo.date_published)
                 .customFormat("#DDD# #DD# #MMM# #YYYY# #h#:#mm# #AMPM#"));
               }
