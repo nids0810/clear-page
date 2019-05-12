@@ -180,8 +180,7 @@
               $("#help-mode").remove();
             }
             removeExtensionElements();
-            //$("#read-text-domain, #read-text-words, #read-text-eta, #read-text-author").text("");
-            $("#read-text-domain, #read-text-words, #read-text-eta, #read-text-author").remove();
+            $("#read-text-icon, #read-text-domain, #read-text-words, #read-text-eta, #read-text-author, #read-text-published").remove();
 
             _oldBody = document.body.innerHTML;
             _oldHead = document.head.innerHTML;
@@ -238,6 +237,26 @@
               }
             };
 
+            var webDetails = function webDetails () {
+              var web = {};
+
+              web.title = $("title").text() || $("meta[name='title']").attr("content") || $("meta[property='og:title']").attr("content") || "";
+              web.url = $("meta[property='og:url']").attr("content") || "";
+              if (web.url !== "") {
+                web.domain = new URL(web.url).hostname;
+              }
+              web.sitename = $("meta[property='og:site_name']").attr("content") || "";
+              web.type = $("meta[property='og:type']").attr("content") || "";
+              web.favicon = $("link[rel='shortcut icon']").attr("href") || $("link[rel='icon']").attr("href") || "";
+              web.date_published = Date.parse($("meta[property='article:published_time']").attr("content")) || "";
+              web.date_modified = Date.parse($("meta[property='article:modified_time']").attr("content")) || "";
+              web.lead_image_url = $("meta[property='og:image']").attr("content") || "";
+              web.short_url = web.url;
+              return web;
+            };
+
+            var articleInfo = webDetails();
+
             //console.log(uri);
             var article = new Readability(uri, document).parse();
 
@@ -279,12 +298,11 @@
                 "<div id='read-mode'></div>"
               );
               $("#read-mode").text("Reading Mode On");
-              $("#read-mode").animate({ opacity: "0.0" }, 1200);
+              $("#read-mode").fadeToggle();
             } else {
               //read-mode exist
               $("#read-mode").text("Reading Mode On");
-              $("#read-mode").css({ opacity: 1, zIndex: "20" });
-              $("#read-mode").animate({ opacity: "0.0" }, 1200);
+              $("#read-mode").fadeToggle();
             }
 
             if ($("#read-option").length == 0) {
@@ -378,7 +396,7 @@
                     .prop("checked", false);
                 });
                 $("#read-font-family :input").change(function () {
-                  $("#read-text-words, #read-text-eta, #read-text-author, #read-text-domain, #read-text-content").css({
+                  $("#read-text-words, #read-text-eta, #read-text-author, #read-text-published, #read-text-domain, #read-text-content").css({
                     fontFamily: this.value
                   });
                   $("#read-font-family")
@@ -434,6 +452,9 @@
               $("#read-option").hide();
               console.warn("Article is not readable");
             } else {
+              if ($("#read-text-icon").length == 0) {
+                $("#read-text").append("<img id='read-text-icon'></img>");
+              }
               if ($("#read-text-domain").length == 0) {
                 $("#read-text").append("<span id='read-text-domain'></span>");
               }
@@ -449,11 +470,15 @@
               if ($("#read-text-author").length == 0) {
                 $("#read-text").append("<span id='read-text-author'></span>");
               }
+              if ($("#read-text-published").length == 0) {
+                $("#read-text").append("<span id='read-text-published'></span>");
+              }
               if ($("#read-text-content").length == 0) {
                 $("#read-text").append("<p id='read-text-content'></p>");
               }
 
-              $("#read-text-domain").text(article.uri.host);
+              $("#read-text-icon").attr("src", articleInfo.favicon);
+              $("#read-text-domain").text(articleInfo.domain);
               $("#read-text-title").text(article.title);
               $("#read-text-content").html(article.content);
               var _articleWCount = wordCount(article.textContent);
@@ -463,20 +488,25 @@
               if(article.byline !== null) {
                 $("#read-text-author").text("Author: " + article.byline);
               }
+              if(articleInfo.date_published !== null) {
+                $("#read-text-published").text("Published: " + new Date(articleInfo.date_published)
+                .customFormat("#DDD# #DD# #MMM# #YYYY# #h#:#m# #AMPM#"));
+              }
               // Add prevent default to all click event
-              $("#read-text #read-text-content a").each(function () {
+              $("#read-text-content a").each(function () {
                 $(this).click(function (event) {
                   event.preventDefault();
+                  event.stopPropagation();
                 });
               });
 
-              // Add prevent default to all click event
+              // remove all imgs with typeof
               $("#read-text #read-text-content img").each(function () {
                 if($(this).attr("typeof") === "foaf:Image"){
-                  $(this).css({display: "none"});
+                  $(this).addClass("hideElement");
                 }
                 if(this.width <= 100 && this.height <= 100) {
-                  $(this).css({ display: "none" });
+                  $(this).addClass("hideElement");
                 }
                 /* var _boxDim = $("#read-text-content").width();
                 var _maxDim = Math.max(this.width, this.height);
@@ -530,8 +560,7 @@
             }
           } else {
             $("#read-mode").text("Reading Mode Off");
-            $("#read-mode").css({ opacity: 1, zIndex: "20" });
-            $("#read-mode").animate({ opacity: "0.0" }, 1200);
+            $("#read-mode").fadeToggle();
             readMode = false;
             $("#read-container").remove();
             removeExtensionElements();
@@ -559,12 +588,11 @@
             //tts-mode doesn't exist
             $("body").append("<div id='tts-mode'></div>");
             $("#tts-mode").text("Speech to Text Mode");
-            $("#tts-mode").animate({ opacity: "0.0" }, 1200);
+            $("#tts-mode").fadeToggle();
           } else {
             //tts-mode exist
             $("#tts-mode").text("Speech to Text Mode");
-            $("#tts-mode").css({ opacity: "1.0" });
-            $("#tts-mode").animate({ opacity: "0.0" }, 1200);
+            $("#tts-mode").fadeToggle();
           }
 
           if ($("#dialog-box").length == 0) {
@@ -583,9 +611,12 @@
           // check if speech synthesis is supported
           if (!("speechSynthesis" in window)) {
             console.warn("browser don't support.");
-            $("#tts-mode").text("browser don't support Text to Speech");
-            $("#tts-mode").css({ opacity: "1.0" });
-            $("#tts-mode").animate({ opacity: "0.0" }, 1200);
+            swal({
+              title: "Read Pro",
+              text: "Browser don't support Text to Speech",
+              icon: "error",
+              button: "Damn"
+            });
           } else {
             loadVoiceList();
             if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -662,21 +693,21 @@
 
                     speaker.onstart = function () {
                       $("#tts-mode").text("Speaking in " + speaker.voice.name + " ...");
-                      $("#tts-mode").css({ opacity: "1.0" });
+                      $("#tts-mode").fadeToggle();
                       $("#apply-btn").html("Pause");
                       console.log("Speech started.");
                     };
 
                     speaker.onerror = function (event) {
                       $("#tts-mode").text("Error! Try again");
-                      $("#tts-mode").css({ opacity: "1.0" });
+                      $("#tts-mode").fadeToggle();
                       $("#apply-btn").html("Speak");
                       console.log("Error occured " + event.message);
                     };
 
                     speaker.onend = function (event) {
                       $("#tts-mode").text("Select Text to Speech.");
-                      $("#tts-mode").css({ opacity: "1.0" });
+                      $("#tts-mode").fadeToggle();
                       $("#apply-btn").html("Speak");
                     };
 
@@ -686,28 +717,26 @@
                   });
                 } else {
                   $("#tts-mode").text("No text available. Select Text.");
-                  $("#tts-mode").css({ opacity: "1.0" });
-                  $("#tts-mode").animate({ opacity: "0.0" }, 1200);
+                  $("#tts-mode").fadeToggle();
                   console.log("No text available");
                 }
               } else if (event.target.id === "apply-btn" && event.target.innerText === "Pause") {
                 console.log("Speech paused");
                 window.speechSynthesis.pause();
                 $("#tts-mode").text("Speech Paused");
-                $("#tts-mode").css({ opacity: "1.0" });
+                $("#tts-mode").fadeToggle();
                 $("#apply-btn").html("Resume");
               } else if (event.target.id === "apply-btn" && event.target.innerText === "Resume") {
                 console.log("Speech resumed");
                 window.speechSynthesis.resume();
                 $("#tts-mode").text("Speaking in " + speaker.voice.name + " ...");
-                $("#tts-mode").css({ opacity: "1.0" });
+                $("#tts-mode").fadeToggle();
                 $("#apply-btn").html("Pause");
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
                 console.log("Cancel Text to Speech mode");
                 $("#tts-mode").text("Text to Speech mode off!");
-                $("#tts-mode").css({ opacity: "1.0" });
-                $("#tts-mode").animate({ opacity: "0.0" }, 1200);
+                $("#tts-mode").fadeToggle();
                 $("#apply-btn").html("Apply Changes");
                 window.speechSynthesis.cancel();
                 text2Speech = "";
@@ -769,12 +798,11 @@
             //erase-mode doesn't exist
             $("body").append("<div id='erase-mode'></div>");
             $("#erase-mode").text("Erase Mode On!");
-            $("#erase-mode").animate({opacity: "0.0"}, 1200);
+            $("#erase-mode").fadeToggle();
           } else {
             //erase-mode exist
             $("#erase-mode").text("Erase Mode On!");
-            $("#erase-mode").css({opacity: "1.0"});
-            $("#erase-mode").animate({ opacity: "0.0" }, 1200);
+            $("#erase-mode").fadeToggle();
           }
 
           if ($("#dialog-box").length == 0) {
@@ -786,10 +814,13 @@
 
           // transform all links as unclickable
           $("a").each(function () {
-            $(this).click(function (event) {
-              event.preventDefault();
-            });
             $(this).addClass("link-disabled");
+            if(!readMode){
+              $(this).click(function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+              });
+            }            
           });
 
           // Click an element in erase mode
@@ -837,15 +868,16 @@
                   $(this).removeClass("web-edited");
                   $(this).addClass("web-deleted");
                 });
-                $("#erase-mode").text("Changes are applied!");
-                $("#erase-mode").css({
-                  opacity: "1.0"
+                $(".link-disabled").each(function() {
+                  $(this).removeClass("link-disabled");
+                  if (!readMode) {
+                    $(this).click(function(event) {
+                      return true;
+                    });
+                  }
                 });
-                $("#erase-mode").animate({
-                    opacity: "0.0"
-                  },
-                  "slow"
-                );
+                $("#erase-mode").text("Changes are applied!");
+                $("#erase-mode").fadeToggle();
                 removeExtensionElements();
                 createToolOptions();
                 eraseMode = false;
@@ -855,12 +887,16 @@
                 $(".web-edited").each(function () {
                   $(this).removeClass("web-edited");
                 });
-                $("a").each(function () {
+                $(".link-disabled").each(function() {
                   $(this).removeClass("link-disabled");
+                  if (!readMode) {
+                    $(this).click(function(event) {
+                      return true;
+                    });
+                  }
                 });
                 $("#erase-mode").text("Changes are cancelled!");
-                $("#erase-mode").css({ opacity: "1.0" });
-                $("#erase-mode").animate({ opacity: "0.0" }, 1200);
+                $("#erase-mode").fadeToggle();
                 removeExtensionElements();
                 createToolOptions();
                 eraseMode = false;
@@ -893,12 +929,11 @@
             //highlight-mode doesn't exist
             $("body").append("<div id='highlight-mode'></div>");
             $("#highlight-mode").text("Highlight Mode On!");
-            $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
+            $("#highlight-mode").fadeToggle();
           } else {
             //highligh-mode exist
             $("#highlight-mode").text("Highlight Mode On!");
-            $("#highlight-mode").css({ opacity: "1.0" });
-            $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
+            $("#highlight-mode").fadeToggle();
           }
 
           if ($("#dialog-box").length == 0) {
@@ -993,8 +1028,7 @@
                 //apply button clicked
                 console.log("Apply highlights on all selected elements");
                 $("#highlight-mode").text("Changes are applied!");
-                $("#highlight-mode").css({ opacity: "1.0" });
-                $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
+                $("#highlight-mode").fadeToggle();
                 lightMode = false;
                 removeExtensionElements();
                 createToolOptions();
@@ -1005,8 +1039,7 @@
                   $(this).removeClass("manual-highlight");
                 });
                 $("#highlight-mode").text("Changes are cancelled!");
-                $("#highlight-mode").css({ opacity: "1.0" });
-                $("#highlight-mode").animate({ opacity: "0.0" }, 1200);
+                $("#highlight-mode").fadeToggle();
                 lightMode = false;
                 removeExtensionElements();
                 createToolOptions();
@@ -1034,7 +1067,7 @@
             $("body").append("<div id='save-mode'></div>");
           } else {
             //save-mode exist
-            $("#save-mode").css({ opacity: "0.0"});
+            $("#save-mode").fadeToggle();
           }
 
           if (saveLinkMode) {
@@ -1058,8 +1091,7 @@
                 } else {
                   $("#save-mode").text("Error: Try again.");
                 }
-                $("#save-mode").animate({ opacity: "1.0" }, 'fast');
-                $("#save-mode").animate({ opacity: "0.0" }, 1200);
+                $("#save-mode").fadeToggle();
               }
             );
           } else {
@@ -1094,23 +1126,31 @@
 
           if (saveAsPDFMode) {
             var mediaQueryList = window.matchMedia("print");
+            if ($("#help-mode").length != 0) {
+              helpMode = false;
+              $("#help-mode").remove();
+            }
             mediaQueryList.addListener(function (mql) {
               if (mql.matches) {
                 console.log("Hide tool-option");
                 $("#tool-option").hide();
-                $("#help-mode").hide();
-                $("#read-option").hide();
-                $("#read-text").css({
-                  width: "100%"
-                });
+                $("#dialog-box").hide();
+                if(readMode){
+                  $("#read-option").hide();
+                  $("#read-text").css({
+                    width: "100%"
+                  });
+                }
               } else {
                 console.log("Show tool-option");
                 $("#tool-option").show();
-                $("#help-mode").show();
-                $("#read-option").show();
-                $("#read-text").css({
-                  width: "60%"
-                });
+                $("#dialog-box").hide(); 
+                if (readMode) {
+                  $("#read-option").show();
+                  $("#read-text").css({
+                    width: "60%"
+                  });
+                }
               }
             });
             window.print();
@@ -1147,7 +1187,6 @@
               $("#help-mode").append($.parseHTML(helpHtml));
             } else {
               $("#help-mode").show();
-              $("#help-mode").css({ opacity: 1, zIndex: "300" });
             }
           } else {
             console.log("Help mode off");
@@ -1158,16 +1197,13 @@
           $("#cross-btn").click(function (event) {
             if (helpMode) {
               helpMode = false;
-              $("#help-mode").animate({ opacity: "0.0" }, 1200 );
               $("#help-mode").remove();
-              $("#help-mode").css({ zIndex: "-20" });
               console.log("Help mode off");
             } else {
               console.warn("Help mode is already off");
             }
           });
         };
-
         removeExtensionElements();
         createToolOptions();
       } else {
@@ -1175,6 +1211,27 @@
         removeExtensionElements();
       }
     });
+
+  Date.prototype.customFormat = function(formatString){
+    var YYYY,YY,MMMM,MMM,MM,M,DDDD,DDD,DD,D,hhhh,hhh,hh,h,mm,m,ss,s,ampm,AMPM,dMod,th;
+    YY = ((YYYY=this.getFullYear())+"").slice(-2);
+    MM = (M=this.getMonth()+1)<10?('0'+M):M;
+    MMM = (MMMM=["January","February","March","April","May","June","July","August","September","October","November","December"][M-1]).substring(0,3);
+    DD = (D=this.getDate())<10?('0'+D):D;
+    DDD = (DDDD=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][this.getDay()]).substring(0,3);
+    th=(D>=10&&D<=20)?'th':((dMod=D%10)==1)?'st':(dMod==2)?'nd':(dMod==3)?'rd':'th';
+    formatString = formatString.replace("#YYYY#",YYYY).replace("#YY#",YY).replace("#MMMM#",MMMM).replace("#MMM#",MMM).replace("#MM#",MM).replace("#M#",M).replace("#DDDD#",DDDD).replace("#DDD#",DDD).replace("#DD#",DD).replace("#D#",D).replace("#th#",th);
+    h=(hhh=this.getHours());
+    if (h==0) h=24;
+    if (h>12) h-=12;
+    hh = h<10?('0'+h):h;
+    hhhh = hhh<10?('0'+hhh):hhh;
+    AMPM=(ampm=hhh<12?'am':'pm').toUpperCase();
+    mm=(m=this.getMinutes())<10?('0'+m):m;
+    ss=(s=this.getSeconds())<10?('0'+s):s;
+    return formatString.replace("#hhhh#",hhhh).replace("#hhh#",hhh).replace("#hh#",hh).replace("#h#",h).replace("#mm#",mm).replace("#m#",m).replace("#ss#",ss).replace("#s#",s).replace("#ampm#",ampm).replace("#AMPM#",AMPM);
+    //https://stackoverflow.com/questions/4673527/converting-milliseconds-to-a-date-jquery-javascript
+  };
 
   var removeExtensionElements = function () {
     console.log("Remove all extension elements.");

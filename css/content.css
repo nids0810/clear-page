@@ -28,7 +28,6 @@
     background-color: #333;
     color: #fff;
     padding: 10px;
-    opacity: 1.0;
     z-index: 9999 !important;
 }
 
@@ -89,7 +88,8 @@
 
 #read-text.day #read-text-words,
 #read-text.day #read-text-eta,
-#read-text.day #read-text-author {
+#read-text.day #read-text-author, 
+#read-text.day #read-text-published {
     color: #777;
 }
 
@@ -131,7 +131,8 @@
 
 #read-text.night #read-text-words,
 #read-text.night #read-text-eta,
-#read-text.night #read-text-author {
+#read-text.night #read-text-author,
+#read-text.night #read-text-published {
     color: #777;
 }
 
@@ -153,7 +154,7 @@
 
 /* Small Font Themes */
 #read-text.small {
-    font-size: 15px;
+    font-size: 13px;
     line-height: 28px;
 }
 
@@ -165,7 +166,8 @@
 #read-text.small #read-text-words, 
 #read-text.small #read-text-eta,
 #read-text.small #read-text-author, 
-#read-text.small #read-text-domain {
+#read-text.small #read-text-domain,
+#read-text.small #read-text-published {
     font-size: 12px;
 }
 
@@ -177,45 +179,47 @@
 /* Medium Font Themes */
 #read-text.medium {
     font-size: 15px;
-    line-height: 28px;
+    line-height: 29px;
 }
 
 #read-text.medium #read-text-title {
-    font-size: 30px;
+    font-size: 32px;
     line-height: 35px;
 }
 
 #read-text.medium #read-text-words,
 #read-text.medium #read-text-eta,
 #read-text.medium #read-text-author,
-#read-text.medium #read-text-domain {
-    font-size: 12px;
+#read-text.medium #read-text-domain,
+#read-text.medium #read-text-published {
+    font-size: 13px;
 }
 
 #read-text.medium #read-text-content {
-    font-size: 13px;
+    font-size: 15px;
 }
 
 /* Large Font Themes */
 #read-text.large {
-    font-size: 15px;
-    line-height: 28px;
+    font-size: 17px;
+    line-height: 30px;
 }
 
 #read-text.large #read-text-title {
-    font-size: 30px;
-    line-height: 35px;
+    font-size: 34px;
+    line-height: 43px;
 }
 
 #read-text.large #read-text-words,
 #read-text.large #read-text-eta,
 #read-text.large #read-text-author,
-#read-text.large #read-text-domain {
-    font-size: 12px;
+#read-text.large #read-text-domain,
+#read-text.large #read-text-published {
+    font-size: 14px;
 }
 
 #read-text.large #read-text-content {
-    font-size: 13px;
+    font-size: 17px;
 }
 
 
@@ -255,6 +259,13 @@
     text-align: center;
 }
 
+#read-text-icon {
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    cursor: default;
+}
+
 #read-text-title {
 }
 
@@ -262,7 +273,7 @@
     font-style: oblique;
 }
 
-#read-text-words, #read-text-eta, #read-text-author {
+#read-text-words, #read-text-eta, #read-text-author, #read-text-published {
     font-style: oblique;
     margin-right: 13px;
 }
@@ -327,6 +338,11 @@
 #read-text #read-text-content progress {
     display: none;
 }
+
+#read-text-content.hideElement {
+    display: none;
+}
+
 
 #read-text-footer {
     text-align: center;
