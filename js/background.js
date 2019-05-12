@@ -91,7 +91,7 @@ chrome.runtime.onInstalled.addListener(function () {
   }
 
   //window.open(chrome.runtime.getURL("html/welcome.html"));
-  window.open("https://sites.google.com/view/readpro/home");
+  //window.open("https://sites.google.com/view/readpro/home");
   
 });
 
