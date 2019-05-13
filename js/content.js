@@ -500,7 +500,7 @@
                 });
               });
 
-              // remove all imgs with typeof
+              // remove all imgs with typeof and widht & height < 100 px
               $("#read-text #read-text-content img").each(function () {
                 if($(this).attr("typeof") === "foaf:Image"){
                   $(this).addClass("hideElement");
@@ -526,11 +526,7 @@
                   });
                 }  */
               });
-              $("li").parents("ul").css({
-                listStyleType: "none",
-                overflow: "hidden",
-                display: "block"
-              });
+              // Add prettify class
               if (!$("#read-text #read-text-content pre").hasClass("prettyprint")) {
                 $("#read-text #read-text-content pre").addClass("prettyprint");
               }
@@ -577,6 +573,8 @@
           chrome.runtime.sendMessage({ message: "open speak mode" });
           var ttsMode = true;
           var selectedVoice = {};
+          var voiceChangedIndex = -1;
+          var synth = window.speechSynthesis;
           $("#tool-option").hide();
 
           if ($("#help-mode").length != 0) {
@@ -619,13 +617,13 @@
             });
           } else {
             loadVoiceList();
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-              speechSynthesis.onvoiceschanged = loadVoiceList;
+            if (synth.onvoiceschanged !== undefined) {
+              synth.onvoiceschanged = loadVoiceList;
             }
           }
 
           function loadVoiceList() {
-            var voices = speechSynthesis.getVoices();
+            var voices = synth.getVoices();
             if ($("#speech-voices option").length == 0) {
               var language = window.navigator.userLanguage || window.navigator.language; //en-US
               voices.forEach(function (voice, index) {
@@ -654,13 +652,14 @@
                 var voiceIndex = this.value;
                 if (voices.length !== 0) {
                   selectedVoice = voices[voiceIndex];
+                  voiceChangedIndex = voiceIndex;
                   //console.log("New voice: " + selectedVoice.name + " , language: " + selectedVoice.lang);
                 }
               });
 
-              if (voices.length > 0 && speechSynthesis.onvoiceschanged !== undefined) {
+              if (voices.length > 0 && synth.onvoiceschanged !== undefined) {
                 // unregister event listener (it is fired multiple times)
-                speechSynthesis.onvoiceschanged = null;
+                synth.onvoiceschanged = null;
               }
             }
           }
@@ -669,17 +668,17 @@
           var textArray = "";
           var speaker;
 
-          window.speechSynthesis.cancel();
+          synth.cancel();
 
           $(document).click(function (event) {
             if (ttsMode) {
               if (event.target.id === "apply-btn" && event.target.innerText === "Speak") {
                 //apply button clicked
                 console.log("Speaks all selected text");
-                if (window.speechSynthesis.speaking) {
-                  console.log("speechSynthesis.speaking");
+                if (synth.speaking) {
+                  console.log("Synth speaking");
                   //return;
-                  window.speechSynthesis.cancel();
+                  synth.cancel();
                 }
 
                 if (textArray.length != 0) {
@@ -687,9 +686,8 @@
                     speaker = new SpeechSynthesisUtterance(this.trim());
                     if (!$.isEmptyObject(selectedVoice)) {
                       speaker.voice = selectedVoice;
-                      //console.log("Current voice: " + selectedVoice.name);
                     }
-                    window.speechSynthesis.speak(speaker);
+                    synth.speak(speaker);
 
                     speaker.onstart = function () {
                       $("#tts-mode").text("Speaking in " + speaker.voice.name + " ...");
@@ -722,13 +720,13 @@
                 }
               } else if (event.target.id === "apply-btn" && event.target.innerText === "Pause") {
                 console.log("Speech paused");
-                window.speechSynthesis.pause();
+                synth.pause();
                 $("#tts-mode").text("Speech Paused");
                 $("#tts-mode").fadeToggle();
                 $("#apply-btn").html("Resume");
               } else if (event.target.id === "apply-btn" && event.target.innerText === "Resume") {
                 console.log("Speech resumed");
-                window.speechSynthesis.resume();
+                synth.resume();
                 $("#tts-mode").text("Speaking in " + speaker.voice.name + " ...");
                 $("#tts-mode").fadeToggle();
                 $("#apply-btn").html("Pause");
@@ -738,7 +736,7 @@
                 $("#tts-mode").text("Text to Speech mode off!");
                 $("#tts-mode").fadeToggle();
                 $("#apply-btn").html("Apply Changes");
-                window.speechSynthesis.cancel();
+                synth.cancel();
                 text2Speech = "";
                 textArray = [];
                 selectedVoice = {};

@@ -328,6 +328,7 @@
 }
 
 #read-text #read-text-content li {
+    list-style-type: none;
     float: left;
 }
 
@@ -387,13 +388,14 @@
 
 /* Highlight Mode */
 .manual-highlight {
-    background-color: yellow; 
+    background-color: yellow;
     color: #000 !important; 
     display: inline;
 }
 
 .manual-highlight a, .manual-highlight span, .manual-highlight p {
-    color: #000 !important; 
+    background-color: yellow;
+    color: #000 !important;
     text-decoration: none;
 }
 
