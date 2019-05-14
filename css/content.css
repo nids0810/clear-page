@@ -105,8 +105,18 @@
     background-color: #EFF0F1;
 }
 
-#read-text.day #read-text-content blockquote {
+#read-text.day #read-text-content blockquote,
+#read-text.day #read-text-content q {
     background-color: #EFF0F1;
+    border-color: #333;
+}
+
+#read-text.day #read-text-content th {
+    background-color: #EFF0F1;
+}
+
+#read-text.day #read-text-content td, th {
+    border-color: #333;
 }
 
 /* Night Theme */
@@ -145,11 +155,21 @@
 }
 
 #read-text.night #read-text-content pre {
-    background-color: #ccc;
+    background-color: #bbb;
 }
 
-#read-text.night #read-text-content blockquote {
-    background-color: #ccc;
+#read-text.night #read-text-content blockquote,
+#read-text.night #read-text-content q {
+    background-color: #333;
+    border-color: #aaa;
+}
+
+#read-text.night #read-text-content th {
+    background-color: #333;
+}
+
+#read-text.night #read-text-content td, th {
+    border-color: #aaa;
 }
 
 /* Small Font Themes */
@@ -290,29 +310,36 @@
 
 #read-text #read-text-content pre {
     border: none;
-    overflow: auto;
+    padding: 2rem;
+    /* overflow: auto; */
+    white-space: pre-wrap;
+    /* overflow-x: auto; */
 }
 
 #read-text #read-text-content img {
     max-width: 100%;
     height: auto;
     width: auto\9; /* ie8 */
-}
-
-#read-text #read-text-content svg {
-    display: none;
-}
-
-#read-text #read-text-content figure {
-    /* display: none; */
-}
-
-#read-text #read-text-content video {
-    display: none;
+    /* clear: both; */
 }
 
 #read-text #read-text-content blockquote {
-    /* background-color: #eee; */
+    border-left: .325rem solid;
+    padding: 2rem;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+#read-text #read-text-content q {
+    padding: 2rem;
+}
+
+#read-text #read-text-content cite {
+    font-style: italic;
+}
+
+#read-text #read-text-content summary {
+    display: block;
 }
 
 #read-text #read-text-content ul {
@@ -329,21 +356,78 @@
 
 #read-text #read-text-content li {
     list-style-type: none;
-    float: left;
+    /* float: left; */
 }
 
-#read-text #read-text-content aside {
+#read-text #read-text-content figure {
+    text-align: center;
+    font-style: italic;
+    font-size: smaller;
+    text-indent: 0;
+    line-height: 15px;
+    /* border-bottom: thin silver solid; */
+    margin: 0.5em;
+    padding: 0.5em;
+}
+
+#read-text #read-text-content figcaption {
+    caption-side: bottom;
+    padding: 0.5em;
+    border-bottom: thin silver solid;
+}
+
+#read-text #read-text-content table {
+    border-collapse: collapse;
+    /* overflow: auto; */
+    white-space: pre-wrap;
+    /* overflow-x: auto; */
+}
+
+#read-text #read-text-content td, th {
+    border: 1px solid;
+    padding: 0.25rem;
+}
+
+#read-text #read-text-content th {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    text-align: left;
+}
+
+#read-text #read-text-content caption {
+    display: table-caption;
+    text-align: center;
+    font-size: smaller;
+    caption-side: bottom;
+}
+
+/* Display None */
+#read-text #read-text-content iframe,
+#read-text #read-text-content object,
+#read-text #read-text-content header,
+#read-text #read-text-content footer,
+#read-text #read-text-content nav,
+#read-text #read-text-content aside,
+#read-text #read-text-content embed,
+#read-text #read-text-content video,
+#read-text #read-text-content audio,
+#read-text #read-text-content canvas,
+#read-text #read-text-content svg,
+#read-text #read-text-content map,
+#read-text #read-text-content label,
+#read-text #read-text-content progress,
+#read-text #read-text-content noscript {
     display: none;
 }
 
-#read-text #read-text-content progress {
+#read-text #read-text-content figure.hideElement,
+#read-text #read-text-content img.hideElement {
     display: none;
 }
 
-#read-text-content.hideElement {
+#read-text #read-text-content .hideElement {
     display: none;
 }
-
 
 #read-text-footer {
     text-align: center;
@@ -387,17 +471,18 @@
 }
 
 /* Highlight Mode */
-.manual-highlight {
-    background-color: yellow;
+/* mark.manual-highlight *:not(section), */
+mark.manual-highlight * {
+    background-color: yellow !important;
     color: #000 !important; 
-    display: inline;
 }
 
-.manual-highlight a, .manual-highlight span, .manual-highlight p {
-    background-color: yellow;
-    color: #000 !important;
+mark.manual-highlight a,
+mark.manual-highlight span,
+mark.manual-highlight p {
     text-decoration: none;
 }
+
 
 /* Help Mode */
 #help-mode {

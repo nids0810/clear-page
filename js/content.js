@@ -182,8 +182,14 @@
             removeExtensionElements();
             $("#read-text-icon, #read-text-domain, #read-text-words, #read-text-eta, #read-text-author, #read-text-published").remove();
 
-            _oldBody = document.body.innerHTML;
-            _oldHead = document.head.innerHTML;
+            if ($("head").length !== 0) {
+              //_oldHead = document.head.innerHTML;
+              _oldHead = $("head").html();
+            }
+            if ($("body").length !== 0) {
+              //_oldBody = document.body.innerHTML;
+              _oldBody = $("body").html();
+            }
 
             var loc = document.location;
             var uri = {
@@ -260,16 +266,57 @@
             //console.log(uri);
             var article = new Readability(uri, document).parse();
 
-            // Remove alll or most stylesheets.
-            //document.head.outerHTML = "";            
-            document.head.innerHTML = "";
+            if ($("html").length !== 0) {
+              // Remove alll or most stylesheets.
+              //document.head.outerHTML = "";            
+              if ($("head").length !== 0) {
+                //document.head.innerHTML = "";
+                $("head").html("");
+              } else {
+                var newHead = document.createElement("head");
+                $(newHead).html("");
+                $("html").append(newHead);
+              }
 
-            // Remove everything.
-            //document.body.outerHTML = "";
-            document.body.innerHTML = "";
-            $("body").css({
-              margin: "0"
-            });
+              // Remove everything.
+              //document.body.outerHTML = "";
+              if ($("body").length !== 0) {
+                //document.body.innerHTML = "";
+                $("body").html("");
+                $("body").css({
+                  margin: "0"
+                });
+              } else {
+                var newbody = document.createElement("body");
+                $(newbody).html("");
+                $("html").append(newbody);
+                $("body").css({
+                  margin: "0"
+                });
+              }
+            } else {
+              var dom = document;
+              if(dom === null) {
+                document = new Document();
+                dom = document.implementation.createHTMLDocument();
+                var srcNode = dom.documentElement;
+                var newNode = document.importNode(srcNode, true);
+                document.replaceChild(newNode, document.documentElement);
+              }
+              var html = dom.createElement("html");
+              var head = dom.createElement("head");
+              var body = dom.createElement("body");
+              head.innerHTML = "";
+              body.innerHTML = "";
+              //dom.firstChild.appendChild(head);
+              //dom.firstChild.appendChild(body);
+              dom.appendChild(html);
+              html.appendChild(head);
+              html.appendChild(body);
+              $("body").css({
+                margin: "0"
+              });
+            }
 
             var s = document.createElement("script");
             s.type = "text/javascript";
@@ -452,6 +499,13 @@
               $("#read-option").hide();
               console.warn("Article is not readable");
             } else {
+              if ($("title").length == 0) {
+                var title = document.createElement("title");
+                title.text = "Read Pro: " + article.title;
+                $("head").append(title);
+              } else {
+                $("title").text = "Read Pro: " + article.title;
+              }
               if ($("#read-text-icon").length == 0) {
                 $("#read-text").append("<img id='read-text-icon'></img>");
               }
@@ -471,14 +525,15 @@
                 $("#read-text").append("<span id='read-text-author'></span>");
               }
               if ($("#read-text-published").length == 0) {
-                $("#read-text").append("<span id='read-text-published'></span>");
+                $("#read-text").append("<time id='read-text-published'></time>");
               }
+              $("#read-text").append("<hr>");
               if ($("#read-text-content").length == 0) {
                 $("#read-text").append("<p id='read-text-content'></p>");
               }
 
               $("#read-text-icon").attr("src", articleInfo.favicon);
-              $("#read-text-domain").text(articleInfo.domain);
+              $("#read-text-domain").text(article.uri.host);
               $("#read-text-title").text(article.title);
               $("#read-text-content").html(article.content);
               var _articleWCount = wordCount(article.textContent);
@@ -508,28 +563,19 @@
                 if(this.width <= 100 && this.height <= 100) {
                   $(this).addClass("hideElement");
                 }
-                /* var _boxDim = $("#read-text-content").width();
-                var _maxDim = Math.max(this.width, this.height);
-                var ratio;
-                if (_maxDim > _boxDim) {
-                  ratio = parseFloat(_maxDim/_boxDim);
-                  this.width = parseInt(this.width/ratio);
-                  $(this).width("90%");
-                  $(this).css({
-                    height: "auto",
-                    display: "block"
-                  });
-                } else {
-                  $(this).css({
-                    height: "auto",
-                    display: "block"
-                  });
-                }  */
+                /* $(this).parent().addClass("imgcontainer"); */
               });
               // Add prettify class
-              if (!$("#read-text #read-text-content pre").hasClass("prettyprint")) {
-                $("#read-text #read-text-content pre").addClass("prettyprint");
-              }
+              $("figure:has(video)").each(function() {
+                $(this).addClass("hideElement");
+              });
+              $("#read-text #read-text-content pre").each(function () {
+                if($(this).hasClass("prettyprint")) {
+                  //do nothing
+                }else {
+                  $(this).addClass("prettyprint");
+                }
+              });
               if ($("#read-text-footer").length == 0) {
                 $("#read-container").append($.parseHTML(
                   "<div id='read-text-footer'>" +
@@ -542,6 +588,21 @@
 
             readMode = true;
             createToolOptions();
+
+            /* var s = document.createElement("script");
+            s.type = "text/javascript";
+            s.id = "twitter-wjs";
+            s.src = chrome.runtime.getURL(
+              "third-party/twitter-wjs.js"
+            );
+            $("body").append(s); */
+
+            //$("body").append('<script async="" src="https://platform.twitter.com/widgets.js"></script>');
+
+            /* twttr.widgets.load(
+              document.getElementById("read-text-content")
+            ); */
+
             $("tool-option").nextAll("div, iframe").css({display: "none"});
             if ($('#read-btn').length !== 0) {
               //console.log("Reading Icon changed");
@@ -945,7 +1006,7 @@
 
           function highlightRange(range) {
             if (range.toString() !== "" && range.toString().match(/\w+/g) !== null) {
-              var newNode = document.createElement("span");
+              var newNode = document.createElement("mark");
               newNode.setAttribute("class", "manual-highlight");
               range.surroundContents(newNode);
             }
