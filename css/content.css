@@ -301,6 +301,7 @@
 #read-text-content{
     border-top: 2px solid;
     overflow: auto;
+    padding-top: 1rem;
 }
 
 #read-text #read-text-content a {

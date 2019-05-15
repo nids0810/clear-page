@@ -527,7 +527,6 @@
               if ($("#read-text-published").length == 0) {
                 $("#read-text").append("<time id='read-text-published'></time>");
               }
-              $("#read-text").append("<hr>");
               if ($("#read-text-content").length == 0) {
                 $("#read-text").append("<p id='read-text-content'></p>");
               }
@@ -566,7 +565,7 @@
                 /* $(this).parent().addClass("imgcontainer"); */
               });
               // Add prettify class
-              $("figure:has(video)").each(function() {
+              $("#read-text #read-text-content figure:has(video)").each(function() {
                 $(this).addClass("hideElement");
               });
               $("#read-text #read-text-content pre").each(function () {
@@ -588,22 +587,6 @@
 
             readMode = true;
             createToolOptions();
-
-            /* var s = document.createElement("script");
-            s.type = "text/javascript";
-            s.id = "twitter-wjs";
-            s.src = chrome.runtime.getURL(
-              "third-party/twitter-wjs.js"
-            );
-            $("body").append(s); */
-
-            //$("body").append('<script async="" src="https://platform.twitter.com/widgets.js"></script>');
-
-            /* twttr.widgets.load(
-              document.getElementById("read-text-content")
-            ); */
-
-            $("tool-option").nextAll("div, iframe").css({display: "none"});
             if ($('#read-btn').length !== 0) {
               //console.log("Reading Icon changed");
               $('#read-btn').attr('src', '').promise().done(function () {
@@ -627,6 +610,23 @@
             createToolOptions();
           }
         };
+
+        /* var formatText = function() {
+          $("tool-option")
+            .nextAll("div, iframe")
+            .css({ display: "none" });
+          $("#read-text #read-text-content")
+            .find(":hidden")
+            .addClass("hideElement");
+            var s = document.createElement("script");
+            s.type = "text/javascript";
+            s.id = "twitter-wjs";
+            s.src = chrome.runtime.getURL(
+              "third-party/twitter-wjs.js"
+            );
+            $("body").append(s);
+            //$("body").append('<script async="" src="https://platform.twitter.com/widgets.js"></script>');
+        }; */
 
         //Text to Speech Mode Button Function
         var ttsModeFunction = function () {
@@ -742,6 +742,31 @@
                   synth.cancel();
                 }
 
+                if(textArray.length === 0 && readMode === true) {
+                  var _articleContent = $("#read-text-content").find(":visible").text();
+                  textArray = chuckText(_articleContent);
+                  textArray.unshift($("#read-text-eta").text());
+                  textArray.unshift("Title: " + $("#read-text-title").text());
+                  textArray.push("This article is powered by Read Pro.");
+                  /* var newText = "";
+                  //var visibleObject = $("#read-text-content").filter(":visible");
+                  function dfs(elem) {
+                    if ($(elem).children().length > 0 && $(elem).filter(":hidden").length === 0) {
+                      $(elem).children().each(function() {
+                        dfs(this);
+                      });
+                    } else {
+                      //do sth with elem
+                      if($(elem).text().trim().length > 0){
+                        newText = +$(elem).text();
+                        $(elem).pop();
+                      }
+                    }
+                  }
+                  dfs($("#read-text-content").filter(":visible"));
+                  var textNewArray = chuckText(newText); */
+                }
+
                 if (textArray.length != 0) {
                   $.each(textArray, function () {
                     speaker = new SpeechSynthesisUtterance(this.trim());
@@ -833,7 +858,7 @@
             .replace(/(\/).+/g, "") //folder structure
             .replace(/(\r\n|\n|\r)/g, " ")
             .replace(/\s\s+/g, " ") //multiple spaces
-            .replace(/[^\w\s.,!?]/g, ""); //all non-words & non-space
+            .replace(/[^\w\s.,'!?&<=>%;$]/g, ""); //all non-words & non-space
           while (text.length > 0) {
             arr.push(text.match(pattRegex)[0]);
             text = text.substring(arr[arr.length - 1].length);
@@ -1264,7 +1289,8 @@
           });
         };
         removeExtensionElements();
-        createToolOptions();
+        readModeFunction();
+        //createToolOptions();
       } else {
         console.log("Extension Active: " + response.message);
         removeExtensionElements();
