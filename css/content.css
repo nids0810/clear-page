@@ -21,7 +21,7 @@
     position: fixed;
     top: 11%;
     left: 44.5%;
-    background-color: #333;
+    background-color: #0F999E;
     color: #fff;
     padding: 10px;
     z-index: 9999 !important;
@@ -446,8 +446,12 @@ th {
     cursor: pointer;
     font-size: 17px;
     border-radius: 5px;
-    margin-left: 10px;
     height: 38px;
+    width: 300px;
+}
+
+#speech-inner {
+    margin-top: 10px;
 }
 
 /* Erase Mode */
@@ -478,7 +482,6 @@ mark.manual-highlight p,
 mark.manual-highlight em {
     text-decoration: none;
 }
-
 
 /* Help Mode */
 #help-container {
@@ -523,6 +526,7 @@ mark.manual-highlight em {
 
 #help-content div p {
     font-size: 13px;
+    margin: 0;
 }
 
 #help-content div p a {

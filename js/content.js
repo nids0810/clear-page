@@ -683,7 +683,7 @@
           if ($("#dialog-box").length == 0) {
             //dialog-box doesn't exist
             $("body").append(
-              "<div id='dialog-box'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button><select id='speech-voices'></select></div>"
+              "<div id='dialog-box'><select id='speech-voices'></select><div id='speech-inner'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button></div></div>"
             );
           } else {
             if ($("#speech-voices").length == 0) {
@@ -927,7 +927,8 @@
                 event.target.id === "help-container" || // All Help Mode Elements
                 event.target.id === "cross-btn" ||
                 event.target.id === "help-title" ||
-                event.target.id === "help-content"
+                event.target.id === "help-content" ||
+                $('#read-option-box').has($(event.target)).length > 0
               ) {
                 // Don't select extension elements
               } else if (event.target.tagName === "BODY") {
@@ -981,7 +982,7 @@
           if ($("#dialog-box").length == 0) {
             //dialog-box doesn't exist
             $("body").append(
-              "<div id='dialog-box'><button id='apply-btn'>Save Highlights</button><button id='cancel-btn'>Cancel Highlights</button></div>"
+              "<div id='dialog-box'><button id='apply-btn'>Save Highlights</button><button id='cancel-btn'>Cancel</button></div>"
             );
           } else {
             $("#dialog-box").show();

@@ -173,5 +173,7 @@
         }
       );
     });
+    // add save link footer icon
+    $('#save-link-footer').attr('src', chrome.runtime.getURL("icons/icon_48.png"));
   };
 })();
