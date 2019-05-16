@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Read Pro",
-  "version": "2.0.9",
-  "web_accessible_resources": ["images/*.png", "icons/*.png", "html/*.html", "css/*.css", "json/*.json", "js/*.js", "third-party/*.js", "fonts/*.otf"],
+  "version": "2.1.0",
+  "web_accessible_resources": ["images/*.png", "icons/*.png", "html/*.html", "css/*.css", "json/*.json", "js/*.js", "third-party/*.js", "fonts/*.otf", "fonts/*.ttf"],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "description": "A powerful browser extension to enhance web readability by a single click.",
   "icons": {
