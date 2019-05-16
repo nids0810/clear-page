@@ -23,7 +23,6 @@
           }
 
           // Add sweet-alert-js file
-          //$("head").append('<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js" />');
           if ($("#sweet-alert-js").length === 0) {
             $("head").append('<script src = "' + chrome.runtime.getURL("third-party/sweetalert.min.js") + '" id="sweet-alert-js" />');
           }
@@ -100,68 +99,59 @@
           );
           $("#help-btn").click(helpModeFunction);
 
-          $("#read-btn").hover(function () {
-            $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
-            $(this).addClass("animated swing");
-          }, function () {
-            $(this).attr('src', chrome.runtime.getURL("images/book-white.png"));
-            $(this).removeClass("animated swing");
-          });
+          if(readMode){
+            $('#read-btn').attr('src', '').promise().done(function () {
+              $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
+            });
+            $("#read-btn").hover(function () { return true;});
+          } else {
+            $("#read-btn").hover(function () {
+              $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
+            }, function () {
+              $(this).attr('src', chrome.runtime.getURL("images/book-white.png"));
+            });
+          }
 
           $("#tts-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/speak-green.png"));
-            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/speak-white.png"));
-            $(this).removeClass("animated swing");
           });
 
           $("#erase-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/erase-green.png"));
-            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/erase-white.png"));
-            $(this).removeClass("animated wobble");
           });
 
           $("#highlight-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/highlight-green.png"));
-            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/highlight-white.png"));
-            $(this).removeClass("animated swing");
           });
 
           $("#save-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/save-green.png"));
-            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/save-white.png"));
-            $(this).removeClass("animated swing");
           });
 
           $("#open-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/open-green.png"));
-            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/open-white.png"));
-            $(this).removeClass("animated swing");
           });
 
           $("#pdf-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/pdf-green.png"));
-            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/pdf-white.png"));
-            $(this).removeClass("animated swing");
           });
 
           $("#help-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/help-green.png"));
-            $(this).addClass("animated swing");
           }, function () {
             $(this).attr('src', chrome.runtime.getURL("images/help-white.png"));
-            $(this).removeClass("animated swing");
           });
           
         };
@@ -175,19 +165,17 @@
 
           if (!readMode) {
 
-            if ($("#help-mode").length != 0) {
+            if ($("#help-container").length != 0) {
               helpMode = false;
-              $("#help-mode").remove();
+              $("#help-container").remove();
             }
             removeExtensionElements();
             $("#read-text-icon, #read-text-domain, #read-text-words, #read-text-eta, #read-text-author, #read-text-published").remove();
 
             if ($("head").length !== 0) {
-              //_oldHead = document.head.innerHTML;
               _oldHead = $("head").html();
             }
             if ($("body").length !== 0) {
-              //_oldBody = document.body.innerHTML;
               _oldBody = $("body").html();
             }
 
@@ -243,6 +231,81 @@
               }
             };
 
+            var dayOrNightFunction = function() {
+              var curHours = new Date().getHours();
+              if (curHours > 7 && curHours < 18) {
+                return "day";
+              } else {
+                return "night";
+              }
+            };
+
+            var cleanArticleContent = function (content) {
+              var wrapper = document.createElement("div");
+              wrapper.innerHTML = content;
+              var node = wrapper.firstChild;
+              //Programming tags	script, noscript, applet, embed, object, param
+              $(node).find("script").remove();
+              $(node).find("noscript").remove();
+              $(node).find("applet").remove();
+              $(node).find("embed").remove();
+              $(node).find("object").remove();
+              $(node).find("param").remove();
+
+              //Other Tags
+              $(node).find("style").remove();
+              $(node).find("meta").remove();
+              $(node).contents().filter(function(){
+                return this.nodeType == 8;
+              }).remove();
+
+              //Frames tags	frame, frameset, noframes, iframe
+              $(node).find("frame").remove();
+              $(node).find("iframe").remove();
+              $(node).find("frameset").remove();
+              $(node).find("noframes").remove();
+
+              //Audio and Video tags	audio, source, track, video
+              $(node).find("figure:has(video)").remove();
+              $(node).find("figure:has(source)").remove();
+              $(node).find("video").remove();
+              $(node).find("audio").remove();
+              $(node).find("source").remove();
+              $(node).find("track").remove();
+              
+              //Block elements
+              $(node).find("header").remove();
+              $(node).find("footer").remove();
+              $(node).find("nav").remove();
+              $(node).find("aside").remove();
+              $(node).find("progress").remove();
+              
+              //Images tags	map, area, canvas, svg, -- img, figcaption, figure, picture
+              $(node).find("map").remove();
+              $(node).find("area").remove();
+              $(node).find("canvas").remove();
+              $(node).find("svg").remove();
+
+              //Forms and Input tags	form, textarea
+              $(node).find("form").remove();
+              $(node).find("input").remove();
+              $(node).find("textarea").remove();
+
+              // Add prettify class
+              $(node).find("pre").each(function () {
+                if($(this).hasClass("prettyprint")) {
+                  //do nothing
+                }else {
+                  $(this).addClass("prettyprint");
+                }
+              });
+
+              //Remove wrapper
+              wrapper.remove();
+
+              return node.outerHTML;
+            };
+
             var webDetails = function webDetails () {
               var web = {};
 
@@ -263,14 +326,11 @@
 
             var articleInfo = webDetails();
 
-            //console.log(uri);
             var article = new Readability(uri, document).parse();
 
             if ($("html").length !== 0) {
-              // Remove alll or most stylesheets.
-              //document.head.outerHTML = "";            
+              // Remove all head elements
               if ($("head").length !== 0) {
-                //document.head.innerHTML = "";
                 $("head").html("");
               } else {
                 var newHead = document.createElement("head");
@@ -278,10 +338,8 @@
                 $("html").append(newHead);
               }
 
-              // Remove everything.
-              //document.body.outerHTML = "";
+              // Remove all body elements
               if ($("body").length !== 0) {
-                //document.body.innerHTML = "";
                 $("body").html("");
                 $("body").css({
                   margin: "0"
@@ -308,8 +366,6 @@
               var body = dom.createElement("body");
               head.innerHTML = "";
               body.innerHTML = "";
-              //dom.firstChild.appendChild(head);
-              //dom.firstChild.appendChild(body);
               dom.appendChild(html);
               html.appendChild(head);
               html.appendChild(body);
@@ -318,40 +374,16 @@
               });
             }
 
-            var s = document.createElement("script");
-            s.type = "text/javascript";
-            s.id = "prettify-script"
-            s.src = "https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true";
-            // Use any selector
-            $("head").append(s);
+            addScripts();
             
-            $("<style>")
-            .prop("type", "text/css")
-            .prop("id", "font-style")
-            .html(
-              "@font-face {" +
-                "font-family: 'OpenDyslexic-Regular';" +
-                "src: url('" + chrome.runtime.getURL('fonts/OpenDyslexic-Regular.otf') + "');}"
-            ).appendTo("head");
+            addFonts();
             
+            // Add Read Container
             if ($("#read-container").length == 0) {
-              //read-container will replace body
               $("body").append("<div id='read-container'></div>");
             }
 
-            if ($("#read-mode").length == 0) {
-              //read-mode doesn't exist
-              $("#read-container").append(
-                "<div id='read-mode'></div>"
-              );
-              $("#read-mode").text("Reading Mode On");
-              $("#read-mode").fadeToggle();
-            } else {
-              //read-mode exist
-              $("#read-mode").text("Reading Mode On");
-              $("#read-mode").fadeToggle();
-            }
-
+            // Add Read Option
             if ($("#read-option").length == 0) {
               $("#read-container").append(
                 "<div id='read-option'></div>"
@@ -365,19 +397,13 @@
               );
             }
 
-            var dayOrNight;
-            var curHours = new Date().getHours();
-            if (curHours > 7 && curHours < 18){
-              dayOrNight = "day";
-            } else {
-              dayOrNight = "night";
-            }
+            var dayOrNight = dayOrNightFunction();
 
             var _optionClicked = false;
+            // Read Option Button Clicked
             $("#read-option-btn").click(function () {
               if (!_optionClicked) {
                 _optionClicked = true;
-                //Read Option Box
                 if ($("#read-option-box").length == 0) {
                   $("#read-option").append(
                     "<div id='read-option-box'></div>"
@@ -430,6 +456,7 @@
                     );
                   }
                 }
+
                 $("#read-font-size :input").change(function () {
                   if (this.value == "small") {
                     $("#read-text").removeClass('small').removeClass('medium').removeClass('large').addClass('small');
@@ -442,6 +469,7 @@
                     .find('input[type="radio"]:not(#' + this.id + ")")
                     .prop("checked", false);
                 });
+
                 $("#read-font-family :input").change(function () {
                   $("#read-text-words, #read-text-eta, #read-text-author, #read-text-published, #read-text-domain, #read-text-content").css({
                     fontFamily: this.value
@@ -450,6 +478,7 @@
                   .find('input[type="radio"]:not(#' + this.id + ")")
                   .prop("checked", false);
                 });
+
                 $("#read-color-theme :input").change(
                   function () {
                     if (this.value == "day") {
@@ -464,13 +493,14 @@
                       .find('input[type="radio"]:not(#' + this.id + ")")
                       .prop("checked", false);
                   });
+
               } else {
                 _optionClicked = false;
                 $("#read-option-box").hide();
               }
             });
 
-            //create a element to display article
+            //Create Read Text
             if ($("#read-text").length == 0) {
               $("#read-container").append(
                 "<div id='read-text'></div>"
@@ -497,7 +527,7 @@
               }
               $("#read-text-error img").addClass("animated hinge delay-2s");
               $("#read-option").hide();
-              console.warn("Article is not readable");
+              console.log("Article is not readable");
             } else {
               if ($("title").length == 0) {
                 var title = document.createElement("title");
@@ -534,7 +564,7 @@
               $("#read-text-icon").attr("src", articleInfo.favicon);
               $("#read-text-domain").text(article.uri.host);
               $("#read-text-title").text(article.title);
-              $("#read-text-content").html(article.content);
+              $("#read-text-content").html(cleanArticleContent(article.content));
               var _articleWCount = wordCount(article.textContent);
               var _articleETA = estimatedReadingTime(_articleWCount);
               $("#read-text-words").text("Total words: " + _articleWCount);
@@ -547,7 +577,7 @@
                 .customFormat("#DDD# #DD# #MMM# #YYYY# #h#:#mm# #AMPM#"));
               }
               // Add prevent default to all click event
-              $("#read-text-content a").each(function () {
+              $("#read-text-content").find("a").each(function () {
                 $(this).click(function (event) {
                   event.preventDefault();
                   event.stopPropagation();
@@ -555,26 +585,15 @@
               });
 
               // remove all imgs with typeof and widht & height < 100 px
-              $("#read-text #read-text-content img").each(function () {
+              $("#read-text-content").find("img").each(function () {
                 if($(this).attr("typeof") === "foaf:Image"){
                   $(this).addClass("hideElement");
                 }
                 if(this.width <= 100 && this.height <= 100) {
-                  $(this).addClass("hideElement");
-                }
-                /* $(this).parent().addClass("imgcontainer"); */
-              });
-              // Add prettify class
-              $("#read-text #read-text-content figure:has(video)").each(function() {
-                $(this).addClass("hideElement");
-              });
-              $("#read-text #read-text-content pre").each(function () {
-                if($(this).hasClass("prettyprint")) {
-                  //do nothing
-                }else {
-                  $(this).addClass("prettyprint");
+                  $(this).remove();
                 }
               });
+
               if ($("#read-text-footer").length == 0) {
                 $("#read-container").append($.parseHTML(
                   "<div id='read-text-footer'>" +
@@ -588,45 +607,52 @@
             readMode = true;
             createToolOptions();
             if ($('#read-btn').length !== 0) {
-              //console.log("Reading Icon changed");
               $('#read-btn').attr('src', '').promise().done(function () {
                 $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
-                $("#read-btn").hover(function () {
-                  $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
-                }, function () {
-                  $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
-                });
               });
             }
           } else {
-            $("#read-mode").text("Reading Mode Off");
-            $("#read-mode").fadeToggle();
             readMode = false;
             $("#read-container").remove();
             removeExtensionElements();
-            //window.location.reload();
-            document.head.innerHTML = _oldHead;
-            document.body.innerHTML = _oldBody;
-            createToolOptions();
+            //document.head.innerHTML = _oldHead;
+            //document.body.innerHTML = _oldBody;
+            location.reload(false);
+            //createToolOptions();
           }
         };
 
-        /* var formatText = function() {
-          $("tool-option")
-            .nextAll("div, iframe")
-            .css({ display: "none" });
-          $("#read-text #read-text-content")
-            .find(":hidden")
-            .addClass("hideElement");
-            var s = document.createElement("script");
+        var addFonts = function () {
+          $("<style>")
+            .prop("type", "text/css")
+            .prop("id", "font-style")
+            .html(
+              "@font-face {" +
+                "font-family: 'OpenDyslexic-Regular';" +
+                "src: url('" + chrome.runtime.getURL('fonts/OpenDyslexic-Regular.otf') + "');}"
+            ).appendTo("head");
+        };
+
+        var addScripts = function () {
+          var s = document.createElement("script");
+          s.type = "text/javascript";
+          s.id = "prettify-script";
+          s.src =
+            "https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?autoload=true";
+          $("head").append(s);
+        };
+
+        var formatText = function() {
+          $("#tool-option").nextAll("div, iframe, link, span, p, a").remove();
+            /* var s = document.createElement("script");
             s.type = "text/javascript";
             s.id = "twitter-wjs";
             s.src = chrome.runtime.getURL(
               "third-party/twitter-wjs.js"
             );
-            $("body").append(s);
+            $("body").append(s); */
             //$("body").append('<script async="" src="https://platform.twitter.com/widgets.js"></script>');
-        }; */
+        };
 
         //Text to Speech Mode Button Function
         var ttsModeFunction = function () {
@@ -638,9 +664,9 @@
           var synth = window.speechSynthesis;
           $("#tool-option").hide();
 
-          if ($("#help-mode").length != 0) {
+          if ($("#help-container").length != 0) {
             helpMode = false;
-            $("#help-mode").remove();
+            $("#help-container").remove();
           }
 
           if ($("#tts-mode").length == 0) {
@@ -674,7 +700,8 @@
               title: "Read Pro",
               text: "Browser don't support Text to Speech",
               icon: "error",
-              button: "Damn"
+              button: "Damn",
+              timer: 2000
             });
           } else {
             loadVoiceList();
@@ -743,28 +770,11 @@
                 }
 
                 if(textArray.length === 0 && readMode === true) {
-                  var _articleContent = $("#read-text-content").find(":visible").text();
+                  var _articleContent = $("#read-text-content").text();
                   textArray = chuckText(_articleContent);
                   textArray.unshift($("#read-text-eta").text());
-                  textArray.unshift("Title: " + $("#read-text-title").text());
+                  textArray.unshift("Title - " + $("#read-text-title").text());
                   textArray.push("This article is powered by Read Pro.");
-                  /* var newText = "";
-                  //var visibleObject = $("#read-text-content").filter(":visible");
-                  function dfs(elem) {
-                    if ($(elem).children().length > 0 && $(elem).filter(":hidden").length === 0) {
-                      $(elem).children().each(function() {
-                        dfs(this);
-                      });
-                    } else {
-                      //do sth with elem
-                      if($(elem).text().trim().length > 0){
-                        newText = +$(elem).text();
-                        $(elem).pop();
-                      }
-                    }
-                  }
-                  dfs($("#read-text-content").filter(":visible"));
-                  var textNewArray = chuckText(newText); */
                 }
 
                 if (textArray.length != 0) {
@@ -805,12 +815,14 @@
                   console.log("No text available");
                 }
               } else if (event.target.id === "apply-btn" && event.target.innerText === "Pause") {
+                //Pause button clicked
                 console.log("Speech paused");
                 synth.pause();
                 $("#tts-mode").text("Speech Paused");
                 $("#tts-mode").fadeToggle();
                 $("#apply-btn").html("Resume");
               } else if (event.target.id === "apply-btn" && event.target.innerText === "Resume") {
+                //Resume button clicked
                 console.log("Speech resumed");
                 synth.resume();
                 $("#tts-mode").text("Speaking in " + speaker.voice.name + " ...");
@@ -832,7 +844,6 @@
               } else {
                 text2Speech = window.getSelection().toString();
                 textArray = chuckText(text2Speech);
-                //console.log(textArray);
               }
             }
           });
@@ -873,20 +884,9 @@
           var eraseMode = true;
           $("#tool-option").hide();
 
-          if ($("#help-mode").length != 0) {
+          if ($("#help-container").length != 0) {
             helpMode = false;
-            $("#help-mode").remove();
-          }
-
-          if ($("#erase-mode").length == 0) {
-            //erase-mode doesn't exist
-            $("body").append("<div id='erase-mode'></div>");
-            $("#erase-mode").text("Erase Mode On!");
-            $("#erase-mode").fadeToggle();
-          } else {
-            //erase-mode exist
-            $("#erase-mode").text("Erase Mode On!");
-            $("#erase-mode").fadeToggle();
+            $("#help-container").remove();
           }
 
           if ($("#dialog-box").length == 0) {
@@ -896,20 +896,10 @@
             $("#dialog-box").show();
           }
 
-          // transform all links as unclickable
-          $("a").each(function () {
-            $(this).addClass("link-disabled");
-            if(!readMode){
-              $(this).click(function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-              });
-            }            
-          });
-
           // Click an element in erase mode
           $(document).click(function (event) {
             if (eraseMode) {
+              //console.log(event.target);
               if (
                 event.target.id === "tool-option" ||
                 event.target.id === "read-btn" ||
@@ -922,8 +912,7 @@
                 event.target.id === "help-btn" ||
                 event.target.id === "dialog-box" ||
                 event.target.id === "speech-voices" ||
-                event.target.id === "read-mode" ||
-                event.target.id === "read-container" || // All Read-mode IDs
+                event.target.id === "read-container" || // All Read Mode Elements
                 event.target.id === "read-option" ||
                 event.target.id === "read-option-btn" ||
                 event.target.id === "read-option-box" ||
@@ -933,54 +922,34 @@
                 event.target.id === "read-font-size" ||
                 event.target.id === "read-text" ||
                 event.target.id === "read-text-content" ||
+                event.target.id === "read-text-footer" ||
                 event.target.id === "tts-mode" ||
-                event.target.id === "erase-mode" ||
-                event.target.id === "highlight-mode" ||
-                event.target.id === "save-mode" ||
-                event.target.id === "help-mode" ||
+                event.target.id === "help-container" || // All Help Mode Elements
                 event.target.id === "cross-btn" ||
                 event.target.id === "help-title" ||
                 event.target.id === "help-content"
               ) {
-                //Don't select hidden elements
+                // Don't select extension elements
               } else if (event.target.tagName === "BODY") {
-                //Can't delete body
+                // Don't delete body
               } else if (event.target.id === "apply-btn") {
                 //apply button clicked
-                console.log("Erases all selected elements");
-                $(".web-edited").each(function () {
+                console.log("Erased all selected elements");
+                $(".web-edited").each(function() {
                   $(this).removeClass("web-edited");
                   $(this).addClass("web-deleted");
                 });
-                $(".link-disabled").each(function() {
-                  $(this).removeClass("link-disabled");
-                  if (!readMode) {
-                    $(this).click(function(event) {
-                      return true;
-                    });
-                  }
-                });
-                $("#erase-mode").text("Changes are applied!");
-                $("#erase-mode").fadeToggle();
                 removeExtensionElements();
                 createToolOptions();
                 eraseMode = false;
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
-                console.log("Canceled all erased elements");
-                $(".web-edited").each(function () {
+                console.log(
+                  "Canceled erasing all selected elements"
+                );
+                $(".web-edited").each(function() {
                   $(this).removeClass("web-edited");
                 });
-                $(".link-disabled").each(function() {
-                  $(this).removeClass("link-disabled");
-                  if (!readMode) {
-                    $(this).click(function(event) {
-                      return true;
-                    });
-                  }
-                });
-                $("#erase-mode").text("Changes are cancelled!");
-                $("#erase-mode").fadeToggle();
                 removeExtensionElements();
                 createToolOptions();
                 eraseMode = false;
@@ -1004,26 +973,15 @@
 
           $("#tool-option").hide();
 
-          if ($("#help-mode").length != 0) {
+          if ($("#help-container").length != 0) {
             helpMode = false;
-            $("#help-mode").remove();
-          }
-
-          if ($("#highlight-mode").length == 0) {
-            //highlight-mode doesn't exist
-            $("body").append("<div id='highlight-mode'></div>");
-            $("#highlight-mode").text("Highlight Mode On!");
-            $("#highlight-mode").fadeToggle();
-          } else {
-            //highligh-mode exist
-            $("#highlight-mode").text("Highlight Mode On!");
-            $("#highlight-mode").fadeToggle();
+            $("#help-container").remove();
           }
 
           if ($("#dialog-box").length == 0) {
             //dialog-box doesn't exist
             $("body").append(
-              "<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>"
+              "<div id='dialog-box'><button id='apply-btn'>Save Highlights</button><button id='cancel-btn'>Cancel Highlights</button></div>"
             );
           } else {
             $("#dialog-box").show();
@@ -1111,8 +1069,6 @@
               if (event.target.id === "apply-btn") {
                 //apply button clicked
                 console.log("Apply highlights on all selected elements");
-                $("#highlight-mode").text("Changes are applied!");
-                $("#highlight-mode").fadeToggle();
                 lightMode = false;
                 removeExtensionElements();
                 createToolOptions();
@@ -1122,8 +1078,6 @@
                 $(".manual-highlight").each(function () {
                   $(this).removeClass("manual-highlight");
                 });
-                $("#highlight-mode").text("Changes are cancelled!");
-                $("#highlight-mode").fadeToggle();
                 lightMode = false;
                 removeExtensionElements();
                 createToolOptions();
@@ -1142,40 +1096,41 @@
         };
 
         var saveLinkMode = false;
+        //Save Link Button Function
         var saveLinksFunction = function () {
           console.log("Save link mode is on");
           saveLinkMode = true;
-
-          if ($("#save-mode").length == 0) {
-            //save-mode doesn't exist
-            $("body").append("<div id='save-mode'></div>");
-          } else {
-            //save-mode exist
-            $("#save-mode").fadeToggle();
-          }
 
           if (saveLinkMode) {
             chrome.runtime.sendMessage({
                 message: "save link"
               },
               function (response) {
-                //console.log(response.message);
                 if (response.message === "link saved") {
-                  $("#save-mode").text("Link saved.");
                   swal({
                     title: "Read Pro",
-                    text: response.data.title + " link is saved!",
+                    text: "Link Saved!",
                     icon: "success",
-                    button: "Kewl"
+                    button: "Kewl",
+                    timer: 2000
                   });
                 } else if (response.message === "link duplicate") {
-                  $("#save-mode").text(
-                    "Duplicate link."
-                  );
+                  swal({
+                    title: "Read Pro",
+                    text: "Links Already Saved!",
+                    icon: "warning",
+                    button: "Kewl",
+                    timer: 2000
+                  });
                 } else {
-                  $("#save-mode").text("Error: Try again.");
+                  swal({
+                    title: "Read Pro",
+                    text: "Error: Please Try again!",
+                    icon: "error",
+                    button: "Kewl",
+                    timer: 2000
+                  });
                 }
-                $("#save-mode").fadeToggle();
               }
             );
           } else {
@@ -1210,13 +1165,13 @@
 
           if (saveAsPDFMode) {
             var mediaQueryList = window.matchMedia("print");
-            if ($("#help-mode").length != 0) {
+            if ($("#help-container").length != 0) {
               helpMode = false;
-              $("#help-mode").remove();
+              $("#help-container").remove();
             }
             mediaQueryList.addListener(function (mql) {
               if (mql.matches) {
-                console.log("Hide tool-option");
+                console.log("Hide unnecesary elements");
                 $("#tool-option").hide();
                 $("#dialog-box").hide();
                 if(readMode){
@@ -1224,9 +1179,10 @@
                   $("#read-text").css({
                     width: "100%"
                   });
+                  $("#tool-option").nextAll("div, iframe, link, span, p, a").hide();
                 }
               } else {
-                console.log("Show tool-option");
+                console.log("Show all elements");
                 $("#tool-option").show();
                 $("#dialog-box").hide(); 
                 if (readMode) {
@@ -1234,6 +1190,7 @@
                   $("#read-text").css({
                     width: "60%"
                   });
+                  //$("#tool-option").nextAll("div, iframe, link, span, p, a").show();
                 }
               }
             });
@@ -1251,37 +1208,37 @@
           if (!helpMode) {
             helpMode = true;
             $("#help-btn").attr('src', chrome.runtime.getURL("images/help-green.png"));
-            if ($("#help-mode").length == 0) {
-              $("body").append("<div id='help-mode'></div>");
+            if ($("#help-container").length == 0) {
+              $("body").append("<div id='help-container'></div>");
               var helpHtml =
                 "<div id='cross-btn'>X</div>\
-                <div id='help-title'>Clear Page: Help Doc</div>\
+                <div id='help-title'>Read Pro: Help Doc</div>\
                 <div id='help-content'>\
                   <div><p>Use this powerful tool by either clicking the icon <img src='" + chrome.runtime.getURL("icons/icon_16.png") + "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p></div>\
-                  <div><span>Read Mode:</span><p>Transform the website into a clean readable page with various styling options.</p></div>\
+                  <div><span>Read Mode (default):</span><p>Transform the website into a clean readable page with various styling options.</p></div>\
                   <div><span>Text to Speak Mode:</span><p>Read out loud any selected text from the web page. Choose voices from various voice options.</p></div>\
                   <div><span>Erase Mode:</span><p>Erases any unnecessary element from the web page on a single click. Select the element and use Apply button to erase. Use Cancel button to Undo any changes.</p></div>\
                   <div><span>Highlight Mode:</span><p>Use the inbuilt Highlighter to highlight any text on the web page. Remove all highlights using the cancel button.</p></div>\
                   <div><span>Save Page for Later:</span><p>Save favorite web pages in a reading queue for a later read. Detect any previously saved pages.</p></div>\
                   <div><span>Open Reading Queue:</span><p>View the Read for Later list. Sort the list using various options as well as delete the unwanted web page.</p></div>\
                   <div><span>Save as PDF:</span><p>One click to save the web page into PDF file locally.</p></div>\
-                  <div><p>Want to learn more? Please check out the clear page extension <a href='https://sites.google.com/view/readpro/home' title='Clear Page' target='_blank'>website</a>.</p></div>\
+                  <div><p>Want to learn more? Please check out the Read Pro extension <a href='https://sites.google.com/view/readpro/home' title='Read Pro' target='_blank'>website</a>.</p></div>\
                 </div>\
                 ";
-              $("#help-mode").append($.parseHTML(helpHtml));
+              $("#help-container").append($.parseHTML(helpHtml));
             } else {
-              $("#help-mode").show();
+              $("#help-container").show();
             }
           } else {
             console.log("Help mode off");
             helpMode = false;
-            $("#help-mode").remove();
+            $("#help-container").remove();
           }
 
           $("#cross-btn").click(function (event) {
             if (helpMode) {
               helpMode = false;
-              $("#help-mode").remove();
+              $("#help-container").remove();
               console.log("Help mode off");
             } else {
               console.warn("Help mode is already off");
@@ -1290,6 +1247,7 @@
         };
         removeExtensionElements();
         readModeFunction();
+        formatText();
         //createToolOptions();
       } else {
         console.log("Extension Active: " + response.message);
@@ -1329,28 +1287,12 @@
       $("#dialog-box").remove();
     }
 
-    if ($("#read-mode").length != 0) {
-      $("#read-mode").remove();
-    }
-
     if ($("#tts-mode").length != 0) {
       $("#tts-mode").remove();
     }
 
-    if ($("#erase-mode").length != 0) {
-      $("#erase-mode").remove();
-    }
-
-    if ($("#highlight-mode").length != 0) {
-      $("#highlight-mode").remove();
-    }
-
-    if ($("#save-mode").length != 0) {
-      $("#save-mode").remove();
-    }
-
-    if ($("#help-mode").length != 0) {
-      $("#help-mode").remove();
+    if ($("#help-container").length != 0) {
+      $("#help-container").remove();
     }
   };
 })();
