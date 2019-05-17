@@ -11,7 +11,7 @@
         //Create Tool Option
         var createToolOptions = function () {
           //Tool options box
-          if ($("#tool-option").length != 0) {
+          if ($("#tool-option").length !== 0) {
             $("#tool-option").remove();
           }
 
@@ -99,18 +99,10 @@
           );
           $("#help-btn").click(helpModeFunction);
 
-          if(readMode){
-            $('#read-btn').attr('src', '').promise().done(function () {
-              $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
-            });
-            $("#read-btn").hover(function () { return true;});
-          } else {
-            $("#read-btn").hover(function () {
-              $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
-            }, function () {
-              $(this).attr('src', chrome.runtime.getURL("images/book-white.png"));
-            });
-          }
+          $('#read-btn').attr('src', '').promise().done(function () {
+            $(this).attr('src', chrome.runtime.getURL("images/book-green.png"));
+          });
+          $("#read-btn").hover(function () { return true;});
 
           $("#tts-btn").hover(function () {
             $(this).attr('src', chrome.runtime.getURL("images/speak-green.png"));
@@ -165,7 +157,7 @@
 
           if (!readMode) {
 
-            if ($("#help-container").length != 0) {
+            if ($("#help-container").length !== 0) {
               helpMode = false;
               $("#help-container").remove();
             }
@@ -240,6 +232,32 @@
               }
             };
 
+            function removeDataAttributes(target) {
+              var i,
+                $target = $(target),
+                attrName,
+                dataAttrsToDelete = [],
+                dataAttrs = $target.get(0).attributes,
+                dataAttrsLen = dataAttrs.length;
+              
+              // loop through attributes and make a list of those
+              // that begin with 'data-'
+              for (i=0; i<dataAttrsLen; i++) {
+                if ( 'data-' === dataAttrs[i].name.substring(0,5) ) {
+                // Why don't you just delete the attributes here?
+                // Deleting an attribute changes the indices of the
+                // others wreaking havoc on the loop we are inside
+                // b/c dataAttrs is a NamedNodeMap (not an array or obj)
+                dataAttrsToDelete.push(dataAttrs[i].name);
+               }
+              }
+              // delete each of the attributes we found above
+              // i.e. those that start with "data-"
+              $.each( dataAttrsToDelete, function( index, attrName ) {
+                $target.removeAttr( attrName );
+              })
+            };
+
             var cleanArticleContent = function (content) {
               var wrapper = document.createElement("div");
               wrapper.innerHTML = content;
@@ -255,8 +273,9 @@
               //Other Tags
               $(node).find("style").remove();
               $(node).find("meta").remove();
+              $(node).find("link").remove();
               $(node).contents().filter(function(){
-                return this.nodeType == 8;
+                return this.nodeType === 8;
               }).remove();
 
               //Frames tags	frame, frameset, noframes, iframe
@@ -289,7 +308,10 @@
               //Forms and Input tags	form, textarea
               $(node).find("form").remove();
               $(node).find("input").remove();
+              $(node).find("select").remove();
               $(node).find("textarea").remove();
+
+              //$(node).find("*").map(removeDataAttributes());
 
               // Add prettify class
               $(node).find("pre").each(function () {
@@ -379,17 +401,17 @@
             addFonts();
             
             // Add Read Container
-            if ($("#read-container").length == 0) {
+            if ($("#read-container").length === 0) {
               $("body").append("<div id='read-container'></div>");
             }
 
             // Add Read Option
-            if ($("#read-option").length == 0) {
+            if ($("#read-option").length === 0) {
               $("#read-container").append(
                 "<div id='read-option'></div>"
               );
             }
-            if ($("#read-option-btn").length == 0) {
+            if ($("#read-option-btn").length === 0) {
               $("#read-option").append(
                 "<div id='read-option-btn'><img id='read-option-btn-icon' title='option' src='" +
                 chrome.runtime.getURL("images/option-blue.png") +
@@ -404,7 +426,7 @@
             $("#read-option-btn").click(function () {
               if (!_optionClicked) {
                 _optionClicked = true;
-                if ($("#read-option-box").length == 0) {
+                if ($("#read-option-box").length === 0) {
                   $("#read-option").append(
                     "<div id='read-option-box'></div>"
                   );
@@ -413,7 +435,7 @@
                 }
 
                 //Font Size toggle button
-                if ($("#read-font-size").length == 0) {
+                if ($("#read-font-size").length === 0) {
                   $("#read-option-box").append(
                     "<div id='read-font-size'>\
                     <Label>Text Size:</Label>\
@@ -424,7 +446,7 @@
                   );
                 }
                 //Font toggle button
-                if ($("#read-font-family").length == 0) {
+                if ($("#read-font-family").length === 0) {
                   $("#read-option-box").append(
                     "<div id='read-font-family'>\
                     <Label>Typography:</Label>\
@@ -432,12 +454,14 @@
                     <input type='radio' id='font-verdana' name='verdana' value='Verdana'> Verdana\
                     <input type='radio' id='font-georgia' name='georgia' value='Georgia'> Georgia\
                     <input type='radio' id='font-lucida-sans' name='lucida-sans' value='Lucida Sans'> Lucida Sans\
+                    <input type='radio' id='font-literata' name='literata' value='Literata-Regular'> Literata\
+                    <input type='radio' id='font-bookerly' name='bookerly' value='Bookerly-Regular'> Bookerly\
                     <input type='radio' id='font-open-dyslexic' name='open-dyslexic' value='OpenDyslexic-Regular'> Open Dyslexic\
                     </div>"
                   );
                 }
                 //Color Theme toggle button
-                if ($("#read-color-theme").length == 0) {
+                if ($("#read-color-theme").length === 0) {
                   if(dayOrNight === "day") {
                     $("#read-option-box").append(
                       "<div id='read-color-theme'>\
@@ -458,11 +482,11 @@
                 }
 
                 $("#read-font-size :input").change(function () {
-                  if (this.value == "small") {
+                  if (this.value === "small") {
                     $("#read-text").removeClass('small').removeClass('medium').removeClass('large').addClass('small');
-                  } else if (this.value == "medium") {
+                  } else if (this.value === "medium") {
                     $("#read-text").removeClass('small').removeClass('medium').removeClass('large').addClass('medium');
-                  } else if (this.value == "large") {
+                  } else if (this.value === "large") {
                     $("#read-text").removeClass('small').removeClass('medium').removeClass('large').addClass('large');
                   }
                   $("#read-font-size")
@@ -471,7 +495,7 @@
                 });
 
                 $("#read-font-family :input").change(function () {
-                  $("#read-text-words, #read-text-eta, #read-text-author, #read-text-published, #read-text-domain, #read-text-content").css({
+                  $("#read-text-title, #read-text-words, #read-text-eta, #read-text-author, #read-text-published, #read-text-domain, #read-text-content").css({
                     fontFamily: this.value
                   });
                   $("#read-font-family")
@@ -481,10 +505,10 @@
 
                 $("#read-color-theme :input").change(
                   function () {
-                    if (this.value == "day") {
+                    if (this.value === "day") {
                       $("#read-container").removeClass("night").addClass("day");
                       $("#read-text").removeClass("night").addClass("day");
-                    } else if (this.value == "night") {
+                    } else if (this.value === "night") {
                       $("#read-container").removeClass("day").addClass("night");
                       $("#read-text").removeClass("day").addClass("night");                    
                     }
@@ -501,7 +525,7 @@
             });
 
             //Create Read Text
-            if ($("#read-text").length == 0) {
+            if ($("#read-text").length === 0) {
               $("#read-container").append(
                 "<div id='read-text'></div>"
               );
@@ -518,7 +542,7 @@
             }
 
             if (article === null) {
-              if ($("#read-text-error").length == 0) {
+              if ($("#read-text-error").length === 0) {
                 $("#read-text").append(
                   "<div id='read-text-error'><img src='" +
                     chrome.runtime.getURL("icons/icon_128.png") +
@@ -529,35 +553,35 @@
               $("#read-option").hide();
               console.log("Article is not readable");
             } else {
-              if ($("title").length == 0) {
+              if ($("title").length === 0) {
                 var title = document.createElement("title");
                 title.text = "Read Pro: " + article.title;
                 $("head").append(title);
               } else {
                 $("title").text = "Read Pro: " + article.title;
               }
-              if ($("#read-text-icon").length == 0) {
+              if ($("#read-text-icon").length === 0) {
                 $("#read-text").append("<img id='read-text-icon'></img>");
               }
-              if ($("#read-text-domain").length == 0) {
+              if ($("#read-text-domain").length === 0) {
                 $("#read-text").append("<span id='read-text-domain'></span>");
               }
-              if ($("#read-text-title").length == 0) {
+              if ($("#read-text-title").length === 0) {
                 $("#read-text").append("<h1 id='read-text-title'></h1>");
               }
-              if ($("#read-text-words").length == 0) {
+              if ($("#read-text-words").length === 0) {
                 $("#read-text").append("<span id='read-text-words'></span>");
               }
-              if ($("#read-text-eta").length == 0) {
+              if ($("#read-text-eta").length === 0) {
                 $("#read-text").append("<span id='read-text-eta'></span>");
               }
-              if ($("#read-text-author").length == 0) {
+              if ($("#read-text-author").length === 0) {
                 $("#read-text").append("<span id='read-text-author'></span>");
               }
-              if ($("#read-text-published").length == 0) {
+              if ($("#read-text-published").length === 0) {
                 $("#read-text").append("<time id='read-text-published'></time>");
               }
-              if ($("#read-text-content").length == 0) {
+              if ($("#read-text-content").length === 0) {
                 $("#read-text").append("<p id='read-text-content'></p>");
               }
 
@@ -594,7 +618,7 @@
                 }
               });
 
-              if ($("#read-text-footer").length == 0) {
+              if ($("#read-text-footer").length === 0) {
                 $("#read-container").append($.parseHTML(
                   "<div id='read-text-footer'>" +
                   "<span>This page is powered by <b>Read Pro</b></span>" + 
@@ -615,9 +639,9 @@
             readMode = false;
             $("#read-container").remove();
             removeExtensionElements();
-            //document.head.innerHTML = _oldHead;
-            //document.body.innerHTML = _oldBody;
             location.reload(false);
+            //document.head.innerHTML = _oldHead;
+            //document.body.innerHTML = _oldBody;            
             //createToolOptions();
           }
         };
@@ -629,7 +653,13 @@
             .html(
               "@font-face {" +
                 "font-family: 'OpenDyslexic-Regular';" +
-                "src: url('" + chrome.runtime.getURL('fonts/OpenDyslexic-Regular.otf') + "');}"
+                "src: url('" + chrome.runtime.getURL('fonts/OpenDyslexic-Regular.otf') + "');}" +
+              "@font-face {" +
+                "font-family: 'Literata-Regular';" +
+                "src: url('" + chrome.runtime.getURL('fonts/Literata-Regular.otf') + "');}" + 
+              "@font-face {" +
+                "font-family: 'Bookerly-Regular';" +
+                "src: url('" + chrome.runtime.getURL('fonts/Bookerly-Regular.ttf') + "');}"
             ).appendTo("head");
         };
 
@@ -642,16 +672,69 @@
           $("head").append(s);
         };
 
-        var formatText = function() {
-          $("#tool-option").nextAll("div, iframe, link, span, p, a").remove();
-            /* var s = document.createElement("script");
-            s.type = "text/javascript";
-            s.id = "twitter-wjs";
-            s.src = chrome.runtime.getURL(
-              "third-party/twitter-wjs.js"
-            );
-            $("body").append(s); */
-            //$("body").append('<script async="" src="https://platform.twitter.com/widgets.js"></script>');
+        var observeChanges = function() {
+          // Select the node that will be observed for mutations
+          var targetNode = document.getElementsByTagName("body")[0];
+          
+          // Options for the observer (which mutations to observe)
+          var config = { attributes: false, childList: true, subtree: false };
+
+          // Callback function to execute when mutations are observed
+          var callback = function(mutations, observer) {
+            for(var mutation of mutations) {
+              var newNodes = mutation.addedNodes; // DOM NodeList
+              if( newNodes !== null ) { // If there are new nodes added
+                var $nodes = $(newNodes); // jQuery set
+                $nodes.each(function() {
+                  var $node = $(this);
+                  if (
+                    $node.hasClass("swal-overlay") ||
+                    $node.is("#tool-option") ||
+                    $node.is("#read-container") ||
+                    $node.is("#help-container") ||
+                    $node.is("#dialog-box") ||
+                    $node.is("#tts-mode")
+                  ) {
+                    //console.log("Extension element " + this.tagName + "#" + this.id + " inserted");
+                  } else {
+                    console.log("Unknown element " + this.tagName + "#" + this.id + " inserted");
+                    this.remove();
+                  }
+                });
+              }
+            }
+           }
+
+          var observer = new MutationObserver(callback);
+          // Start observing the target node for configured mutations
+          observer.observe(targetNode, config);
+          setTimeout(
+            function() { 
+              console.log("Observer disconnected");
+              // Later, you can stop observing
+              observer.disconnect();
+            }, 20000);
+        };
+
+        var removeAttr = function(elem) {
+          elem.className = '';
+          while (elem.attributes.length > 0)
+            elem.removeAttribute(elem.attributes[0].name);
+        };
+
+        var cleanWebsite = function () {
+          removeAttr($("html").get(0));
+          removeAttr($("head").get(0));
+          removeAttr($("body").get(0));
+          $("html")
+          .contents()
+          .filter(function() {
+            return this.nodeType === 8;
+          })
+          .remove();
+
+          $("span.gr__tooltip").remove();
+          console.log("Website cleaned!");
         };
 
         //Text to Speech Mode Button Function
@@ -664,12 +747,12 @@
           var synth = window.speechSynthesis;
           $("#tool-option").hide();
 
-          if ($("#help-container").length != 0) {
+          if ($("#help-container").length !== 0) {
             helpMode = false;
             $("#help-container").remove();
           }
 
-          if ($("#tts-mode").length == 0) {
+          if ($("#tts-mode").length === 0) {
             //tts-mode doesn't exist
             $("body").append("<div id='tts-mode'></div>");
             $("#tts-mode").text("Speech to Text Mode");
@@ -680,14 +763,17 @@
             $("#tts-mode").fadeToggle();
           }
 
-          if ($("#dialog-box").length == 0) {
+          if ($("#dialog-box").length === 0) {
             //dialog-box doesn't exist
             $("body").append(
               "<div id='dialog-box'><select id='speech-voices'></select><div id='speech-inner'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button></div></div>"
             );
           } else {
-            if ($("#speech-voices").length == 0) {
-              $("#dialog-box").append("<select id='speech-voices'></select>");
+            if ($("#speech-voices").length === 0) {
+              $("#dialog-box").prepend("<select id='speech-voices'></select>");
+              $("#speech-voices").after("<div id='speech-inner'></div>");
+              $("#speech-inner").append($("#apply-btn"));
+              $("#speech-inner").append($("#cancel-btn"));
               $("#apply-btn").html("Speak");
             }
             $("#dialog-box").show();
@@ -712,7 +798,7 @@
 
           function loadVoiceList() {
             var voices = synth.getVoices();
-            if ($("#speech-voices option").length == 0) {
+            if ($("#speech-voices option").length === 0) {
               var language = window.navigator.userLanguage || window.navigator.language; //en-US
               voices.forEach(function (voice, index) {
                 if (voice.lang === language) {
@@ -730,7 +816,7 @@
                 }
               });
 
-              if ($("#speech-voices option").length == 0) {
+              if ($("#speech-voices option").length === 0) {
                 $("#speech-voices").hide();
               } else {
                 $("#speech-voices").show();
@@ -741,7 +827,6 @@
                 if (voices.length !== 0) {
                   selectedVoice = voices[voiceIndex];
                   voiceChangedIndex = voiceIndex;
-                  //console.log("New voice: " + selectedVoice.name + " , language: " + selectedVoice.lang);
                 }
               });
 
@@ -777,7 +862,7 @@
                   textArray.push("This article is powered by Read Pro.");
                 }
 
-                if (textArray.length != 0) {
+                if (textArray.length !== 0) {
                   $.each(textArray, function () {
                     speaker = new SpeechSynthesisUtterance(this.trim());
                     if (!$.isEmptyObject(selectedVoice)) {
@@ -884,12 +969,12 @@
           var eraseMode = true;
           $("#tool-option").hide();
 
-          if ($("#help-container").length != 0) {
+          if ($("#help-container").length !== 0) {
             helpMode = false;
             $("#help-container").remove();
           }
 
-          if ($("#dialog-box").length == 0) {
+          if ($("#dialog-box").length === 0) {
             //dialog-box doesn't exist
             $("body").append("<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>");
           } else {
@@ -901,38 +986,19 @@
             if (eraseMode) {
               //console.log(event.target);
               if (
-                event.target.id === "tool-option" ||
-                event.target.id === "read-btn" ||
-                event.target.id === "tts-btn" ||
-                event.target.id === "erase-btn" ||
-                event.target.id === "highlight-btn" ||
-                event.target.id === "save-btn" ||
-                event.target.id === "pdf-btn" ||
-                event.target.id === "open-btn" ||
-                event.target.id === "help-btn" ||
+                $('#tool-option').has($(event.target)).length > 0 || // All Tool Option Elements
                 event.target.id === "dialog-box" ||
                 event.target.id === "speech-voices" ||
                 event.target.id === "read-container" || // All Read Mode Elements
-                event.target.id === "read-option" ||
-                event.target.id === "read-option-btn" ||
-                event.target.id === "read-option-box" ||
-                event.target.id === "read-option-btn-icon" ||
-                event.target.id === "read-font-family" ||
-                event.target.id === "read-color-theme" ||
-                event.target.id === "read-font-size" ||
+                $('#read-option').has($(event.target)).length > 0 || // All Read Option Elements
+                $('#read-text-footer').has($(event.target)).length > 0 || // All Read Text Footer Elements
                 event.target.id === "read-text" ||
                 event.target.id === "read-text-content" ||
-                event.target.id === "read-text-footer" ||
                 event.target.id === "tts-mode" ||
-                event.target.id === "help-container" || // All Help Mode Elements
-                event.target.id === "cross-btn" ||
-                event.target.id === "help-title" ||
-                event.target.id === "help-content" ||
-                $('#read-option-box').has($(event.target)).length > 0
+                $('#help-container').has($(event.target)).length > 0 || // All Help Mode Elements
+                event.target.tagName === "BODY"
               ) {
                 // Don't select extension elements
-              } else if (event.target.tagName === "BODY") {
-                // Don't delete body
               } else if (event.target.id === "apply-btn") {
                 //apply button clicked
                 console.log("Erased all selected elements");
@@ -940,14 +1006,19 @@
                   $(this).removeClass("web-edited");
                   $(this).addClass("web-deleted");
                 });
+                swal({
+                  title: "Read Pro",
+                  text: "All selected elemenst are erased!",
+                  icon: "success",
+                  button: "Kewl",
+                  timer: 2000
+                });
                 removeExtensionElements();
                 createToolOptions();
                 eraseMode = false;
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
-                console.log(
-                  "Canceled erasing all selected elements"
-                );
+                console.log("Canceled erasing all selected elements");
                 $(".web-edited").each(function() {
                   $(this).removeClass("web-edited");
                 });
@@ -974,12 +1045,12 @@
 
           $("#tool-option").hide();
 
-          if ($("#help-container").length != 0) {
+          if ($("#help-container").length !== 0) {
             helpMode = false;
             $("#help-container").remove();
           }
 
-          if ($("#dialog-box").length == 0) {
+          if ($("#dialog-box").length === 0) {
             //dialog-box doesn't exist
             $("body").append(
               "<div id='dialog-box'><button id='apply-btn'>Save Highlights</button><button id='cancel-btn'>Cancel</button></div>"
@@ -990,7 +1061,7 @@
 
           function highlightRange(range) {
             if (range.toString() !== "" && range.toString().match(/\w+/g) !== null) {
-              var newNode = document.createElement("mark");
+              var newNode = document.createElement("span");
               newNode.setAttribute("class", "manual-highlight");
               range.surroundContents(newNode);
             }
@@ -999,12 +1070,9 @@
           function getSafeRanges(dangerous) {
             var a = dangerous.commonAncestorContainer;
             // Starts -- Work inward from the start, selecting the largest safe range
-            var s = new Array(0),
-              rs = new Array(0);
+            var s = new Array(0), rs = new Array(0);
             if (dangerous.startContainer != a)
-              for (
-                var i = dangerous.startContainer; i != a; i = i.parentNode
-              )
+              for (var i = dangerous.startContainer; i != a; i = i.parentNode)
                 s.push(i);
             if (0 < s.length)
               for (var i = 0; i < s.length; i++) {
@@ -1027,9 +1095,7 @@
             var e = new Array(0),
               re = new Array(0);
             if (dangerous.endContainer != a)
-              for (
-                var i = dangerous.endContainer; i != a; i = i.parentNode
-              )
+              for (var i = dangerous.endContainer; i != a; i = i.parentNode)
                 e.push(i);
             if (0 < e.length)
               for (var i = 0; i < e.length; i++) {
@@ -1166,7 +1232,7 @@
 
           if (saveAsPDFMode) {
             var mediaQueryList = window.matchMedia("print");
-            if ($("#help-container").length != 0) {
+            if ($("#help-container").length !== 0) {
               helpMode = false;
               $("#help-container").remove();
             }
@@ -1209,21 +1275,23 @@
           if (!helpMode) {
             helpMode = true;
             $("#help-btn").attr('src', chrome.runtime.getURL("images/help-green.png"));
-            if ($("#help-container").length == 0) {
+            if ($("#help-container").length === 0) {
               $("body").append("<div id='help-container'></div>");
               var helpHtml =
                 "<div id='cross-btn'>X</div>\
                 <div id='help-title'>Read Pro: Help Doc</div>\
                 <div id='help-content'>\
-                  <div><p>Use this powerful tool by either clicking the icon <img src='" + chrome.runtime.getURL("icons/icon_16.png") + "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p></div>\
+                  <div>\
+                  <p>Use this powerful tool by either clicking the icon <img src='" + chrome.runtime.getURL("icons/icon_16.png") + "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p>\
+                  <p>Want to learn more? Check out the Read Pro extension <a href='https://sites.google.com/view/readpro/home' title='Read Pro' target='_blank'>website</a>.</p>\
+                  </div>\
                   <div><span>Read Mode (default):</span><p>Transform the website into a clean readable page with various styling options.</p></div>\
                   <div><span>Text to Speak Mode:</span><p>Read out loud any selected text from the web page. Choose voices from various voice options.</p></div>\
                   <div><span>Erase Mode:</span><p>Erases any unnecessary element from the web page on a single click. Select the element and use Apply button to erase. Use Cancel button to Undo any changes.</p></div>\
                   <div><span>Highlight Mode:</span><p>Use the inbuilt Highlighter to highlight any text on the web page. Remove all highlights using the cancel button.</p></div>\
                   <div><span>Save Page for Later:</span><p>Save favorite web pages in a reading queue for a later read. Detect any previously saved pages.</p></div>\
                   <div><span>Open Reading Queue:</span><p>View the Read for Later list. Sort the list using various options as well as delete the unwanted web page.</p></div>\
-                  <div><span>Save as PDF:</span><p>One click to save the web page into PDF file locally.</p></div>\
-                  <div><p>Want to learn more? Please check out the Read Pro extension <a href='https://sites.google.com/view/readpro/home' title='Read Pro' target='_blank'>website</a>.</p></div>\
+                  <div><span>Save as PDF:</span><p>One click to save the web page into PDF file locally. See empty pages? Try unselecting Headers & Footers options.</p></div>\
                 </div>\
                 ";
               $("#help-container").append($.parseHTML(helpHtml));
@@ -1248,8 +1316,8 @@
         };
         removeExtensionElements();
         readModeFunction();
-        formatText();
-        //createToolOptions();
+        cleanWebsite();
+        observeChanges();
       } else {
         console.log("Extension Active: " + response.message);
         removeExtensionElements();
@@ -1280,19 +1348,19 @@
   var removeExtensionElements = function () {
     console.log("Remove all extension elements.");
     //remove the tool options if available
-    if ($("#tool-option").length != 0) {
+    if ($("#tool-option").length !== 0) {
       $("#tool-option").remove();
     }
 
-    if ($("#dialog-box").length != 0) {
+    if ($("#dialog-box").length !== 0) {
       $("#dialog-box").remove();
     }
 
-    if ($("#tts-mode").length != 0) {
+    if ($("#tts-mode").length !== 0) {
       $("#tts-mode").remove();
     }
 
-    if ($("#help-container").length != 0) {
+    if ($("#help-container").length !== 0) {
       $("#help-container").remove();
     }
   };

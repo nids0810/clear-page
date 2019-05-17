@@ -1,3 +1,8 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
 /* tool-option */
 #tool-option {
     background-color: #0f999e;
@@ -91,7 +96,6 @@
     margin: 0 auto;
     padding: 45px 70px;
     width: 60%;
-    /* font-family: '"Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif'; */
 }
 
 /* Day Theme */
@@ -131,11 +135,6 @@
 
 #read-text.day #read-text-content pre {
     background-color: #EFF0F1;
-}
-
-#read-text.day #read-text-content mark {
-    background: #fff;
-    color: #333;
 }
 
 #read-text.day #read-text-content blockquote,
@@ -190,11 +189,6 @@ th {
 
 #read-text.night #read-text-content pre {
     background-color: #bbb;
-}
-
-#read-text.night #read-text-content mark {
-    background: #222;
-    color: #aaa;
 }
 
 #read-text.night #read-text-content blockquote,
@@ -316,11 +310,10 @@ th {
     cursor: default;
 }
 
-#read-text #read-text-content p,
-#read-text #read-text-content span {
+/* #read-text #read-text-content p:not(.manual-highlight),
+#read-text #read-text-content span:not(.manual-highlight) {
     padding-left: 2px;
-    /* display: block; */
-}
+} */
 
 #read-text #read-text-content pre {
     border: none;
@@ -334,7 +327,6 @@ th {
     max-width: 100%;
     height: auto;
     width: auto\9; /* ie8 */
-    /* clear: both; */
 }
 
 #read-text #read-text-content blockquote {
@@ -379,7 +371,6 @@ th {
     font-size: smaller;
     text-indent: 0;
     line-height: 15px;
-    /* border-bottom: thin silver solid; */
     margin: 0.5em;
     padding: 0.5em;
 }
@@ -392,9 +383,7 @@ th {
 
 #read-text #read-text-content table {
     border-collapse: collapse;
-    /* overflow: auto; */
     white-space: pre-wrap;
-    /* overflow-x: auto; */
 }
 
 #read-text #read-text-content td, th {
@@ -465,22 +454,31 @@ th {
     filter: alpha(opacity=0);
 }
 
-/* .link-disabled {
-    pointer-events: none;
-    cursor: default;
-} */
-
 /* Highlight Mode */
-mark.manual-highlight * {
+.manual-highlight {
     background-color: yellow !important;
-    color: #000 !important; 
+    color: #000 !important;
 }
 
-mark.manual-highlight a,
-mark.manual-highlight span,
-mark.manual-highlight p,
-mark.manual-highlight em {
-    text-decoration: none;
+span.manual-highlight {
+    background-color: yellow !important;
+    color: #000 !important;
+}
+
+span.manual-highlight a,
+span.manual-highlight span,
+span.manual-highlight p,
+span.manual-highlight em,
+span.manual-highlight h1,
+span.manual-highlight h2,
+span.manual-highlight h3,
+span.manual-highlight h4,
+span.manual-highlight h5,
+span.manual-highlight h6,
+span.manual-highlight td,
+span.manual-highlight th {
+    background-color: yellow !important;
+    color: #000 !important;
 }
 
 /* Help Mode */
