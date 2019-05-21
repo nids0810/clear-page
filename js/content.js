@@ -232,6 +232,7 @@
               }
             };
 
+            /*
             function removeDataAttributes(target) {
               var i,
                 $target = $(target),
@@ -256,13 +257,14 @@
               $.each( dataAttrsToDelete, function( index, attrName ) {
                 $target.removeAttr( attrName );
               })
-            };
+            }; */
 
             var cleanArticleContent = function (content) {
               var wrapper = document.createElement("div");
               wrapper.innerHTML = content;
               var node = wrapper.firstChild;
-              //Programming tags	script, noscript, applet, embed, object, param
+
+              //Programming tags - script, noscript, applet, embed, object, param
               $(node).find("script").remove();
               $(node).find("noscript").remove();
               $(node).find("applet").remove();
@@ -270,7 +272,7 @@
               $(node).find("object").remove();
               $(node).find("param").remove();
 
-              //Other Tags
+              //Other Tags - style, meta, link, comments
               $(node).find("style").remove();
               $(node).find("meta").remove();
               $(node).find("link").remove();
@@ -278,18 +280,16 @@
                 return this.nodeType === 8;
               }).remove();
 
-              //Frames tags	frame, frameset, noframes, iframe
+              //Frames tags	- frame, frameset, noframes, iframe
               $(node).find("frame").remove();
               $(node).find("iframe").remove();
               $(node).find("frameset").remove();
               $(node).find("noframes").remove();
 
-              //Audio and Video tags	audio, source, track, video
-              $(node).find("figure:has(video)").remove();
-              $(node).find("figure:has(source)").remove();
-              $(node).find("video").remove();
-              $(node).find("audio").remove();
-              $(node).find("source").remove();
+              //Audio and Video tags - figure, audio, video, picture, source, track
+              $(node).find("figure:has(video, audio)").remove();
+              $(node).find("video:has(source), video").remove();
+              $(node).find("audio:has(source), audio").remove();
               $(node).find("track").remove();
               
               //Block elements
@@ -298,20 +298,59 @@
               $(node).find("nav").remove();
               $(node).find("aside").remove();
               $(node).find("progress").remove();
+              $(node).find("hr").remove();
               
-              //Images tags	map, area, canvas, svg, -- img, figcaption, figure, picture
+              //Images tags	- map, area, canvas, svg, -- img, figcaption, figure, picture
               $(node).find("map").remove();
               $(node).find("area").remove();
               $(node).find("canvas").remove();
               $(node).find("svg").remove();
 
-              //Forms and Input tags	form, textarea
+              //Forms and Input tags - form, input, select, textarea
               $(node).find("form").remove();
               $(node).find("input").remove();
               $(node).find("select").remove();
+              $(node).find("label").remove();
               $(node).find("textarea").remove();
+              $(node).find("legend").remove();
+              $(node).find("button").remove();
+              $(node).find("output").remove();
+              $(node).find("option").remove();
+              $(node).find("datalist").remove();
+              $(node).find("fieldset").remove();
+              $(node).find("optgroup").remove();
 
-              //$(node).find("*").map(removeDataAttributes());
+              //https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+
+              //filter all images with conditions
+              $(node).find('img').filter(function() {
+                if(this.src.match(/.*\.svg$/)) //find all SVG files.
+                  return true;
+                else if (this.src.match(/.*\.gif$/)) //find all GIF files
+                  return true;
+                else if(this.width <= 100 && this.height <= 100)
+                  return true;
+                else if (this.typeof === "foaf:Image")
+                  return true;
+                else
+                  return false; 
+              }).each(function(){
+                this.remove();
+              });
+              //img - src & srcset
+
+              //Only show unique images - keep first and remove all other images
+              var img_array_length = $(node).find('img').length;
+              var img_array = $(node).find('img').map(function() { return $(this).attr("src"); });
+              img_array = $.unique(img_array);
+              if (img_array_length !== img_array.length){
+                img_array.each(function(index, value) {
+                  var sel = 'img[src="' + value + '"]';
+                  $(node).find(sel).not($(node).find(sel + ":first")).remove();
+                  console.log("Removed duplicate images");
+                });
+              }
+              //https://stackoverflow.com/questions/8415910/filtering-duplicate-img-src-with-jquery-unique-or-remove
 
               // Add prettify class
               $(node).find("pre").each(function () {
@@ -608,16 +647,6 @@
                 });
               });
 
-              // remove all imgs with typeof and widht & height < 100 px
-              $("#read-text-content").find("img").each(function () {
-                if($(this).attr("typeof") === "foaf:Image"){
-                  $(this).addClass("hideElement");
-                }
-                if(this.width <= 100 && this.height <= 100) {
-                  $(this).remove();
-                }
-              });
-
               if ($("#read-text-footer").length === 0) {
                 $("#read-container").append($.parseHTML(
                   "<div id='read-text-footer'>" +
@@ -672,7 +701,7 @@
           $("head").append(s);
         };
 
-        var observeChanges = function() {
+        var observeBodyChanges = function() {
           // Select the node that will be observed for mutations
           var targetNode = document.getElementsByTagName("body")[0];
           
@@ -683,21 +712,19 @@
           var callback = function(mutations, observer) {
             for(var mutation of mutations) {
               var newNodes = mutation.addedNodes; // DOM NodeList
-              if( newNodes !== null ) { // If there are new nodes added
+              if( newNodes !== null  && newNodes.length > 0) { // If there are new nodes added
                 var $nodes = $(newNodes); // jQuery set
                 $nodes.each(function() {
                   var $node = $(this);
-                  if (
-                    $node.hasClass("swal-overlay") ||
-                    $node.is("#tool-option") ||
-                    $node.is("#read-container") ||
-                    $node.is("#help-container") ||
-                    $node.is("#dialog-box") ||
-                    $node.is("#tts-mode")
-                  ) {
+                  if ($node.hasClass("swal-overlay") ||
+                      $node.is("#tool-option") ||
+                      $node.is("#read-container") ||
+                      $node.is("#help-container") ||
+                      $node.is("#dialog-box") ||
+                      $node.is("#tts-mode")) {
                     //console.log("Extension element " + this.tagName + "#" + this.id + " inserted");
                   } else {
-                    console.log("Unknown element " + this.tagName + "#" + this.id + " inserted");
+                    console.log("Unknown element " + this.tagName + "#" + this.id + " inserted in body");
                     this.remove();
                   }
                 });
@@ -708,12 +735,47 @@
           var observer = new MutationObserver(callback);
           // Start observing the target node for configured mutations
           observer.observe(targetNode, config);
-          setTimeout(
-            function() { 
-              console.log("Observer disconnected");
+          setTimeout( function() { 
+              console.log("Body Observer disconnected");
+              // Later, you can stop observing
+              cleanWebsite();
+              observer.disconnect();
+            }, 30000);
+        };
+
+        var observeHtmlChanges = function() {
+          // Select the node that will be observed for mutations
+          var targetNode = document.getElementsByTagName("html")[0];
+          
+          // Options for the observer (which mutations to observe)
+          var config = { attributes: false, childList: true, subtree: false };
+
+          // Callback function to execute when mutations are observed
+          var callback = function(mutations, observer) {
+            for(var mutation of mutations) {
+              var newNodes = mutation.addedNodes; // DOM NodeList
+              if( newNodes !== null && newNodes.length > 0) { // If there are new nodes added
+                var $nodes = $(newNodes); // jQuery set
+                $nodes.each(function() {
+                  var $node = $(this);
+                  if ($node.is("body") || $node.is("head")) {
+                  } else {
+                    console.log("Unknown element " + this.tagName + "#" + this.id + " inserted in html");
+                    this.remove();
+                  }
+                });
+              }
+            }
+           }
+
+          var observer = new MutationObserver(callback);
+          // Start observing the target node for configured mutations
+          observer.observe(targetNode, config);
+          setTimeout(function() { 
+              console.log("Head Observer disconnected");
               // Later, you can stop observing
               observer.disconnect();
-            }, 20000);
+            }, 30000);
         };
 
         var removeAttr = function(elem) {
@@ -723,17 +785,13 @@
         };
 
         var cleanWebsite = function () {
-          removeAttr($("html").get(0));
-          removeAttr($("head").get(0));
-          removeAttr($("body").get(0));
-          $("html")
-          .contents()
-          .filter(function() {
-            return this.nodeType === 8;
-          })
-          .remove();
+          removeAttr($("html").get(0)); //remove all html attributes
+          removeAttr($("head").get(0)); //remove all head attributes
+          removeAttr($("body").get(0)); //remove all body attributes
+          $(document, "html", "head", "body").contents().filter(function() { return this.nodeType === 8; }).remove(); //remove all comments
 
-          $("span.gr__tooltip").remove();
+          $("span.gr__tooltip").remove();  //remove span.gr__tooltip
+          $("body").nextAll("div, iframe, link, span, p, a").remove(); //remove all elements after body
           console.log("Website cleaned!");
         };
 
@@ -840,6 +898,7 @@
           var text2Speech = [];
           var textArray = "";
           var speaker;
+          var speakDefault = false;
 
           synth.cancel();
 
@@ -850,7 +909,6 @@
                 console.log("Speaks all selected text");
                 if (synth.speaking) {
                   console.log("Synth speaking");
-                  //return;
                   synth.cancel();
                 }
 
@@ -860,6 +918,7 @@
                   textArray.unshift($("#read-text-eta").text());
                   textArray.unshift("Title - " + $("#read-text-title").text());
                   textArray.push("This article is powered by Read Pro.");
+                  speakDefault = true;
                 }
 
                 if (textArray.length !== 0) {
@@ -898,7 +957,7 @@
                   $("#tts-mode").text("No text available. Select Text.");
                   $("#tts-mode").fadeToggle();
                   console.log("No text available");
-                }
+                }                
               } else if (event.target.id === "apply-btn" && event.target.innerText === "Pause") {
                 //Pause button clicked
                 console.log("Speech paused");
@@ -1246,7 +1305,7 @@
                   $("#read-text").css({
                     width: "100%"
                   });
-                  $("#tool-option").nextAll("div, iframe, link, span, p, a").hide();
+                  cleanWebsite();
                 }
               } else {
                 console.log("Show all elements");
@@ -1257,7 +1316,6 @@
                   $("#read-text").css({
                     width: "60%"
                   });
-                  //$("#tool-option").nextAll("div, iframe, link, span, p, a").show();
                 }
               }
             });
@@ -1317,7 +1375,8 @@
         removeExtensionElements();
         readModeFunction();
         cleanWebsite();
-        observeChanges();
+        observeBodyChanges();
+        observeHtmlChanges();
       } else {
         console.log("Extension Active: " + response.message);
         removeExtensionElements();

@@ -36,6 +36,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
             executeScripts(tab.id, [
               { file: "third-party/jquery-3.4.1.min.js" },
               { file: "third-party/readability.js" },
+              { file: "third-party/sweetalert.min.js" },
               { file: "js/content.js" }
             ]);
             chrome.browserAction.setIcon({ path: "icons/icon_on_16.png", tabId: tab.id}, extensionCallback(tab.id));
@@ -58,17 +59,6 @@ function executeScripts(tabId, injectDetailsArray) {
       chrome.tabs.executeScript(tabId, injectDetails, innerCallback);
     };
   }
-
-/*   function createCallback(tabId, injectDetails, innerCallback) {
-    return function() {
-      try {
-        chrome.tabs.executeScript(tabId, injectDetails, innerCallback);
-      } catch (error) {
-        extensionCallback(error, tabId);
-      }
-    };
-  } */
-
   var callback = null;
 
   for (var i = injectDetailsArray.length - 1; i >= 0; --i)
@@ -130,7 +120,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     _savedlinks = request.data;
     if (Array.isArray(_savedlinks)) {
       ga("send", "event", "Delete Link", "Clicked", "");
-      //console.log("List updated." + JSON.stringify(_savedlinks));
       localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
       sendResponse({ message: "Success" });
     } else {
@@ -213,12 +202,10 @@ function pushUniqueLinks(newLink) {
   if (_savedlinks === null || _savedlinks === "") {
     _savedlinks = [];
     _savedlinks.push(newLink);
-    //console.log("List updated. " + JSON.stringify(_savedlinks));
     localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
     return true;
   } else if (_savedlinks === []) {
     _savedlinks.push(newLink);
-    //console.log("List updated. " + JSON.stringify(_savedlinks));
     localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
     return true;
   } else if (Array.isArray(_savedlinks)) {
@@ -228,7 +215,6 @@ function pushUniqueLinks(newLink) {
       }
     }
     _savedlinks.push(newLink);
-    //console.log("List updated. " + JSON.stringify(_savedlinks));
     localStorage.setItem("clear-page-saved-links", JSON.stringify(_savedlinks));
     return true;
   } else {

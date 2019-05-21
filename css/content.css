@@ -147,8 +147,7 @@ body {
     background-color: #EFF0F1;
 }
 
-#read-text.day #read-text-content td,
-th {
+#read-text.day #read-text-content td, th {
     border-color: #333;
 }
 
@@ -201,8 +200,7 @@ th {
     background-color: #333;
 }
 
-#read-text.night #read-text-content td,
-th {
+#read-text.night #read-text-content td, th {
     border-color: #aaa;
 }
 
@@ -287,9 +285,6 @@ th {
     cursor: default;
 }
 
-#read-text-title {
-}
-
 #read-text-domain {
     font-style: oblique;
 }
@@ -310,16 +305,11 @@ th {
     cursor: default;
 }
 
-/* #read-text #read-text-content p:not(.manual-highlight),
-#read-text #read-text-content span:not(.manual-highlight) {
-    padding-left: 2px;
-} */
-
 #read-text #read-text-content pre {
     border: none;
     padding: 2rem;
-    /* overflow: auto; */
     white-space: pre-wrap;
+    /* overflow: auto; */
     /* overflow-x: auto; */
 }
 
@@ -327,8 +317,10 @@ th {
     max-width: 100%;
     height: auto;
     width: auto\9; /* ie8 */
+    border-radius: 20px;
 }
 
+/* Read Content quotes*/
 #read-text #read-text-content blockquote {
     border-left: .325rem solid;
     padding: 2rem;
@@ -348,6 +340,7 @@ th {
     display: block;
 }
 
+/* Read Content Lists*/
 #read-text #read-text-content ul {
     list-style-type: none;
     overflow: hidden;
@@ -362,9 +355,10 @@ th {
 
 #read-text #read-text-content li {
     list-style-type: none;
-    /* float: left; */
+    display: inline-block;
 }
 
+/* Read Content figure*/
 #read-text #read-text-content figure {
     text-align: center;
     font-style: italic;
@@ -381,6 +375,7 @@ th {
     border-bottom: thin silver solid;
 }
 
+/* Read Content Table*/
 #read-text #read-text-content table {
     border-collapse: collapse;
     white-space: pre-wrap;
@@ -402,12 +397,6 @@ th {
     text-align: center;
     font-size: smaller;
     caption-side: bottom;
-}
-
-/* Display None */
-#read-text #read-text-content figure.hideElement,
-#read-text #read-text-content img.hideElement {
-    display: none;
 }
 
 #read-text #read-text-content .hideElement {
@@ -550,11 +539,4 @@ span.manual-highlight th {
     right: -14px;
     z-index: 10;
     position: sticky;
-}
-
-/* Animation class */
-#tool-option img.animated {
-    animation-duration: 200ms;
-    /* animation-delay: 2s; */
-    /* animation-iteration-count: infinite; */
 }
