@@ -14,7 +14,7 @@
   }, function (response) {
     if (response.message === "links sent") {
       //console.log("links loaded in local" + JSON.stringify(response.data));
-      savedLinksArray = response.data.sort(compareDate);
+      savedLinksArray = response.data.reverse(compareDate);
       loadSavedLinksObject(savedLinksArray);
       loadButtonFunctions();
     } else if (response.message === "links empty") {

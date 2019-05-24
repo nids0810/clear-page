@@ -232,33 +232,6 @@
               }
             };
 
-            /*
-            function removeDataAttributes(target) {
-              var i,
-                $target = $(target),
-                attrName,
-                dataAttrsToDelete = [],
-                dataAttrs = $target.get(0).attributes,
-                dataAttrsLen = dataAttrs.length;
-              
-              // loop through attributes and make a list of those
-              // that begin with 'data-'
-              for (i=0; i<dataAttrsLen; i++) {
-                if ( 'data-' === dataAttrs[i].name.substring(0,5) ) {
-                // Why don't you just delete the attributes here?
-                // Deleting an attribute changes the indices of the
-                // others wreaking havoc on the loop we are inside
-                // b/c dataAttrs is a NamedNodeMap (not an array or obj)
-                dataAttrsToDelete.push(dataAttrs[i].name);
-               }
-              }
-              // delete each of the attributes we found above
-              // i.e. those that start with "data-"
-              $.each( dataAttrsToDelete, function( index, attrName ) {
-                $target.removeAttr( attrName );
-              })
-            }; */
-
             var cleanArticleContent = function (content) {
               var wrapper = document.createElement("div");
               wrapper.innerHTML = content;
@@ -276,9 +249,6 @@
               $(node).find("style").remove();
               $(node).find("meta").remove();
               $(node).find("link").remove();
-              $(node).contents().filter(function(){
-                return this.nodeType === 8;
-              }).remove();
 
               //Frames tags	- frame, frameset, noframes, iframe
               $(node).find("frame").remove();
@@ -287,9 +257,10 @@
               $(node).find("noframes").remove();
 
               //Audio and Video tags - figure, audio, video, picture, source, track
-              $(node).find("figure:has(video, audio)").remove();
-              $(node).find("video:has(source), video").remove();
-              $(node).find("audio:has(source), audio").remove();
+              $(node).find("figure:has(video, audio)").each(function(){ this.remove(); });
+              $(node).find("figure:has(img):has(source)").find("source").each(function(){ this.remove(); });
+              $(node).find("video:has(source), video").each(function(){ this.remove(); });
+              $(node).find("audio:has(source), audio").each(function(){ this.remove(); });
               $(node).find("track").remove();
               
               //Block elements
@@ -319,8 +290,33 @@
               $(node).find("datalist").remove();
               $(node).find("fieldset").remove();
               $(node).find("optgroup").remove();
-
               //https://developer.mozilla.org/en-US/docs/Web/HTML/Element
+
+              //Remove Twitter Widget
+              $(node).find("twitter-widget").remove();
+
+              //Remove all amp elements
+              $(node).find("amp-iframe, amp-img, amp-sticky-ad, amp-ad, amp-analytics").each(function(){ this.remove(); });
+              $(node).find('#S1_box').parent().remove();
+
+              //Remove all comments
+              $(node).contents().filter(function(){
+                return this.nodeType === 8;
+              }).each(function(){ this.remove(); });
+
+              // Remove all data-attributes
+              $(node).find("*").filter(function() {
+                var dataset = this.dataset;
+                 if($.isEmptyObject(dataset))
+                   return false;
+                else
+                  return true;
+              }).each(function(){
+                var dataset = this.dataset;
+                for (var key in dataset) {
+                  this.removeAttribute("data-" + key.split(/(?=[A-Z])/).join("-").toLowerCase());
+                }
+              });
 
               //filter all images with conditions
               $(node).find('img').filter(function() {
@@ -352,6 +348,8 @@
               }
               //https://stackoverflow.com/questions/8415910/filtering-duplicate-img-src-with-jquery-unique-or-remove
 
+              $(node).find("figure:not(:has(img)):has(figcaption)").each(function(){ this.remove(); });
+
               // Add prettify class
               $(node).find("pre").each(function () {
                 if($(this).hasClass("prettyprint")) {
@@ -360,6 +358,16 @@
                   $(this).addClass("prettyprint");
                 }
               });
+
+              $(node).find("p").filter(function() {
+                if (this.innerHTML.match(/\w+/g) === null) {
+                  return true;
+                } else {
+                  return false;
+                }
+              }).each(function(){ this.remove(); });
+
+              $(node).find(":empty").each(function(){ this.remove(); });
 
               //Remove wrapper
               wrapper.remove();
@@ -599,6 +607,8 @@
               } else {
                 $("title").text = "Read Pro: " + article.title;
               }
+              $("head").append('<link id="read-favicon" rel="shortcut icon" type="image/png" href="' + articleInfo.favicon + '" />');
+
               if ($("#read-text-icon").length === 0) {
                 $("#read-text").append("<img id='read-text-icon'></img>");
               }
@@ -621,7 +631,7 @@
                 $("#read-text").append("<time id='read-text-published'></time>");
               }
               if ($("#read-text-content").length === 0) {
-                $("#read-text").append("<p id='read-text-content'></p>");
+                $("#read-text").append("<div id='read-text-content'></div>");
               }
 
               $("#read-text-icon").attr("src", articleInfo.favicon);

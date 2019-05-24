@@ -342,22 +342,25 @@ body {
 
 /* Read Content Lists*/
 #read-text #read-text-content ul {
-    list-style-type: none;
-    overflow: hidden;
     display: block;
+    margin: 0;
+    padding: 0;
 }
 
 #read-text #read-text-content ol {
-    list-style-type: none;
-    overflow: hidden;
     display: block;
+    margin: 0;
+    padding: 0;
 }
 
 #read-text #read-text-content li {
     list-style-type: none;
-    display: inline-block;
+    margin-top: 15px;
 }
 
+#read-text #read-text-content li:first-child {
+    margin-top: 0;
+}
 /* Read Content figure*/
 #read-text #read-text-content figure {
     text-align: center;
