@@ -367,7 +367,7 @@
                 }
               }).each(function(){ this.remove(); });
 
-              $(node).find(":empty").each(function(){ this.remove(); });
+              //$(node).find(":empty").each(function(){ this.remove(); });
 
               //Remove wrapper
               wrapper.remove();
