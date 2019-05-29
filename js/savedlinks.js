@@ -23,7 +23,7 @@
       loadSavedLinksObject(savedLinksArray);
       loadButtonFunctions();
     } else {
-      console.log(response.message);
+      //console.log(response.message);
     }
   });
 
@@ -110,7 +110,7 @@
   }
 
   var loadSavedLinksObject = function (_linksArray) {
-    console.log('Loading saved links');
+    //console.log('Loading saved links');
     //console.log(_linksArray);
     var html = '';
     $("#saved-links-list").empty();
@@ -166,9 +166,9 @@
         },
         function(response) {
           if (response.message === "Success"){
-            console.log(response.message);
+            //console.log(response.message);
           } else {
-            console.error(response.message);
+            //console.error(response.message);
           }            
         }
       );

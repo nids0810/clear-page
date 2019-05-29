@@ -45,10 +45,10 @@ chrome.browserAction.onClicked.addListener(function (tab) {
         }
       } else {
         alert("This extension currently blocked on site: \n" + _tabURL.host);
-        console.log("This extension currently blocked on site: " + _tabURL.host);
+        //console.log("This extension currently blocked on site: " + _tabURL.host);
       }
     } else {
-      console.log("This extension can't run on non http(s) pages");
+      //console.log("This extension can't run on non http(s) pages");
     }
 });
 
@@ -69,14 +69,14 @@ function executeScripts(tabId, injectDetailsArray) {
 }
 
 chrome.runtime.onInstalled.addListener(function () {
-  console.log("Welcome to Clear Page!");
+  //console.log("Welcome to Clear Page!");
   //Clear the active tab on extension installed
   ga("send", "event", "Extension", "Installed", "");
   _activeTabs = [];
 
   var _savedlinks = JSON.parse(localStorage.getItem("clear-page-saved-links"));
   if (_savedlinks === null || _savedlinks === "") {
-    console.log("Saved links list not available. Reset the list");
+    //console.log("Saved links list not available. Reset the list");
     localStorage.setItem("clear-page-saved-links", JSON.stringify([]));
   }
 
@@ -94,7 +94,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     });
   } else if (request.message == "Extension Active?") {  //check if extension is active
     var _extensionActive = isTabActive(sender.tab);
-    console.log("Extension Active: " + _extensionActive);
+    //console.log("Extension Active: " + _extensionActive);
     sendResponse({ message: _extensionActive });
   } else if (request.message == "save link") { //save a new link
     if (!($.isEmptyObject(sender.tab))) {
@@ -107,10 +107,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       _savedLink.dateSaved = Date.now();
       //console.log("Saved Link: " + JSON.stringify(_savedLink));
       if (pushUniqueLinks(_savedLink)) {
-        console.log("Link saved");
+        //console.log("Link saved");
         sendResponse({ message: "link saved", data: _savedLink });
       } else {
-        console.log("Link duplicate");
+        //console.log("Link duplicate");
         sendResponse({ message: "link duplicate" });
       }
     } else {
@@ -128,10 +128,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   } else if (request.message == "send links") {  //Send the saved links array
     var _savedlinks = JSON.parse(localStorage.getItem("clear-page-saved-links"));
     if (_savedlinks === null || _savedlinks === "" || _savedlinks === []) {
-      console.log("links sent");
+      //console.log("links sent");
       sendResponse({ message: "links empty", data: JSON.parse([]) });
     } else {
-      console.log("links sent");
+      //console.log("links sent");
       sendResponse({ message: "links sent", data: _savedlinks });
     }
   } else if (request.message == "open links page") {  //Open Saved links page
@@ -175,7 +175,7 @@ chrome.tabs.onUpdated.addListener(function(tabid, changeInfo, tab) {
         _activeTabs = _activeTabs.filter(item => item.id !== tabid);
         chrome.browserAction.setIcon({ path: "icons/icon_16.png", tabId: tab.id}, extensionCallback(tab.id));
         chrome.browserAction.setBadgeText({ text: "" , tabId: tab.id}, extensionCallback(tab.id));
-        console.log("An extension active tab " + tabid + " was reloaded");
+        //console.log("An extension active tab " + tabid + " was reloaded");
       }      
     }
   }
@@ -185,14 +185,14 @@ chrome.tabs.onRemoved.addListener(function (tabid, removed) {
   //Check if the removed tab had extension active before
   if (isTabIdActive(tabid)) {
     _activeTabs = _activeTabs.filter(item => item.id !== tabid);
-    console.log("An extension active tab " + tabid + " was closed " + removed);
+    //console.log("An extension active tab " + tabid + " was closed " + removed);
   }
 });
 
 chrome.windows.onRemoved.addListener(function(windowId) {
   //Check if the removed tab had extension active before
   _activeTabs = _activeTabs.filter(item => item.windowId !== windowId);
-  console.log("An extension active window " + windowId + " was closed ");
+  //console.log("An extension active window " + windowId + " was closed ");
 });
 
 
@@ -226,7 +226,7 @@ function pushUniqueLinks(newLink) {
 function extensionCallback(tabid) {
   const lastErr = chrome.runtime.lastError;
   if (lastErr)
-    console.log("tab: " + tabid + " lastError: " + JSON.stringify(lastErr));
+    //console.log("tab: " + tabid + " lastError: " + JSON.stringify(lastErr));
 };
 
 var isTabActive = function(tab) {

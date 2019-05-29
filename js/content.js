@@ -7,7 +7,7 @@
     },
     function (response) {
       if (response.message) {
-        console.log("Extension Active: " + response.message);
+        //console.log("Extension Active: " + response.message);
         //Create Tool Option
         var createToolOptions = function () {
           //Tool options box
@@ -152,7 +152,7 @@
         var readMode = false;
         //Read Mode Button Function
         var readModeFunction = function () {
-          console.log("Reading Mode On");
+          //console.log("Reading Mode On");
           chrome.runtime.sendMessage({ message: "open read mode" });
 
           if (!readMode) {
@@ -343,7 +343,7 @@
                 img_array.each(function(index, value) {
                   var sel = 'img[src="' + value + '"]';
                   $(node).find(sel).not($(node).find(sel + ":first")).remove();
-                  console.log("Removed duplicate images");
+                  //console.log("Removed duplicate images");
                 });
               }
               //https://stackoverflow.com/questions/8415910/filtering-duplicate-img-src-with-jquery-unique-or-remove
@@ -598,7 +598,7 @@
               }
               $("#read-text-error img").addClass("animated hinge delay-2s");
               $("#read-option").hide();
-              console.log("Article is not readable");
+              //console.log("Article is not readable");
             } else {
               if ($("title").length === 0) {
                 var title = document.createElement("title");
@@ -734,7 +734,7 @@
                       $node.is("#tts-mode")) {
                     //console.log("Extension element " + this.tagName + "#" + this.id + " inserted");
                   } else {
-                    console.log("Unknown element " + this.tagName + "#" + this.id + " inserted in body");
+                    //console.log("Unknown element " + this.tagName + "#" + this.id + " inserted in body");
                     this.remove();
                   }
                 });
@@ -746,7 +746,7 @@
           // Start observing the target node for configured mutations
           observer.observe(targetNode, config);
           setTimeout( function() { 
-              console.log("Body Observer disconnected");
+              //console.log("Body Observer disconnected");
               // Later, you can stop observing
               cleanWebsite();
               observer.disconnect();
@@ -770,7 +770,7 @@
                   var $node = $(this);
                   if ($node.is("body") || $node.is("head")) {
                   } else {
-                    console.log("Unknown element " + this.tagName + "#" + this.id + " inserted in html");
+                    //console.log("Unknown element " + this.tagName + "#" + this.id + " inserted in html");
                     this.remove();
                   }
                 });
@@ -782,7 +782,7 @@
           // Start observing the target node for configured mutations
           observer.observe(targetNode, config);
           setTimeout(function() { 
-              console.log("Head Observer disconnected");
+              //console.log("Head Observer disconnected");
               // Later, you can stop observing
               observer.disconnect();
             }, 30000);
@@ -802,12 +802,12 @@
 
           $("span.gr__tooltip").remove();  //remove span.gr__tooltip
           $("body").nextAll("div, iframe, link, span, p, a").remove(); //remove all elements after body
-          console.log("Website cleaned!");
+          //console.log("Website cleaned!");
         };
 
         //Text to Speech Mode Button Function
         var ttsModeFunction = function () {
-          console.log("Text to Speech mode is on");
+          //console.log("Text to Speech mode is on");
           chrome.runtime.sendMessage({ message: "open speak mode" });
           var ttsMode = true;
           var selectedVoice = {};
@@ -916,9 +916,9 @@
             if (ttsMode) {
               if (event.target.id === "apply-btn" && event.target.innerText === "Speak") {
                 //apply button clicked
-                console.log("Speaks all selected text");
+                //console.log("Speaks all selected text");
                 if (synth.speaking) {
-                  console.log("Synth speaking");
+                  //console.log("Synth speaking");
                   synth.cancel();
                 }
 
@@ -943,14 +943,14 @@
                       $("#tts-mode").text("Speaking in " + speaker.voice.name + " ...");
                       $("#tts-mode").fadeToggle();
                       $("#apply-btn").html("Pause");
-                      console.log("Speech started.");
+                      //console.log("Speech started.");
                     };
 
                     speaker.onerror = function (event) {
                       $("#tts-mode").text("Error! Try again");
                       $("#tts-mode").fadeToggle();
                       $("#apply-btn").html("Speak");
-                      console.log("Error occured " + event.message);
+                      //console.log("Error occured " + event.message);
                     };
 
                     speaker.onend = function (event) {
@@ -966,25 +966,25 @@
                 } else {
                   $("#tts-mode").text("No text available. Select Text.");
                   $("#tts-mode").fadeToggle();
-                  console.log("No text available");
+                  //console.log("No text available");
                 }                
               } else if (event.target.id === "apply-btn" && event.target.innerText === "Pause") {
                 //Pause button clicked
-                console.log("Speech paused");
+                //console.log("Speech paused");
                 synth.pause();
                 $("#tts-mode").text("Speech Paused");
                 $("#tts-mode").fadeToggle();
                 $("#apply-btn").html("Resume");
               } else if (event.target.id === "apply-btn" && event.target.innerText === "Resume") {
                 //Resume button clicked
-                console.log("Speech resumed");
+                //console.log("Speech resumed");
                 synth.resume();
                 $("#tts-mode").text("Speaking in " + speaker.voice.name + " ...");
                 $("#tts-mode").fadeToggle();
                 $("#apply-btn").html("Pause");
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
-                console.log("Cancel Text to Speech mode");
+                //console.log("Cancel Text to Speech mode");
                 $("#tts-mode").text("Text to Speech mode off!");
                 $("#tts-mode").fadeToggle();
                 $("#apply-btn").html("Apply Changes");
@@ -1033,7 +1033,7 @@
 
         //Erase Mode Button Function
         var eraseModeFunction = function () {
-          console.log("Erase mode is on");
+          //console.log("Erase mode is on");
           chrome.runtime.sendMessage({ message: "open erase mode" });
           var eraseMode = true;
           $("#tool-option").hide();
@@ -1070,7 +1070,7 @@
                 // Don't select extension elements
               } else if (event.target.id === "apply-btn") {
                 //apply button clicked
-                console.log("Erased all selected elements");
+                //console.log("Erased all selected elements");
                 $(".web-edited").each(function() {
                   $(this).removeClass("web-edited");
                   $(this).addClass("web-deleted");
@@ -1087,7 +1087,7 @@
                 eraseMode = false;
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
-                console.log("Canceled erasing all selected elements");
+                //console.log("Canceled erasing all selected elements");
                 $(".web-edited").each(function() {
                   $(this).removeClass("web-edited");
                 });
@@ -1108,7 +1108,7 @@
         var lightMode = false;
         //Highlight Button Function
         var highlightModeFunction = function () {
-          console.log("Highlight mode is on");
+          //console.log("Highlight mode is on");
           chrome.runtime.sendMessage({ message: "open highlight mode" });
           lightMode = true;
 
@@ -1204,13 +1204,13 @@
             if (lightMode) {
               if (event.target.id === "apply-btn") {
                 //apply button clicked
-                console.log("Apply highlights on all selected elements");
+                //console.log("Apply highlights on all selected elements");
                 lightMode = false;
                 removeExtensionElements();
                 createToolOptions();
               } else if (event.target.id === "cancel-btn") {
                 //cancel button clicked
-                console.log("Cancel highlight from all selected elements");
+                //console.log("Cancel highlight from all selected elements");
                 $(".manual-highlight").each(function () {
                   $(this).removeClass("manual-highlight");
                 });
@@ -1234,7 +1234,7 @@
         var saveLinkMode = false;
         //Save Link Button Function
         var saveLinksFunction = function () {
-          console.log("Save link mode is on");
+          //console.log("Save link mode is on");
           saveLinkMode = true;
 
           if (saveLinkMode) {
@@ -1277,14 +1277,14 @@
         var openLinksMode = false;
         //Open saved links Button Function
         var openLinksFunction = function () {
-          console.log("Open reading queue mode is on");
+          //console.log("Open reading queue mode is on");
           openLinksMode = true;
           if (openLinksMode) {
             chrome.runtime.sendMessage({ 
                 message: "open links page" 
               },
               function (response) {
-                console.log(response.message);
+                //console.log(response.message);
               }
             );
           } else {
@@ -1295,7 +1295,7 @@
         var saveAsPDFMode = false;
         //Save as PDF Button Function
         var saveAsPDF = function () {
-          console.log("Save as PDF mode is on");
+          //console.log("Save as PDF mode is on");
           chrome.runtime.sendMessage({ message: "open print mode" });
           saveAsPDFMode = true;
 
@@ -1307,7 +1307,7 @@
             }
             mediaQueryList.addListener(function (mql) {
               if (mql.matches) {
-                console.log("Hide unnecesary elements");
+                //console.log("Hide unnecesary elements");
                 $("#tool-option").hide();
                 $("#dialog-box").hide();
                 if(readMode){
@@ -1318,7 +1318,7 @@
                   cleanWebsite();
                 }
               } else {
-                console.log("Show all elements");
+                //console.log("Show all elements");
                 $("#tool-option").show();
                 $("#dialog-box").hide(); 
                 if (readMode) {
@@ -1338,7 +1338,7 @@
         var helpMode = false;
         //Help Mode Button Function
         var helpModeFunction = function () {
-          console.log("Help mode on");
+          //console.log("Help mode on");
           chrome.runtime.sendMessage({ message: "open help mode" });
           if (!helpMode) {
             helpMode = true;
@@ -1367,7 +1367,7 @@
               $("#help-container").show();
             }
           } else {
-            console.log("Help mode off");
+            //console.log("Help mode off");
             helpMode = false;
             $("#help-container").remove();
           }
@@ -1376,7 +1376,7 @@
             if (helpMode) {
               helpMode = false;
               $("#help-container").remove();
-              console.log("Help mode off");
+              //console.log("Help mode off");
             } else {
               console.warn("Help mode is already off");
             }
@@ -1388,7 +1388,7 @@
         observeBodyChanges();
         observeHtmlChanges();
       } else {
-        console.log("Extension Active: " + response.message);
+        //console.log("Extension Active: " + response.message);
         removeExtensionElements();
       }
     });
@@ -1415,7 +1415,7 @@
   };
 
   var removeExtensionElements = function () {
-    console.log("Remove all extension elements.");
+    //console.log("Remove all extension elements.");
     //remove the tool options if available
     if ($("#tool-option").length !== 0) {
       $("#tool-option").remove();
