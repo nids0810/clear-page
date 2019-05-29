@@ -225,8 +225,9 @@ function pushUniqueLinks(newLink) {
 
 function extensionCallback(tabid) {
   const lastErr = chrome.runtime.lastError;
-  if (lastErr)
+  if (lastErr) {
     //console.log("tab: " + tabid + " lastError: " + JSON.stringify(lastErr));
+  }
 };
 
 var isTabActive = function(tab) {
