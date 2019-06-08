@@ -342,7 +342,7 @@ body {
     max-width: 100%;
     height: auto;
     width: auto\9; /* ie8 */
-    border-radius: 20px;
+    border-radius: 5px;
 }
 
 /* Read Content quotes*/
@@ -453,7 +453,7 @@ body {
     font-size: 17px;
     border-radius: 5px;
     height: 38px;
-    width: 274px;
+    width: 280px;
 }
 
 #speech-inner {
@@ -469,6 +469,7 @@ body {
     cursor: pointer;
     font-size: 17px;
     border-radius: 5px;
+    width: 123px;
 }
 
 #dialog-box .slide-container {

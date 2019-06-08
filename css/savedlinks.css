@@ -13,20 +13,39 @@ body {
     margin: 5px;
 }
 
-#total-reading-time {
+#reading-time-container {
     text-align: right;
     position: relative;
-    bottom: 33px;
-    left: 950px;
+    line-height: 30px;
+}
+
+#warning-icon {
+    font-size: 25px;
+    margin-right: 5px;
+    position: relative;
+    top: 3px;
+    cursor: pointer;
+    color: red;
+}
+
+#total-reading-time {
     font-weight: bold;
 }
 
-#total-reading-time.warning {
-    color: orange;
-}
-
-#total-reading-time.failure {
-    color: red;
+#warning-icon:hover:after {
+    position: absolute;
+    content: "Your reading queue is too large, please finish reading some items";
+    background: #f6f6f6;
+    font-size: 10px;
+    color: #333;
+    border: 1px solid #ddd;
+    width: 160px;
+    padding: 5px;
+    text-align: left;
+    top: -37px;
+    left: 12px;
+    line-height: 14px;
+    border-radius: 2px;
 }
 
 #links-header.links {
@@ -35,7 +54,6 @@ body {
     color: #fff;
     font-weight: bold;
     font-size: 13px;
-    padding-right: 0;
 }
 
 #sort-origin, #sort-title, #sort-date, #sort-readTime {
@@ -46,7 +64,7 @@ body {
 #sort-title:hover,
 #sort-date:hover,
 #sort-readTime:hover {
-    color: #33b5e5;
+    color: #104b4e;
 }
 
 #saved-links-list {
@@ -91,12 +109,8 @@ body {
     cursor: pointer;
 }
 
-.links a:link {
-    color: green;
-}
-
 .links a:visited {
-    color: purple;
+    color: #000;
 }
 
 .links a:hover {

@@ -175,9 +175,9 @@
 
     $("#total-reading-time").text("Total Reading Time - " + totalReadingTime + " mins");
     if (parseInt(totalReadingTime) > 60) {
-      $("#total-reading-time").addClass("warning");
-    } else if (parseInt(totalReadingTime) > 120) {
-      $("#total-reading-time").addClass("failure");
+      $("#warning-icon").show();
+    } else {
+      $("#warning-icon").hide();
     }
     
     // add onclick function on delete text
@@ -195,7 +195,7 @@
         },
         function(response) {
           if (response.message === "Success"){
-            //console.log(response.message);
+            location.reload();
           } else {
             //console.error(response.message);
           }            
