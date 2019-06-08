@@ -13,29 +13,40 @@ body {
     margin: 5px;
 }
 
-#sort-buttons {
+#total-reading-time {
     text-align: right;
     position: relative;
     bottom: 33px;
+    left: 950px;
+    font-weight: bold;
 }
 
-#sort-buttons button {
-    border: 0;
-    border-radius: 2px;
-    padding: 8px 20px;
+#total-reading-time.warning {
+    color: orange;
+}
+
+#total-reading-time.failure {
+    color: red;
+}
+
+#links-header.links {
     background-color: #0F999E;
-    cursor: pointer;
     text-transform: uppercase;
     color: #fff;
-    margin-left: 5px;
+    font-weight: bold;
+    font-size: 13px;
+    padding-right: 0;
 }
 
-#sort-buttons button:hover {
-    background: #33b5e5;
+#sort-origin, #sort-title, #sort-date, #sort-readTime {
+    cursor: pointer;
 }
 
-#sort-buttons button:focus {
-    outline: 0;
+#sort-origin:hover,
+#sort-title:hover,
+#sort-date:hover,
+#sort-readTime:hover {
+    color: #33b5e5;
 }
 
 #saved-links-list {
@@ -45,7 +56,7 @@ body {
 
 .links {
     display: grid;
-    grid-template-columns: 3% 20% 47% 10% 10% 10%;
+    grid-template-columns: 5% 20% 49% 8% 5% 8% 5%;
     padding: 10px;
     text-align: left;
     border: 1px solid #eee;
@@ -67,20 +78,11 @@ body {
     padding-right: 15px;
 }
 
-.links span.heading {
-    font-weight: bold;
-    font-size: 13px;
-    padding-right: 0;
-}
-
-.delete {
+.delete-btn {
+    width: 30px;
+    height: 30px;
+    display: block;
     cursor: pointer;
-    background-color: transparent;
-}
-
-.delete:hover {
-    color: red;
-    background-color: transparent;
 }
 
 .links a {

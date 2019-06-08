@@ -69,7 +69,7 @@
 
           //Save page for later Button
           $("#tool-option").append(
-            "<img id='save-btn' title='Save page for Later' src='" +
+            "<img id='save-btn' title='Read Later' src='" +
             chrome.runtime.getURL("images/save-white.png") +
             "'/>"
           );
@@ -77,7 +77,7 @@
 
           //Open saved links Button
           $("#tool-option").append(
-            "<img id='open-btn' title='Open Reading Queue' src='" +
+            "<img id='open-btn' title='Open Read Later' src='" +
             chrome.runtime.getURL("images/open-white.png") +
             "'/>"
           );
@@ -85,7 +85,7 @@
 
           //Save as PDF Button
           $("#tool-option").append(
-            "<img id='pdf-btn' title='Save as PDF' src='" +
+            "<img id='pdf-btn' title='Export PDF' src='" +
             chrome.runtime.getURL("images/pdf-white.png") +
             "'/>"
           );
@@ -150,6 +150,7 @@
 
         var _oldHead, _oldBody;
         var readMode = false;
+        var totalReadingTime = 0;
         //Read Mode Button Function
         var readModeFunction = function () {
           //console.log("Reading Mode On");
@@ -644,6 +645,7 @@
               $("#read-text-content").html(cleanArticleContent(article.content));
               var _articleWCount = wordCount(article.textContent);
               var _articleETA = estimatedReadingTime(_articleWCount);
+              totalReadingTime = _articleETA;
               $("#read-text-words").text("Total words: " + _articleWCount);
               $("#read-text-eta").text("Reading time: " + _articleETA + " mins");
               if(article.byline !== null && article.byline !== "") {
@@ -838,7 +840,7 @@
           if ($("#dialog-box").length === 0) {
             //dialog-box doesn't exist
             $("body").append(
-              "<div id='dialog-box'><select id='speech-voices'></select><div id='speech-inner'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button><button id='more-option-btn'>More options</button></div></div>"
+              "<div id='dialog-box'><select id='speech-voices'></select><div id='speech-inner'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button><button id='more-option-btn'>More Options</button></div></div>"
             );
           } else {
             if ($("#speech-voices").length === 0) {
@@ -999,11 +1001,18 @@
                 ttsMode = false;
                 removeExtensionElements();
                 createToolOptions();
-              } else if(event.target.id === "more-option-btn") {
+              } else if(event.target.id === "more-option-btn" && event.target.innerText === "More Options") {
                 $("#more-option-btn").text("Hide Options");
-                $("#dialog-box").append(
-                  '<div class="slide-container"><label>Pitch</label><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></div><div class="slide-container"><label>Bitch</label><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></div>'
-                );
+                if($("#dialog-box #slide-block").length === 0) {
+                  $("#dialog-box").append(
+                    '<div id="slide-block"><div class="slide-container"><label>Pitch</label><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></div><div class="slide-container"><label>Bitch</label><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></div></div>'
+                  );
+                } else {
+                  $("#dialog-box #slide-block").show();
+                }
+              } else if(event.target.id === "more-option-btn" && event.target.innerText === "Hide Options") {
+                $("#more-option-btn").text("More Options");
+                $("#dialog-box #slide-block").hide();
               } else {
                 text2Speech = window.getSelection().toString();
                 textArray = chuckText(text2Speech);
@@ -1059,6 +1068,10 @@
             $("#dialog-box").show();
           }
 
+          if ($(".web-deleted").length === 0) {
+            $("#show-all-erase-btn").prop('disabled', true);
+          }
+
           // Click an element in erase mode
           $(document).click(function (event) {
             if (eraseMode) {
@@ -1084,6 +1097,7 @@
                   $(this).removeClass("web-edited");
                   $(this).addClass("web-deleted");
                 });
+                $("#show-all-erase-btn").prop("disabled", false);
                 swal({
                   title: "Read Pro",
                   text: "All selected elemenst are erased!",
@@ -1251,10 +1265,12 @@
           saveLinkMode = true;
 
           if (saveLinkMode) {
-            chrome.runtime.sendMessage({
-                message: "save link"
+            chrome.runtime.sendMessage(
+              {
+                message: "save link",
+                data: { "time": totalReadingTime }
               },
-              function (response) {
+              function(response) {
                 if (response.message === "link saved") {
                   swal({
                     title: "Read Pro",

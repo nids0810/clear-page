@@ -105,6 +105,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       _savedLink.url = sender.tab.url;
       _savedLink.favIconUrl = sender.tab.favIconUrl;
       _savedLink.dateSaved = Date.now();
+      _savedLink.readingTime = request.data.time;
       //console.log("Saved Link: " + JSON.stringify(_savedLink));
       if (pushUniqueLinks(_savedLink)) {
         //console.log("Link saved");

@@ -3,10 +3,12 @@
 (function () {
 
   var savedLinksArray = [];
+  var totalReadingTime = 0;
   var _sorted = {
     "title": false,
     "date": false,
-    "domain":false
+    "domain":false,
+    "readTime":false
   };
 
   chrome.runtime.sendMessage({
@@ -14,7 +16,8 @@
   }, function (response) {
     if (response.message === "links sent") {
       //console.log("links loaded in local" + JSON.stringify(response.data));
-      savedLinksArray = response.data.reverse(compareDate);
+      var tempArray = response.data;
+      savedLinksArray = tempArray.sort(compareDate).reverse(compareDate);
       loadSavedLinksObject(savedLinksArray);
       loadButtonFunctions();
     } else if (response.message === "links empty") {
@@ -36,8 +39,8 @@
 
   //compare array by date
   function compareDate(a, b) {
-      if (a.date < b.date) return -1;
-      if (a.date > b.date) return 1;
+      if (a.dateSaved < b.dateSaved) return -1;
+      if (a.dateSaved > b.dateSaved) return 1;
       return 0;
   }
 
@@ -45,6 +48,13 @@
   function compareTitle(a, b) {
     if (a.title < b.title) return -1;
     if (a.title > b.title) return 1;
+    return 0;
+  }
+
+  //compare array by read time
+  function compareReadTime(a, b) {
+    if (a.readingTime < b.readingTime) return -1;
+    if (a.readingTime > b.readingTime) return 1;
     return 0;
   }
 
@@ -75,7 +85,7 @@
   function loadButtonFunctions(){
      $("#sort-date").click(function (event) {
        var _newArray;
-       if (!_sorted.domain) {
+       if (!_sorted.date) {
          _newArray = savedLinksArray.reverse(compareDate);
          _sorted.date = true;
        } else {
@@ -107,41 +117,47 @@
        }
        loadSavedLinksObject(_newArray);
      });
+
+     $("#sort-readTime").click(function() {
+       var _newArray;
+       if (!_sorted.readTime) {
+         _newArray = savedLinksArray.sort(compareReadTime);
+         _sorted.readTime = true;
+       } else {
+         _newArray = savedLinksArray.reverse(compareReadTime);
+         _sorted.readTime = false;
+       }
+       loadSavedLinksObject(_newArray);
+     });
   }
 
   var loadSavedLinksObject = function (_linksArray) {
-    //console.log('Loading saved links');
-    //console.log(_linksArray);
     var html = '';
+    totalReadingTime = 0;
     $("#saved-links-list").empty();
     if (_linksArray.length !== 0) {
-      html += "<div class='links'>";
-      html += "<span class='heading'>Icon</span>";
-      html += "<span class='heading'>Domain</span>";
-      html += "<span class='heading'>Title</span>";
-      html += "<span class='heading'>Url</span>";
-      html += "<span class='heading'>Date</span>";
-      html += "<span class='heading'>Delete</span>";
-      html += "</div>";
       for (var link of _linksArray) {
         //console.log(JSON.stringify(link));
         var date = new Date(link.dateSaved);
-        //console.log(date.toString());
+        var rTime = link.readingTime == null ? "-" : link.readingTime + " mins";
+        totalReadingTime += link.readingTime == null ? 0 : parseInt(link.readingTime);
         html += "<div class='links'>";
         if (link.url !== "") {
           html += '<img src=' + link.favIconUrl + ' alt=' + link.title + '></img>';
           html += "<span>" + link.domain + "</span>";
           html += '<span>' + link.title + '</span>';
+          html += "<span>" + rTime + "</span>";
           html += "<a href='" + link.url + "' target='_blank'>" + "Link" + "</a>";
           html += "<span>" + daysAgo(link.dateSaved) + "</span>";
-          html += "<span class='delete'> Delete </span>";
+          html += "<img class='delete-btn' src='" + chrome.runtime.getURL("images/delete.png") + "' ></img>";
         } else {
           html += '<img src=' + link.favIconUrl + ' alt=' + link.title + '></img>';
           html += "<span>" + link.domain + "</span>";
           html += '<span>' + link.title + '</span>';
+          html += "<span>" + rTime + "</span>";
           html += "<a href='" + link.url + "'>" + "Link" + "</a>";
           html += "<span>" + daysAgo(link.dateSaved) + "</span>";
-          html += "<span class='delete'> Delete </span>";
+          html += "<img class='delete-btn' src='" + chrome.runtime.getURL("images/delete.png") + "' ></img>";
         }
         html += "</div>";
       }
@@ -150,9 +166,22 @@
     }
     // append all links in the html page
     $("#saved-links-list").append(html);
+
+    $(".delete-btn").hover(function () {
+      $(this).attr('src', chrome.runtime.getURL("images/delete-green.png"));
+    }, function () {
+      $(this).attr("src", chrome.runtime.getURL("images/delete.png"));
+    });
+
+    $("#total-reading-time").text("Total Reading Time - " + totalReadingTime + " mins");
+    if (parseInt(totalReadingTime) > 60) {
+      $("#total-reading-time").addClass("warning");
+    } else if (parseInt(totalReadingTime) > 120) {
+      $("#total-reading-time").addClass("failure");
+    }
     
     // add onclick function on delete text
-    $(".delete").click(function (event) {
+    $(".delete-btn").click(function (event) {
       //console.log($(event.target.parentElement).children("a").attr('href'));
       var _deleteUrl = $(event.target.parentElement).children("a").attr('href');
       _linksArray = _linksArray.filter(function(obj) {

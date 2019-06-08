@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Read Pro - Reading Queue</title>
+    <title>Read Pro - Read Later</title>
     <link rel="stylesheet" href="./../css/savedlinks.css">
 </head>
 <body>
     <div id="reading-queue">
-        <h1>Read Pro - Reading Queue</h1>
-        <div id="sort-buttons">
-            <button id="sort-date">Sort By Date</button>
-            <button id="sort-title">Sort By Title</button>
-            <button id="sort-origin">Sort By Domain</button>
+        <h1>Read Pro - Read Later</h1>
+        <span id="total-reading-time"></span>
+        <div id="links-header" class="links">
+            <span class="heading">Icon</span>
+            <span id="sort-origin" class="heading">Domain</span>
+            <span id="sort-title" class="heading">Title</span>
+            <span id="sort-readTime" class="heading">Read Time</span>
+            <span class="heading">URL</span>
+            <span id="sort-date" class="heading">Date</span>
+            <span class="heading">Delete</span>
         </div>
         <div id="saved-links-list"></div>
     </div>
