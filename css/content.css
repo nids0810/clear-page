@@ -69,7 +69,7 @@ body {
 
 #read-option-btn {
     text-align: right;
-    width: 60%;
+    width: 960px;
     margin: 0px auto;
     cursor: pointer;
     margin-bottom: 5px;
@@ -84,18 +84,42 @@ body {
     background-color: #4A7C87;
     color: white;
     padding: 20px;
-    width: 60%;
+    width: 960px;
     margin: 0 auto;
     font-size: 13px;
     box-sizing: border-box;
+}
+
+#read-font-family div, #read-color-theme div, #read-font-size div {
+    display: inline-block;
+}
+
+#read-font-family div span, #read-color-theme div span, #read-font-size div span {
+    margin-left: 3px;
+}
+
+#read-font-size label span:nth-child(2) {
+    font-size: 15px;
+}
+
+#read-font-size label span:nth-child(3) {
+    font-size: 17px;
+}
+
+#read-font-size div:nth-child(3) span {
+    font-size: 15px;
+}
+
+#read-font-size div:nth-child(4) span {
+    font-size: 17px;
 }
 
 #read-text {
     box-sizing: border-box;
     border: 1px solid;
     margin: 0 auto;
-    padding: 45px 70px;
-    width: 60%;
+    padding: 45px;
+    width: 960px;
 }
 
 /* Day Theme */
@@ -298,6 +322,7 @@ body {
     border-top: 2px solid;
     overflow: auto;
     padding-top: 1rem;
+    text-align: justify;
 }
 
 #read-text #read-text-content a {
@@ -428,12 +453,64 @@ body {
     font-size: 17px;
     border-radius: 5px;
     height: 38px;
-    width: 300px;
+    width: 274px;
 }
 
 #speech-inner {
     margin-top: 10px;
 }
+
+#speech-inner #more-option-btn {
+    margin-left: 10px;
+    border: 0;
+    background: #4CA1B6;
+    color: #fff;
+    padding: 9px;
+    cursor: pointer;
+    font-size: 17px;
+    border-radius: 5px;
+}
+
+#dialog-box .slide-container {
+    margin-top: 15px;
+}
+
+#dialog-box .slide-container label {
+    font-family: sans-serif;
+    font-size: 15px;
+    color: #333;
+}
+
+#dialog-box .slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 18px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+  
+  #dialog-box .slider:hover {
+    opacity: 1;
+  }
+  
+  #dialog-box .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+  }
+  
+  #dialog-box .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+  }
 
 /* Erase Mode */
 .web-edited {
@@ -444,6 +521,19 @@ body {
 .web-deleted {
     opacity: 0.0;
     filter: alpha(opacity=0);
+}
+
+#show-all-erase-btn {
+    border: 0;
+    background: #4A7C87;
+    color: #fff;
+    cursor: pointer;
+    font-size: 17px;
+    border-radius: 5px;
+    height: 38px;
+    width: 142px;
+    display: block;
+    margin-top: 10px;
 }
 
 /* Highlight Mode */
@@ -542,4 +632,13 @@ span.manual-highlight th {
     right: -14px;
     z-index: 10;
     position: sticky;
+}
+
+@media(max-width: 1030px) {
+    #read-text {
+        padding: 40px;
+    }
+    #read-option-btn, #read-option-box, #read-text {
+        width: 90%;
+    }
 }

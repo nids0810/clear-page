@@ -485,10 +485,10 @@
                 if ($("#read-font-size").length === 0) {
                   $("#read-option-box").append(
                     "<div id='read-font-size'>\
-                    <Label>Text Size:</Label>\
-                    <input type='radio' id='font-small' name='small' value='small'> Small\
-                    <input type='radio' id='font-medium' name='medium' value='medium' checked> Medium\
-                    <input type='radio' id='font-large' name='large' value='large'> Large\
+                    <Label><span>A</span><span>A</span><span>A</span></Label>\
+                    <div><input type='radio' id='font-small' name='small' value='small'><span>Small</span></div>\
+                    <div><input type='radio' id='font-medium' name='medium' value='medium' checked><span>Medium</span></div>\
+                    <div><input type='radio' id='font-large' name='large' value='large'><span>Large</span></div>\
                     </div>"
                   );
                 }
@@ -497,15 +497,19 @@
                   $("#read-option-box").append(
                     "<div id='read-font-family'>\
                     <Label>Typography:</Label>\
-                    <input type='radio' id='font-sans-serif' name='sans-serif' value='sans-serif' checked> Sans-Serif\
-                    <input type='radio' id='font-verdana' name='verdana' value='Verdana'> Verdana\
-                    <input type='radio' id='font-georgia' name='georgia' value='Georgia'> Georgia\
-                    <input type='radio' id='font-lucida-sans' name='lucida-sans' value='Lucida Sans'> Lucida Sans\
-                    <input type='radio' id='font-literata' name='literata' value='Literata-Regular'> Literata\
-                    <input type='radio' id='font-bookerly' name='bookerly' value='Bookerly-Regular'> Bookerly\
-                    <input type='radio' id='font-open-dyslexic' name='open-dyslexic' value='OpenDyslexic-Regular'> Open Dyslexic\
+                    <div><input type='radio' id='font-sans-serif' name='sans-serif' value='sans-serif' checked><span>Sans-Serif</span></div>\
+                    <div><input type='radio' id='font-verdana' name='verdana' value='Verdana'><span>Verdana</span></div>\
+                    <div><input type='radio' id='font-georgia' name='georgia' value='Georgia'><span>Georgia</span></div>\
+                    <div><input type='radio' id='font-lucida-sans' name='lucida-sans' value='Lucida Sans'><span>Lucida</span></div>\
+                    <div><input type='radio' id='font-literata' name='literata' value='Literata-Regular'><span>Literata</span></div>\
+                    <div><input type='radio' id='font-bookerly' name='bookerly' value='Bookerly-Regular'><span>Bookerly</span></div>\
+                    <div><input type='radio' id='font-open-dyslexic' name='open-dyslexic' value='OpenDyslexic-Regular'><span>Dyslexic</span></div>\
                     </div>"
                   );
+                  $("#read-font-family div span").each(function(){
+                    var fontFamily = $(this).siblings("input[type='radio']").val();
+                    $(this).css('font-family', fontFamily);
+                  });
                 }
                 //Color Theme toggle button
                 if ($("#read-color-theme").length === 0) {
@@ -513,16 +517,16 @@
                     $("#read-option-box").append(
                       "<div id='read-color-theme'>\
                       <Label>Theme:</Label>\
-                      <input type='radio' id='theme-day' name='day' value='day' checked> Day\
-                      <input type='radio' id='theme-night' name='night' value='night'> Night\
+                      <div><input type='radio' id='theme-day' name='day' value='day' checked><span>Day</span></div>\
+                      <div><input type='radio' id='theme-night' name='night' value='night'><span>Night</span></div>\
                     </div>"
                   );
                   } else if (dayOrNight === "night") {
                     $("#read-option-box").append(
                       "<div id='read-color-theme'>\
                       <Label>Theme:</Label>\
-                      <input type='radio' id='theme-day' name='day' value='day'> Day\
-                      <input type='radio' id='theme-night' name='night' value='night' checked> Night\
+                      <div><input type='radio' id='theme-day' name='day' value='day'><span>Day</span></div>\
+                      <div><input type='radio' id='theme-night' name='night' value='night' checked><span>Night</span></div>\
                     </div>"
                     );
                   }
@@ -834,7 +838,7 @@
           if ($("#dialog-box").length === 0) {
             //dialog-box doesn't exist
             $("body").append(
-              "<div id='dialog-box'><select id='speech-voices'></select><div id='speech-inner'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button></div></div>"
+              "<div id='dialog-box'><select id='speech-voices'></select><div id='speech-inner'><button id='apply-btn'>Speak</button><button id='cancel-btn'>Cancel</button><button id='more-option-btn'>More options</button></div></div>"
             );
           } else {
             if ($("#speech-voices").length === 0) {
@@ -995,6 +999,11 @@
                 ttsMode = false;
                 removeExtensionElements();
                 createToolOptions();
+              } else if(event.target.id === "more-option-btn") {
+                $("#more-option-btn").text("Hide Options");
+                $("#dialog-box").append(
+                  '<div class="slide-container"><label>Pitch</label><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></div><div class="slide-container"><label>Bitch</label><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></div>'
+                );
               } else {
                 text2Speech = window.getSelection().toString();
                 textArray = chuckText(text2Speech);
@@ -1045,7 +1054,7 @@
 
           if ($("#dialog-box").length === 0) {
             //dialog-box doesn't exist
-            $("body").append("<div id='dialog-box'><button id='apply-btn'>Apply Changes</button><button id='cancel-btn'>Cancel</button></div>");
+            $("body").append("<div id='dialog-box'><button id='apply-btn'>Erase</button><button id='cancel-btn'>Cancel</button><button id='show-all-erase-btn'>Show all Erased</button></div>");
           } else {
             $("#dialog-box").show();
           }
@@ -1094,6 +1103,10 @@
                 removeExtensionElements();
                 createToolOptions();
                 eraseMode = false;
+              } else if (event.target.id === "show-all-erase-btn") {
+                $(".web-deleted").each(function(){
+                  $(this).removeClass("web-deleted");
+                });
               } else if ($(event.target).hasClass("web-edited")) {
                 //Unselect already selected elements
                 $(event.target).removeClass("web-edited");
