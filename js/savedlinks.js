@@ -53,9 +53,7 @@
 
   //compare array by read time
   function compareReadTime(a, b) {
-    if (a.readingTime < b.readingTime) return -1;
-    if (a.readingTime > b.readingTime) return 1;
-    return 0;
+    return a.readingTime - b.readingTime;
   }
 
   //provide days ago

@@ -7,12 +7,18 @@
     },
     function (response) {
       if (response.message) {
-        //console.log("Extension Active: " + response.message);
         //Create Tool Option
         var createToolOptions = function () {
           //Tool options box
           if ($("#tool-option").length !== 0) {
             $("#tool-option").remove();
+          }
+
+          // Add normalize.css file
+          if ($("#normalize-css").length === 0) {
+            $("head").append('<link rel="stylesheet" href="' +
+            chrome.runtime.getURL("css/normalize.css") +
+            '" type="text/css" id="normalize-css"/>');
           }
 
           // Add content.css file
@@ -26,7 +32,7 @@
           if ($("#sweet-alert-js").length === 0) {
             $("head").append('<script src = "' + chrome.runtime.getURL("third-party/sweetalert.min.js") + '" id="sweet-alert-js" />');
           }
-
+          
           // Add animate.css file
           if ($("#animate-css").length === 0) {
             $("head").append('<link rel="stylesheet" href="' + 
@@ -447,7 +453,7 @@
             addScripts();
             
             addFonts();
-            
+           
             // Add Read Container
             if ($("#read-container").length === 0) {
               $("body").append("<div id='read-container'></div>");
@@ -915,6 +921,8 @@
           var textArray = "";
           var speaker;
           var speakDefault = false;
+          var pitchChanged = false;
+          var rateChanged = false;
 
           synth.cancel();
 
@@ -922,9 +930,7 @@
             if (ttsMode) {
               if (event.target.id === "apply-btn" && event.target.innerText === "Speak") {
                 //apply button clicked
-                //console.log("Speaks all selected text");
                 if (synth.speaking) {
-                  //console.log("Synth speaking");
                   synth.cancel();
                 }
 
@@ -942,6 +948,12 @@
                     speaker = new SpeechSynthesisUtterance(this.trim());
                     if (!$.isEmptyObject(selectedVoice)) {
                       speaker.voice = selectedVoice;
+                    }
+                    if (pitchChanged) {
+                      speaker.pitch = $("#pitch-range").val();
+                    }
+                    if (rateChanged) {
+                      speaker.rate = $("#rate-range").val();
                     }
                     synth.speak(speaker);
 
@@ -999,14 +1011,38 @@
                 textArray = [];
                 selectedVoice = {};
                 ttsMode = false;
+                pitchChanged = false;
+                rateChanged = false;
                 removeExtensionElements();
                 createToolOptions();
               } else if(event.target.id === "more-option-btn" && event.target.innerText === "More Options") {
                 $("#more-option-btn").text("Hide Options");
                 if($("#dialog-box #slide-block").length === 0) {
                   $("#dialog-box").append(
-                    '<div id="slide-block"><div class="slide-container"><label>Pitch</label><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></div><div class="slide-container"><label>Bitch</label><input type="range" min="1" max="100" value="50" class="slider" id="myRange"></div></div>'
+                    '<div id="slide-block">' +
+                      '<div class="slide-container">' +
+                      "<label>Rate:</label>" +
+                      '<span id="rate-value">1.0</span>' +
+                      '<input type="range" min="0" max="2" step="0.1" value="1" class="slider" id="rate-range">' +
+                      "</div>" +
+                      '<div class="slide-container">' +
+                      "<label>Pitch:</label>" +
+                      '<span id="pitch-value">1.0</span>' +
+                      '<input type="range" min="0" max="2" step="0.1" value="1" class="slider" id="pitch-range">' +
+                      "</div>" +
+                      "</div>"
                   );
+                  var rateSlider = document.getElementById("rate-range");
+                  var pitchSlider = document.getElementById("pitch-range");
+                  pitchSlider.oninput = function () {
+                    $("#pitch-value").text(this.value);
+                    pitchChanged = true;
+                  };
+
+                  rateSlider.oninput = function() {
+                    $("#rate-value").text(this.value);
+                    rateChanged = true;
+                  };
                 } else {
                   $("#dialog-box #slide-block").show();
                 }
@@ -1063,7 +1099,7 @@
 
           if ($("#dialog-box").length === 0) {
             //dialog-box doesn't exist
-            $("body").append("<div id='dialog-box'><button id='apply-btn'>Erase</button><button id='cancel-btn'>Cancel</button><button id='show-all-erase-btn'>Show all Erased</button></div>");
+            $("body").append("<div id='dialog-box'><button id='apply-btn'>Erase</button><button id='cancel-btn'>Cancel</button><button id='show-all-erase-btn'>Show Erased</button></div>");
           } else {
             $("#dialog-box").show();
           }
@@ -1149,7 +1185,7 @@
           if ($("#dialog-box").length === 0) {
             //dialog-box doesn't exist
             $("body").append(
-              "<div id='dialog-box'><button id='apply-btn'>Save Highlights</button><button id='cancel-btn'>Cancel</button></div>"
+              "<div id='dialog-box'><button id='apply-btn'>Save Highlights</button><button id='cancel-btn'>Remove</button></div>"
             );
           } else {
             $("#dialog-box").show();
@@ -1375,20 +1411,26 @@
             if ($("#help-container").length === 0) {
               $("body").append("<div id='help-container'></div>");
               var helpHtml =
-                "<div id='cross-btn'>X</div>\
+                "<div id='cross-btn'>&#10006;</div>\
                 <div id='help-title'>Read Pro: Help Doc</div>\
                 <div id='help-content'>\
                   <div>\
-                  <p>Use this powerful tool by either clicking the icon <img src='" + chrome.runtime.getURL("icons/icon_16.png") + "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p>\
+                  <p>Use this powerful tool by either clicking the icon <img src='" +
+                chrome.runtime.getURL("icons/icon_16.png") +
+                "'/> or pressing the '<i>Ctrl+Shift+L</i>' key.</p>\
+                  <br>\
                   <p>Want to learn more? Check out the Read Pro extension <a href='https://sites.google.com/view/readpro/home' title='Read Pro' target='_blank'>website</a>.</p>\
                   </div>\
-                  <div><span>Read Mode (default):</span><p>Transform the website into a clean readable page with various styling options.</p></div>\
-                  <div><span>Text to Speak Mode:</span><p>Read out loud any selected text from the web page. Choose voices from various voice options.</p></div>\
-                  <div><span>Erase Mode:</span><p>Erases any unnecessary element from the web page on a single click. Select the element and use Apply button to erase. Use Cancel button to Undo any changes.</p></div>\
-                  <div><span>Highlight Mode:</span><p>Use the inbuilt Highlighter to highlight any text on the web page. Remove all highlights using the cancel button.</p></div>\
-                  <div><span>Save Page for Later:</span><p>Save favorite web pages in a reading queue for a later read. Detect any previously saved pages.</p></div>\
-                  <div><span>Open Reading Queue:</span><p>View the Read for Later list. Sort the list using various options as well as delete the unwanted web page.</p></div>\
-                  <div><span>Save as PDF:</span><p>One click to save the web page into PDF file locally. See empty pages? Try unselecting Headers & Footers options.</p></div>\
+                  <div><span>Read Mode (default):</span><p>Transform the website into a clean readable page with various theme, text size, font and other options.</p></div>\
+                  <div><span>Text to Speak Mode:</span><p>Hear the  article by clicking the Speak button. Read out any selected text from the page. Choose voices and other options.</p></div>\
+                  <div><span>Erase Mode:</span><p>Erases any unnecessary element from the page by selecting the element and clicking the Erase button. Undo current changes using the Cancel button and bring all erased items back using the 'Show Erased' button.</p></div>\
+                  <div><span>Highlight Mode:</span><p>Highlight any text on the web page using the inbuilt Highlighter. Remove all the highlights using the Remove button.</p></div>\
+                  <div><span>Read Later:</span><p>Save favorite pages for a later read by a single click. Detect any duplicate pages.</p></div>\
+                  <div><span>Open Read Later:</span><p>View all the Read Later pages along with reading time. Sort the list using various options and delete all completed pages.</p></div>\
+                  <div><span>Save as PDF:</span><p>Save the current page into PDF file locally. See empty pages? Try unselecting Headers & Footers options.</p></div>\
+                  <div>\
+                  <p>Like the extension? Please share your review on the chrome extension page. Your feedback is really important to us. Thank you.&#9996;</p>\
+                  </div>\
                 </div>\
                 ";
               $("#help-container").append($.parseHTML(helpHtml));

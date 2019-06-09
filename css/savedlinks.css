@@ -133,3 +133,10 @@ body {
     position: relative;
     top: 15px;
 }
+
+@media(max-width: 720px) {
+    .links {
+        display: grid;
+        grid-template-columns: 5% 20% 35% 15% 5% 15% 5%;
+    }
+}
