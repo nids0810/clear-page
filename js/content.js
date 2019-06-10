@@ -91,7 +91,7 @@
 
           //Save as PDF Button
           $("#tool-option").append(
-            "<img id='pdf-btn' title='Export PDF' src='" +
+            "<img id='pdf-btn' title='Save as PDF' src='" +
             chrome.runtime.getURL("images/pdf-white.png") +
             "'/>"
           );
@@ -492,7 +492,7 @@
                 if ($("#read-font-size").length === 0) {
                   $("#read-option-box").append(
                     "<div id='read-font-size'>\
-                    <Label><span>A</span><span>A</span><span>A</span></Label>\
+                    <Label><span>A</span><span>A</span><span>A</span>:</Label>\
                     <div><input type='radio' id='font-small' name='small' value='small'><span>Small</span></div>\
                     <div><input type='radio' id='font-medium' name='medium' value='medium' checked><span>Medium</span></div>\
                     <div><input type='radio' id='font-large' name='large' value='large'><span>Large</span></div>\
@@ -1022,12 +1022,12 @@
                     '<div id="slide-block">' +
                       '<div class="slide-container">' +
                       "<label>Rate:</label>" +
-                      '<span id="rate-value">1.0</span>' +
+                      '<span id="rate-value">1</span>' +
                       '<input type="range" min="0" max="2" step="0.1" value="1" class="slider" id="rate-range">' +
                       "</div>" +
                       '<div class="slide-container">' +
                       "<label>Pitch:</label>" +
-                      '<span id="pitch-value">1.0</span>' +
+                      '<span id="pitch-value">1</span>' +
                       '<input type="range" min="0" max="2" step="0.1" value="1" class="slider" id="pitch-range">' +
                       "</div>" +
                       "</div>"
@@ -1099,13 +1099,16 @@
 
           if ($("#dialog-box").length === 0) {
             //dialog-box doesn't exist
-            $("body").append("<div id='dialog-box'><button id='apply-btn'>Erase</button><button id='cancel-btn'>Cancel</button><button id='show-all-erase-btn'>Show Erased</button></div>");
+            $("body").append(
+              "<div id='dialog-box'><button id='apply-btn'>Erase</button><button id='cancel-btn'>Cancel</button><button id='show-all-erase-btn'>Show Erased</button><div id='user-message-content'><span></span></div></div>"
+            );
           } else {
             $("#dialog-box").show();
           }
 
           if ($(".web-deleted").length === 0) {
             $("#show-all-erase-btn").prop('disabled', true);
+            $("#show-all-erase-btn").addClass("button-disabled");
           }
 
           // Click an element in erase mode

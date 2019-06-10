@@ -4,6 +4,7 @@
 
   var savedLinksArray = [];
   var totalReadingTime = 0;
+  var totalReadingArticle = 0;
   var _sorted = {
     "title": false,
     "date": false,
@@ -132,6 +133,7 @@
   var loadSavedLinksObject = function (_linksArray) {
     var html = '';
     totalReadingTime = 0;
+    totalReadingArticle = 0;
     $("#saved-links-list").empty();
     if (_linksArray.length !== 0) {
       for (var link of _linksArray) {
@@ -139,6 +141,7 @@
         var date = new Date(link.dateSaved);
         var rTime = link.readingTime == null ? "-" : link.readingTime + " mins";
         totalReadingTime += link.readingTime == null ? 0 : parseInt(link.readingTime);
+        totalReadingArticle += 1;
         html += "<div class='links'>";
         if (link.url !== "") {
           html += '<img src=' + link.favIconUrl + ' alt=' + link.title + '></img>';
@@ -177,6 +180,8 @@
     } else {
       $("#warning-icon").hide();
     }
+
+    $("#total-reading-article").text("Total Articles: " + totalReadingArticle);
     
     // add onclick function on delete text
     $(".delete-btn").click(function (event) {
